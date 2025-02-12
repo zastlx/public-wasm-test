@@ -1,0 +1,24 @@
+{
+  "name": "rBST",
+  "version": "1.0.0",
+  "description": "shell headless bots",
+  "main": "main.js",
+  "repository": "https://github.com/enbyte/rBST",
+  "author": "hijinks",
+  "license": "unlicensed",
+  "private": true,
+  "type": "module",
+  "imports": {
+    "#api": "./api.js",
+    "#player": "./player.js",
+    "#dispatch": "./dispatch.js",
+    "#comm": "./comm.js",
+    "#packet": "./packet.js",
+    "#manager": "./manager.js"
+  },
+  "dependencies": {
+    "firebase": "^11.2.0",
+    "socks-proxy-agent": "^8.0.5",
+    "ws": "^8.18.0"
+  }
+}
