@@ -1,11 +1,14 @@
 import fs from 'fs';
+import path from 'path';
+
+const proxyJSONPath = path.join(import.meta.dirname, '..', 'data', 'proxies.json');
 
 class Manager {
     constructor(players, use_proxies = false) {
         players ? this.players = players : this.players = []; // based
         this.nUpdates = 0;
-        if (fs.existsSync('proxies.json') && use_proxies) {
-            this.proxies = JSON.parse(fs.readFileSync('proxies.json'));
+        if (fs.existsSync(proxyJSONPath) && use_proxies) {
+            this.proxies = JSON.parse(proxyJSONPath);
             console.log("Found proxies.json, there are", this.proxies.length, "proxies");
             for (let i = 0; i < this.players.length; i++) {
                 this.players[i].proxy = this.proxies[i % this.proxies.length];
@@ -26,6 +29,9 @@ class Manager {
             await player.join(code);
         }));
     }
+    async findGame(params) {
+        return await this.players[0].findGame(params);
+    }
     dispatch(dispatch) {
         this.players.forEach((player) => player.dispatch(dispatch));
     }
@@ -41,7 +47,7 @@ class Manager {
         this.players.forEach((player) => player.update());
         this._update_times.push(Date.now() - tmp);
     }
-    avgUpdateTime(n=100) {
+    avgUpdateTime(n = 100) {
         return this._update_times.slice(-n).reduce((a, b) => a + b, 0) / n;
     }
 }

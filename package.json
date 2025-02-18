@@ -1,23 +1,23 @@
 {
-  "name": "rBST",
+  "name": "shellbot",
   "version": "1.0.0",
   "description": "shell headless bots",
   "main": "main.js",
-  "repository": "https://github.com/enbyte/rBST",
+  "repository": "https://github.com/enbyte/Shellfbot",
   "author": "hijinks",
   "license": "unlicensed",
   "private": true,
   "type": "module",
   "imports": {
-    "#api": "./api.js",
-    "#player": "./player.js",
-    "#dispatch": "./dispatch.js",
-    "#comm": "./comm.js",
-    "#packet": "./packet.js",
-    "#manager": "./manager.js"
+    "#api": "./src/api.js",
+    "#comm": "./src/comm.js",
+    "#dispatch": "./src/dispatch.js",
+    "#manager": "./src/manager.js",
+    "#player": "./src/player.js",
+    "#packet": "./src/packet.js"
   },
   "dependencies": {
-    "firebase": "^11.2.0",
+    "firebase": "^11.3.1",
     "socks-proxy-agent": "^8.0.5",
     "ws": "^8.18.0"
   }

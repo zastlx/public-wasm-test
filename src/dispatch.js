@@ -1,9 +1,6 @@
-import packet from '#packet'
+import packet from '#packet';
 
 class SpawnDispatch {
-    constructor() {
-
-    }
     check(player) {
         if (!player.state.playing) {
             if (player.lastDeathTime + 6000 < Date.now()) {
@@ -24,7 +21,6 @@ class SpawnDispatch {
 class ChatDispatch {
     constructor(msg) {
         this.msg = msg;
-
     }
     check(player) {
         return (player.state.joinedGame && (player.lastChatTime + 3000) < Date.now());
@@ -37,9 +33,6 @@ class ChatDispatch {
 }
 
 class ReloadDispatch {
-    constructor() {
-
-    }
     check(player) {
         return player.state.playing
     }

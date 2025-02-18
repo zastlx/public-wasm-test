@@ -1,14 +1,25 @@
-import player from "#player";
+import fs from 'fs';
+
+import path from 'path';
 import dispatch from '#dispatch';
 import manager from '#manager';
-
-import { readFileSync } from 'fs';
+import player from "#player";
 
 let player_list = [];
 let emails = []; // fill in here
 let passwords = []; // fill in here
 
-JSON.parse(readFileSync('logins.json')).accounts.forEach(element => { emails.push(element.email); passwords.push(element.password); });
+const loginJSONPath = path.join(import.meta.dirname, 'data', 'logins.json');
+if (fs.existsSync(loginJSONPath)) JSON.parse(fs.readFileSync(loginJSONPath)).accounts.forEach(element => {
+    emails.push(element.email);
+    passwords.push(element.password);
+});
+else fs.writeFileSync(loginJSONPath, JSON.stringify({
+    accounts: [
+        { email: 'example@example.com', password: 'example' },
+        { email: 'example2@example.com', password: 'example2' }
+    ]
+}, null, 4));
 
 const NUM_PLAYERS = 1;
 

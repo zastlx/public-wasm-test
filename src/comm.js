@@ -1,5 +1,7 @@
 import fs from 'fs';
-import api from '#api'
+import path from 'path';
+
+import api from '#api';
 
 export class Pool {
     constructor(constructorFn, size) {
@@ -220,9 +222,11 @@ export class CommIn {
 
 let lastTime = 0;
 
+const constantsJSONPath = path.join(import.meta.dirname, '..', 'data', 'constants.json');
+
 export async function updatePacketConstants() {
-    if (fs.existsSync('./constants.json')) {
-        lastTime = JSON.parse(fs.readFileSync('./constants.json')).lastFetchedAt;
+    if (fs.existsSync(constantsJSONPath)) {
+        lastTime = JSON.parse(fs.readFileSync(constantsJSONPath)).lastFetchedAt;
     }
     let consts;
 
@@ -254,13 +258,13 @@ export async function updatePacketConstants() {
 
         // console.log(consts)
 
-        fs.writeFileSync('./constants.json', JSON.stringify({
+        fs.writeFileSync(constantsJSONPath, JSON.stringify({
             lastFetchedAt: Date.now(),
             data: consts
         }, null, 4));
         
     } else {
-        consts = JSON.parse(fs.readFileSync('./constants.json')).data;
+        consts = JSON.parse(fs.readFileSync(constantsJSONPath)).data;
         
     }
 

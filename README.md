@@ -224,7 +224,7 @@ imagine how long its taking you to read this... and I had to write all this shit
 
 #### Methods:
 
-`constructor(players, use_proxies=false)` - Sets up the manager. If `use_proxies` is true, it will attempt to read from a list in `proxies.json`. Player list is the list of players the manager will manage. It can be blank, but then the manager will be useless.
+`constructor(players, use_proxies=false)` - Sets up the manager. If `use_proxies` is true, it will attempt to read from a list in `data/proxies.json`. Player list is the list of players the manager will manage. It can be blank, but then the manager will be useless.
 
 Example usage:
 ```javascript

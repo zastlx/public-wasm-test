@@ -1,4 +1,3 @@
-
 import WebSocket from 'ws';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
@@ -106,10 +105,13 @@ async function login(email, password, prox = '') {
         } catch (error) {
             ++k;
             if (error.code == 'auth/network-request-failed') {
-                log.error("cw_api.login: Network req failed (auth/network-request-failed), retrying, k =", k);
+                console.error("cw_api.login: Network req failed (auth/network-request-failed), retrying, k =", k);
+            } else if (error.code == 'auth/missing-email') {
+                console.error("cw_api.login: You did not specify any emails. Please do so in data/logins.json");
+                process.exit(0);
             } else {
-                log.error("cw_api.login: Error:", email, password);
-                log.error("cw_api.login: Error:", error, 'k =', k);
+                console.error("cw_api.login: Error:", email, password);
+                console.error("cw_api.login: Error:", error, 'k =', k);
             }
         }
     }
