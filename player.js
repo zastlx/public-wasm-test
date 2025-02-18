@@ -56,7 +56,7 @@ class InGamePlayer {
 
 
 class Player {
-    constructor(proxy = '', id = '') {
+    constructor(id = '', proxy = '') {
         this.proxy = proxy;
         this.use_proxy = proxy !== '';
 
@@ -66,7 +66,7 @@ class Player {
 
         this._hooks = {
             'chat': [],
-            'new_player': [],
+            'join': [],
             'death': [],
             'fire': [],
             'collect': [],
@@ -156,6 +156,7 @@ class Player {
             if (disp.check(this)) {
                 disp.execute(this);
                 this._dispatches.splice(i, 1);
+                return; // only 1 dispatch per update
             } else {
                 // console.log("Dispatch failed", this.state.joinedGame, this.lastChatTime)
             }
@@ -349,10 +350,6 @@ class Player {
 
         this.nUpdates++;
 
-        if (this.nUpdates % 1000000 == 0) {
-            console.log("gameSocket readyState:", this.gameSocket.readyState);
-        }
-
 
         if (this._packet_queue.length === 0 && this._dispatches.length === 0) {
             return;
@@ -379,7 +376,7 @@ class Player {
         let player = this.state.players[Object.keys(this.state.players).find(p => this.state.players[p].id == id)];
         // console.log(`Player ${player.name}: ${text} (flags: ${msg_flags})`);
         // console.log(`Their position: ${player.state.position.x}, ${player.state.position.y}, ${player.state.position.z}`);
-        this._hooks['chat'].forEach((fn) => this._live_callbacks.push(fn.apply(this, [player, text, msg_flags])));
+        this._hooks['chat'].forEach((fn) => this._live_callbacks.push(fn.apply(this, [this, player, text, msg_flags])));
     }
     _handle_add_player_packet(packet) {
         let id_ = CommIn.unPackInt8U();
@@ -441,7 +438,7 @@ class Player {
         if (!this.state.players[playerData.id_]) {
             this.state.players[playerData.id_] = new InGamePlayer(playerData.id_, playerData.team_, playerData);
         }
-        this._hooks['new_player'].forEach((fn) => this._live_callbacks.push(fn.apply(this, [this.state.players[playerData.id_]])));
+        this._hooks['join'].forEach((fn) => this._live_callbacks.push(fn.apply(this, [this, this.state.players[playerData.id_]])));
         // console.log(`I am ${this.state.me.id}, player ${playerData.id_} joined.`);
         let unp = CommIn.unPackInt8U();
         if (unp == CommCode.addPlayer) { // there is another player stacked
@@ -472,7 +469,7 @@ class Player {
             player.state.grenades = grenades;
             player.state.position = { x: x, y: y, z: z };
             // console.log(`Player ${player.name} respawned at ${x}, ${y}, ${z}`);
-            this._hooks['respawn'].forEach((fn) => this._live_callbacks.push(fn.apply(this, [player])));
+            this._hooks['respawn'].forEach((fn) => this._live_callbacks.push(fn.apply(this, [this, player])));
         } else {
             // console.log(`Player ${id} not found. (me: ${this.state.me.id}) (respawn)`);
         }
@@ -517,7 +514,7 @@ class Player {
         if (player) {
             player.state.playing = false;
             // console.log(`Player ${player.name} paused.`);
-            this._hooks['pause'].forEach((fn) => this._live_callbacks.push(fn.apply(this, [player])));
+            this._hooks['pause'].forEach((fn) => this._live_callbacks.push(fn.apply(this, [this, player])));
         }
     }
     _handle_death_packet(packet) {
@@ -544,14 +541,14 @@ class Player {
             // console.log(`Player ${byPlayer.name} is on a streak of ${byPlayer.state.kills} kills.`);
         }
 
-        this._hooks['death'].forEach((fn) => this._live_callbacks.push(fn.apply(this, [killedPlayer, byPlayer])));
+        this._hooks['death'].forEach((fn) => this._live_callbacks.push(fn.apply(this, [this, killedPlayer, byPlayer])));
 
 
     }
     _handle_fire_packet(packet) {
         let id = CommIn.unPackInt8U(); // there should be 6 floats after this, but that's irrelevant for our purposes 
         let player = this.state.players[id];
-        this._hooks['fire'].forEach((fn) => this._live_callbacks.push(fn.apply(this, [player])));
+        this._hooks['fire'].forEach((fn) => this._live_callbacks.push(fn.apply(this, [this, player])));
     }
     _handle_collect_packet(packet) {
         let id = CommIn.unPackInt8U();
@@ -568,7 +565,7 @@ class Player {
                 console.log("_handle_collect_packet: Invalid collect type", type);
             }
         }
-        this._hooks['collect'].forEach((fn) => this._live_callbacks.push(fn.apply(this, [this.state.players[id], type, applyToWeaponIdx, itemId])));
+        this._hooks['collect'].forEach((fn) => this._live_callbacks.push(fn.apply(this, [this, this.state.players[id], type, applyToWeaponIdx, itemId])));
     }
     _handle_hit_them_packet(packet) {
         let id = CommIn.unPackInt8U();
@@ -581,7 +578,7 @@ class Player {
     }
     handle_packet(packet) {
         CommIn.init(packet);
-        this._hooks['packet'].forEach((fn) => this._live_callbacks.push(fn.apply(this, [packet])));
+        this._hooks['packet'].forEach((fn) => this._live_callbacks.push(fn.apply(this, [this, packet])));
         let cmd = CommIn.unPackInt8U();
         switch (cmd) {
             case CommCode.chat:
