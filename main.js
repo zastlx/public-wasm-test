@@ -4,7 +4,6 @@ import manager from '#manager';
 
 import { readFileSync } from 'fs';
 
-
 let player_list = [];
 let emails = []; // fill in here
 let passwords = []; // fill in here
@@ -14,7 +13,7 @@ JSON.parse(readFileSync('logins.json')).accounts.forEach(element => { emails.pus
 const NUM_PLAYERS = 1;
 
 for (let i = 0; i < NUM_PLAYERS; i++) {
-    player_list.push(new player.Player('spammer'));
+    player_list.push(new player.Player(process.argv[3] || 'spammer'));
 }
 
 let man = new manager.Manager(player_list);
@@ -36,9 +35,7 @@ man.on('join', (me, player) => {
 });
 
 await man.login(emails, passwords);
-await man.join('kate-burl-pint');
-
-
+await man.join(process.argv[2] || 'jork-strp-club');
 
 setInterval(async () => { 
     man.update(); 
