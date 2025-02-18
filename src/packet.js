@@ -23,7 +23,7 @@ class Packet {
                 }
             }
         }
-        
+
     }
     get length() {
         return this.buf.length;
@@ -46,7 +46,7 @@ function MeleePacket() {
 }
 
 function ChatPacket(msg) {
-    return new Packet(CommCode.chat, [{type: 'string', val: msg}]);
+    return new Packet(CommCode.chat, [{ type: 'string', val: msg }]);
 }
 
 export default {

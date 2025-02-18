@@ -21,6 +21,11 @@ else fs.writeFileSync(loginJSONPath, JSON.stringify({
     ]
 }, null, 4));
 
+if (emails.length == 0 || passwords.length == 0) {
+    console.log("No logins found in logins.json, please add some.");
+    process.exit(1);
+}
+
 const NUM_PLAYERS = 1;
 
 for (let i = 0; i < NUM_PLAYERS; i++) {

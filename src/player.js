@@ -9,7 +9,6 @@ let consts = await updatePacketConstants();
 let CommCode = consts[0];
 let CloseCode = consts[1];
 
-
 class InGamePlayer {
     constructor(id, team, playerData) {
         this.id = id;

@@ -105,7 +105,7 @@ export class OutBuffer {
     packDouble(val) {
         this.packInt32(val * 1048576);
     }
-    packString(str, doMalicious=false) {
+    packString(str, doMalicious = false) {
         if (typeof str !== 'string')
             str = '';
         this.packInt8(doMalicious ? 254 : str.length);
@@ -262,10 +262,10 @@ export async function updatePacketConstants() {
             lastFetchedAt: Date.now(),
             data: consts
         }, null, 4));
-        
+
     } else {
         consts = JSON.parse(fs.readFileSync(constantsJSONPath)).data;
-        
+
     }
 
     return [consts.CommCode, consts.CloseCode];
@@ -273,9 +273,9 @@ export async function updatePacketConstants() {
 
 export let consts = await updatePacketConstants();
 export let CommCode = consts[0];
-export let CloseCode = consts[1];  
+export let CloseCode = consts[1];
 
-export let StatsArr = ["kills","deaths","streak","killsCluck9mm","killsGrenade","killsRpegg","killsEggk47","killsScrambler","killsFreeRanger","killsWhipper","killsCrackshot","killsTriHard","killsMelee","killsPrivate","killsPublic","killsKing","killsSpatula","killsTeams","killsFFA","deathsCluck9mm","deathsGrenade","deathsRpegg","deathsEggk47","deathsScrambler","deathsFreeRanger","deathsWhipper","deathsCrackshot","deathsTriHard","deathsMelee","deathsFall","deathsPrivate","deathsPublic","deathsKing","deathsSpatula","deathsTeams","deathsFFA","kotcCaptured","kotcWins"];
+export let StatsArr = ["kills", "deaths", "streak", "killsCluck9mm", "killsGrenade", "killsRpegg", "killsEggk47", "killsScrambler", "killsFreeRanger", "killsWhipper", "killsCrackshot", "killsTriHard", "killsMelee", "killsPrivate", "killsPublic", "killsKing", "killsSpatula", "killsTeams", "killsFFA", "deathsCluck9mm", "deathsGrenade", "deathsRpegg", "deathsEggk47", "deathsScrambler", "deathsFreeRanger", "deathsWhipper", "deathsCrackshot", "deathsTriHard", "deathsMelee", "deathsFall", "deathsPrivate", "deathsPublic", "deathsKing", "deathsSpatula", "deathsTeams", "deathsFFA", "kotcCaptured", "kotcWins"];
 
 export const ReportReasons = {
     'report_reason_cheating': 1,
