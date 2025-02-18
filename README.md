@@ -335,3 +335,121 @@ function upd() {
 
 upd();
 ```
+
+## Matchmaker Documentation
+The `Matchmaker` class is not usually part of the selfbot, and can be imported separately as it's needed. The `Matchmaker` only helps you find public games. Private game creation will eventually (probably) be written into the `Player` documentation.
+
+### Constructor
+The constructor has a parameter, which is a custom session ID. If you want to use a session ID already created (to avoid request usage or something), you can use this parameter. If you intend to use the Matchmaker in a standalone script, ignore the following.
+
+A custom session ID is generated anytime you log into an account in-app, which is then used in future requests to the Matchmaker. This is stored internally inside of the `Player` object of the script (`<Player>.loginData.sessionId`). To make this process easier, the `Manager` has a method named `getSessionId` to generate a random session ID from the `Player`s stored. 
+
+```js
+const manager = new manager.Manager();
+
+// ...
+
+const randomSessionId = manager.getSessionId();
+const matchmaker = new Matchmaker(randomSessionId);
+```
+
+The Matchmaker, if a session ID is not passed, will create an anonymous account ad use that for all future requests.
+
+> [!NOTE]
+> Upon constructing a Matchmaker, it will connect to and then infinitely reconnect to the matchmaker WebSocket. Using `<Matchmaker>.ws.close()` will **instantly reopen the connection**. If you need to close the Matchmaker, use `<Matchmaker>.close()`
+
+### Methods
+The Matchmaker, unlike the rest of the selfbot, heavily relies on promises & `async`. The Matchmaker also has several methods not intended for public use, and hence they will not be documented.
+
+### await getRegions();
+This fetches the region list from the game and then returns it, as well as stores it in `<Matchmaker>.regionList`.
+
+```js
+const matchmaker = new Matchmaker();
+const regionList = await matchmaker.getRegions();
+
+console.log(regionList); // ==> [{ id: 'sydney', sub: 'egs...' }, { id: 'useast', 'sub': 'egs...' }]
+console.log(matchmaker.regionList); // ==> [{ id: 'sydney', sub: 'egs...' }, { id: 'useast', sub: 'egs...' }]
+console.log(regionList == matchmaker.regionList) // ==> true
+```
+
+This will be required for `getRandomRegion()`, as well as region validation in `findGame()`.
+
+### await findGame({ region, mode })
+This finds a game with the specified parameters, `region` and `mode`.
+
+A region list can be found using `getRegions()`, and will a specified region **will only be validated if `getRegions()` has previously been called**.
+
+The `mode` can be any of the following: `ffa`, `team`, `spatula`, & `kotc`.
+
+It will return a standardized game object similar to the following:
+
+```js
+{
+  command: 'gameFound',
+  region: 'santiago', // the game region
+  subdomain: 'egs-static-live-santiago-1s5w3cdc',
+  id: 'just-mode-hawk', // the game code
+  uuid: '...',
+  private: false,
+  noobLobby: false
+}
+```
+
+The game code is `<response>.id`. You can connect to this using `<Manager | Player>.join(code)`.
+
+Example usage:
+
+```js
+const matchmaker = new Matchmaker();
+
+let regions = await matchmaker.getRegions()
+
+const game = await matchmaker.findGame({
+    region: regions[0].id, // --> 'sydney', 'useast', 'germany', etc
+    mode: 'ffa'
+}); // ==> a game object
+```
+
+### getRandomRegion()
+Get a random region ID that can be directly passed to findGame().
+
+You MUST have previously called `getRegions()`.
+
+```js
+const matchmaker = new Matchmaker();
+
+await matchmaker.getRegions()
+
+const game = await matchmaker.findGame({
+    region: matchmaker.getRandomRegion()
+    mode: 'ffa'
+}); // ==> a game object
+```
+
+### getRandomGameMode()
+Get a random game mode ID that can be directly passed to findGame.
+
+```js
+const matchmaker = new Matchmaker();
+
+const game = await matchmaker.findGame({
+    region: 'useast'
+    mode: matchmaker.getRandomGameMode()
+}); // ==> a game object
+```
+
+### close()
+As mentioned above in the constructor, directly closing the matchmaker WebSocket (`<Matchmaker>.ws.close()`) will cause it to instantly reopen, doing effectively nothing. In order to prevent it from reopening, call `close()`.
+
+```js
+const matchmaker = new Matchmaker();
+
+// do NOT do this!
+matchmaker.ws.close();
+console.log(matchmaker.connected) // ==> true
+
+// do THIS instead!
+matchmaker.close();
+console.log(matchmaker.connected) // ==> false
+```
