@@ -48,9 +48,11 @@ class Manager {
         return this._update_times.slice(-n).reduce((a, b) => a + b, 0) / n;
     }
     getSessionId() {
-        const selectedPlayer = this.players.find((player) => player.loginData?.sessionId);
-        if (selectedPlayer) return selectedPlayer.loginData.sessionId;
-        else return null;
+        const authorizedPlayers = this.players.filter((player) => player.loginData?.sessionId);
+        if (authorizedPlayers.length) {
+            const randomPlayer = Math.floor(Math.random() * authorizedPlayers.length);
+            return randomPlayer.loginData.sessionId;
+        } else return null;
     }
 }
 

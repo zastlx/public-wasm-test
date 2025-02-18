@@ -16,3 +16,5 @@ let games = await mm.findPublicGame({
 })
 
 console.log('found a game!', games);
+
+mm.close();

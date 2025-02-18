@@ -19,6 +19,8 @@ class Matchmaker {
     onceConnected = [];
     sessionId = '';
 
+    forceClose = false;
+
     constructor(customSessionId) {
         if (customSessionId) this.sessionId = customSessionId;
         else this.createSessionId();
@@ -40,6 +42,8 @@ class Matchmaker {
         };
 
         this.ws.onclose = () => {
+            if (this.forceClose) return;
+
             this.connected = false;
             this.createSocket();
         }
@@ -125,6 +129,11 @@ class Matchmaker {
     getRandomGameMode() {
         let gameModeArray = Object.keys(GameModes);
         return gameModeArray[Math.floor(Math.random() * gameModeArray.length)];
+    }
+
+    close() {
+        this.forceClose = true;
+        this.ws.close();
     }
 }
 
