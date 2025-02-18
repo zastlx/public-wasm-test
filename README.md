@@ -1,3 +1,12 @@
+<!--
+
+<3 bwd
+https://raw.githubusercontent.com/enbyte/deobfs-shell-source/refs/heads/main/shellshock.js
+
+https://github.com/enbyte/ShellfBot
+
+-->
+
 # ShellfBot Documentation
 
 Enabling easy creation of bots since 2025

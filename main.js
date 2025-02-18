@@ -5,6 +5,8 @@ import dispatch from '#dispatch';
 import manager from '#manager';
 import player from "#player";
 
+import Matchmaker from './src/matchmaker.js';
+
 let player_list = [];
 let emails = []; // fill in here
 let passwords = []; // fill in here
@@ -51,7 +53,25 @@ man.on('join', (me, player) => {
 });
 
 await man.login(emails, passwords);
-await man.join(process.argv[2] || 'jork-strp-club');
+
+let gameCode = process.argv[2];
+if (!gameCode) {
+    console.log('no game code specified, joining random game');
+    let mm = new Matchmaker(man.getSessionId());
+
+    await mm.getRegions();
+
+    let game = await mm.findPublicGame({
+        region: mm.getRandomRegion(),
+        mode: mm.getRandomGameMode()
+    });
+
+    console.log('joining a public game', game.id);
+
+    gameCode = game.id;
+}
+
+await man.join(gameCode);
 
 setInterval(async () => { 
     man.update(); 

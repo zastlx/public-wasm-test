@@ -29,9 +29,6 @@ class Manager {
             await player.join(code);
         }));
     }
-    async findGame(params) {
-        return await this.players[0].findGame(params);
-    }
     dispatch(dispatch) {
         this.players.forEach((player) => player.dispatch(dispatch));
     }
@@ -49,6 +46,11 @@ class Manager {
     }
     avgUpdateTime(n = 100) {
         return this._update_times.slice(-n).reduce((a, b) => a + b, 0) / n;
+    }
+    getSessionId() {
+        const selectedPlayer = this.players.find((player) => player.loginData?.sessionId);
+        if (selectedPlayer) return selectedPlayer.loginData.sessionId;
+        else return null;
     }
 }
 
