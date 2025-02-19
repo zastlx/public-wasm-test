@@ -9,7 +9,7 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "lint": "npmx eslint"
+        "lint": "eslint --fix"
     },
     "imports": {
         "#api": "./src/api.js",
