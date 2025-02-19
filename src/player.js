@@ -291,7 +291,6 @@ class Player {
                 console.log("!!! This message means the startup sequence received an unexpected packet.");
                 console.log("!!! Try refreshing comm codes. If you still see this error, contact hijinks");
                 throw new Error("Unexpected packet received during startup: " + cmd);
-                break;
 
         }
 
