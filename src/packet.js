@@ -19,6 +19,9 @@ class Packet {
                     case 'string':
                         this.out.packString(arg.val);
                         break;
+                    case 'float': 
+                        this.out.packFloat(arg.val);
+                        break;
                 }
             }
         }
@@ -35,22 +38,26 @@ function RespawnPacket() {
     return new Packet(CommCode.requestRespawn)
 }
 
-function FirePacket() {
-    return new Packet(CommCode.fire)
-}
-
 function MeleePacket() {
     return new Packet(CommCode.melee)
 }
 
 function ChatPacket(msg) {
-    return new Packet(CommCode.chat, [{ type: 'string', val: msg }]);
+    return new Packet(CommCode.chat, [
+        { type: 'string', val: msg }
+    ]);
+}
+
+function SwapWeaponPacket(player) {
+    return new Packet(CommCode.swapWeapon, [
+        { type: 'int8', val: player.state.weapon }
+    ]);
 }
 
 export default {
     Packet,
-    RespawnPacket,
-    FirePacket,
+    ChatPacket,
     MeleePacket,
-    ChatPacket
+    RespawnPacket,
+    SwapWeaponPacket
 }

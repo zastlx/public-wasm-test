@@ -56,7 +56,7 @@ export class Pool {
 
         }
     }
-};
+}
 
 export class OutBuffer {
     constructor(size) {
@@ -115,7 +115,7 @@ export class OutBuffer {
         for (let i2 = 0; i2 < str.length; i2++) { this.packInt16(str.charCodeAt(i2)); }
 
     }
-};
+}
 
 export class CommOut {
     static buffer = null;
@@ -127,7 +127,7 @@ export class CommOut {
         b2.idx = 0;
         return b2;
     }
-};
+}
 
 export class CommIn {
     static buffer;
@@ -210,7 +210,7 @@ export class CommIn {
         }
         return str;
     }
-};
+}
 
 let lastTime = 0;
 
@@ -241,9 +241,7 @@ export async function updatePacketConstants() {
 
         for (let i = 0; i < commCodeKeys.length; i++) { consts.CommCode[commCodeKeys[i]] = commCodeStart + i; }
 
-
         for (let i = 0; i < closeCodeKeys.length; i++) { consts.CloseCode[closeCodeKeys[i]] = closeCodeStart + i; }
-
 
         // console.log(consts)
 
@@ -254,8 +252,6 @@ export async function updatePacketConstants() {
 
     } else { consts = JSON.parse(fs.readFileSync(constantsJSONPath)).data; }
 
-
-
     return [consts.CommCode, consts.CloseCode];
 }
 
@@ -263,7 +259,46 @@ export const consts = await updatePacketConstants();
 export const CommCode = consts[0];
 export const CloseCode = consts[1];
 
-export const StatsArr = ["kills", "deaths", "streak", "killsCluck9mm", "killsGrenade", "killsRpegg", "killsEggk47", "killsScrambler", "killsFreeRanger", "killsWhipper", "killsCrackshot", "killsTriHard", "killsMelee", "killsPrivate", "killsPublic", "killsKing", "killsSpatula", "killsTeams", "killsFFA", "deathsCluck9mm", "deathsGrenade", "deathsRpegg", "deathsEggk47", "deathsScrambler", "deathsFreeRanger", "deathsWhipper", "deathsCrackshot", "deathsTriHard", "deathsMelee", "deathsFall", "deathsPrivate", "deathsPublic", "deathsKing", "deathsSpatula", "deathsTeams", "deathsFFA", "kotcCaptured", "kotcWins"];
+export const StatsArr = [
+    'kills',
+    'deaths',
+    'streak',
+    'killsCluck9mm',
+    'killsGrenade',
+    'killsRpegg',
+    'killsEggk47',
+    'killsScrambler',
+    'killsFreeRanger',
+    'killsWhipper',
+    'killsCrackshot',
+    'killsTriHard',
+    'killsMelee',
+    'killsPrivate',
+    'killsPublic',
+    'killsKing',
+    'killsSpatula',
+    'killsTeams',
+    'killsFFA',
+    'deathsCluck9mm',
+    'deathsGrenade',
+    'deathsRpegg',
+    'deathsEggk47',
+    'deathsScrambler',
+    'deathsFreeRanger',
+    'deathsWhipper',
+    'deathsCrackshot',
+    'deathsTriHard',
+    'deathsMelee',
+    'deathsFall',
+    'deathsPrivate',
+    'deathsPublic',
+    'deathsKing',
+    'deathsSpatula',
+    'deathsTeams',
+    'deathsFFA',
+    'kotcCaptured',
+    'kotcWins'
+];
 
 export const ReportReasons = {
     'report_reason_cheating': 1,

@@ -1,18 +1,7 @@
-import { WebSocket } from "ws";
+import { WebSocket } from 'ws';
 import api from '#api';
 
-export const PlayTypes = {
-    joinPublic: 0,
-    createPrivate: 1,
-    joinPrivate: 2
-}
-
-export const GameModes = {
-    'ffa': 0,
-    'team': 1,
-    'spatula': 2,
-    'kotc': 3
-}
+import { GameModes, PlayTypes, USER_AGENT } from './constants';
 
 class Matchmaker {
     connected = false;
@@ -22,16 +11,19 @@ class Matchmaker {
     forceClose = false;
 
     constructor(customSessionId) {
-        if (customSessionId) { this.sessionId = customSessionId; }
-        else { this.createSessionId(); }
+        if (customSessionId) {
+            this.sessionId = customSessionId;
+        } else {
+            this.createSessionId();
+        }
 
         this.createSocket();
     }
 
     createSocket() {
-        this.ws = new WebSocket(`wss://shellshock.io/matchmaker/`, {
+        this.ws = new WebSocket('wss://shellshock.io/matchmaker/', {
             headers: {
-                'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36',
+                'user-agent': USER_AGENT,
                 'accept-language': 'en-US,en;q=0.9'
             }
         });
@@ -61,8 +53,11 @@ class Matchmaker {
     // eslint-disable-next-line require-await
     async waitForConnect() {
         return new Promise((res) => {
-            if (this.connected) { res(); }
-            else { this.onceConnected.push(res); }
+            if (this.connected) {
+                res();
+            } else {
+                this.onceConnected.push(res);
+            }
         });
     }
 
@@ -81,10 +76,10 @@ class Matchmaker {
             };
 
             this.ws.onerror = (e2) => {
-                throw new Error("Failed to get regions", e2);
+                throw new Error('Failed to get regions', e2);
             }
 
-            this.ws.send(JSON.stringify({ command: "regionList" }));
+            this.ws.send(JSON.stringify({ command: 'regionList' }));
         });
     }
 
@@ -98,7 +93,9 @@ class Matchmaker {
 
         if (this.regionList) {
             const region = this.regionList.find(r => r.id == params.region);
-            if (!region) { throw new Error('did not find region in regionList, if you are attempting to force a region, avoid calling getRegions()') }
+            if (!region) {
+                throw new Error('did not find region in regionList, if you are attempting to force a region, avoid calling getRegions()')
+            }
         } else { console.log('regionList not found, not validating findGame region, use <Matchmaker>.regionList() to check region') }
 
         if (!params.mode) { throw new Error('did not specify a mode in findGame') }
@@ -108,7 +105,7 @@ class Matchmaker {
 
         return new Promise((res) => {
             const opts = {
-                command: "findGame",
+                command: 'findGame',
                 region: params.region,
                 playType: PlayTypes.joinPublic,
                 gameType: GameModes[params.mode],
@@ -125,7 +122,9 @@ class Matchmaker {
     }
 
     getRandomRegion() {
-        if (!this.regionList) { throw new Error('attempted to getRandomRegion() without fetching the regionList, use <Matchmaker>.getRegions() before calling getRandomRegion()'); }
+        if (!this.regionList) {
+            throw new Error('called getRandomRegion() without region list cached, use <Matchmaker>.getRegions() before getRandomRegion()');
+        }
         return this.regionList[Math.floor(Math.random() * this.regionList.length)].id;
     }
 

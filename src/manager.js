@@ -11,7 +11,7 @@ class Manager {
         this.nUpdates = 0;
         if (fs.existsSync(proxyJSONPath) && useProxies) {
             this.proxies = JSON.parse(proxyJSONPath);
-            console.log("Found proxies.json, there are", this.proxies.length, "proxies");
+            console.log('Found proxies.json, there are', this.proxies.length, 'proxies');
             for (let i = 0; i < this.players.length; i++) {
                 this.players[i].proxy = this.proxies[i % this.proxies.length];
                 this.players[i].useProxy = true;
@@ -50,7 +50,7 @@ class Manager {
         const authorizedPlayers = this.players.filter((player) => player.loginData?.sessionId);
         if (authorizedPlayers.length) {
             const randomPlayer = Math.floor(Math.random() * authorizedPlayers.length);
-            return randomPlayer.loginData.sessionId;
+            return randomPlayer?.loginData?.sessionId;
         } else { return null; }
     }
 }
