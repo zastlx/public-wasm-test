@@ -22,8 +22,11 @@ class Matchmaker {
     forceClose = false;
 
     constructor(customSessionId) {
-        if (customSessionId) this.sessionId = customSessionId;
-        else this.createSessionId();
+        if (customSessionId) {
+            this.sessionId = customSessionId;
+        } else {
+            this.createSessionId();
+        }
 
         this.createSocket();
     }
@@ -58,8 +61,11 @@ class Matchmaker {
 
     async waitForConnect() {
         return new Promise((res) => {
-            if (this.connected) res();
-            else this.onceConnected.push(res);
+            if (this.connected) {
+                res();
+            } else {
+                this.onceConnected.push(res);
+            }
         });
     }
 
@@ -87,19 +93,29 @@ class Matchmaker {
 
     async findPublicGame(params = {}) {
         await this.waitForConnect();
-        
+
         // params.region
         // params.mode -> params.gameType
         // params.isPublic -> params.playType
-        if (!params.region) throw new Error('did not specify a region in findGame, use <Matchmaker>.getRegions() for a list')
+        if (!params.region) {
+            throw new Error('did not specify a region in findGame, use <Matchmaker>.getRegions() for a list')
+        }
 
         if (this.regionList) {
             let region = this.regionList.find(r => r.id == params.region);
-            if (!region) throw new Error('did not find region in regionList, if you are attempting to force a region, avoid calling getRegions()')
-        } else console.log('regionList not found, not validating findGame region, use <Matchmaker>.regionList() to check region')
-        
-        if (!params.mode) throw new Error('did not specify a mode in findGame')
-        if (GameModes[params.mode] === undefined) throw new Error('invalid mode in findGame, see GameModes for a list')
+            if (!region) {
+                throw new Error('did not find region in regionList, if you are attempting to force a region, avoid calling getRegions()')
+            }
+        } else {
+            console.log('regionList not found, not validating findGame region, use <Matchmaker>.regionList() to check region')
+        }
+
+        if (!params.mode) {
+            throw new Error('did not specify a mode in findGame')
+        }
+        if (GameModes[params.mode] === undefined) {
+            throw new Error('invalid mode in findGame, see GameModes for a list')
+        }
 
         console.log('post-modification params', params);
 
