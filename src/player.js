@@ -67,6 +67,7 @@ class Player {
 
         this.name = params.name || Math.random().toString(36).substring(8);
         this.autoUpdate = params.doUpdate;
+        this.updateInterval = params.updateInterval || 5;
 
         this._hooks = {
             'chat': [],
@@ -335,7 +336,7 @@ class Player {
 
         if (this.autoUpdate) {
             console.log('autoUpdate enabled...');
-            setInterval(() => this.update(), 10);
+            setInterval(() => this.update(), this.updateInterval);
         }
     }
     update() {
