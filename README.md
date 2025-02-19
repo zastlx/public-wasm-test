@@ -9,7 +9,7 @@ https://github.com/enbyte/ShellfBot
 
 # ShellfBot Documentation
 
-Enabling easy creation of bots since 2025
+Creating bots in 10 lines since 2025
 
 Why this exists: Several of our projects seemed to rely on the same needs of joining a game and doing some simple tasks. This codebase exists as a unified, elegant, single point we can build upon.
 
