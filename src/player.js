@@ -77,7 +77,8 @@ class Player {
             'collect': [],
             'pause': [],
             'respawn': [],
-            'packet': []
+            'packet': [],
+            'tick': []
         }
 
         this._liveCallbacks = [];
@@ -136,6 +137,7 @@ class Player {
         this.lastDeathTime = -1;
         this.lastChatTime = -1;
         this.nUpdates = 0;
+        this.lastUpdateTime = -1;
 
         this.initTime = Date.now();
 
@@ -351,8 +353,15 @@ class Player {
 
         this.drain();
 
+        if (Date.now() - this.lastUpdateTime >= 100 ) {
+            this._liveCallbacks.extend(this._hooks['tick'].map((fn) => fn.apply(this, [this])));
+        }
+
         let cb;
         while ((cb = this._liveCallbacks.shift()) !== undefined) { cb(); }
+
+
+        this.lastUpdateTime = Date.now();
     }
     #processChatPacket() {
         const id = CommIn.unPackInt8U();
