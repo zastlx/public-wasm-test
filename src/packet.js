@@ -1,7 +1,6 @@
 import * as comm from '#comm';
 
-let { CommCode, CommOut } = comm;
-
+const { CommCode, CommOut } = comm;
 
 class Packet {
     constructor(code, _args) {
@@ -9,7 +8,7 @@ class Packet {
         this.out = CommOut.getBuffer();
         this.out.packInt8(code);
         if (_args) {
-            for (let arg of _args) {
+            for (const arg of _args) {
                 switch (arg.type) {
                     case 'int8':
                         this.out.packInt8(arg.val);
@@ -23,7 +22,6 @@ class Packet {
                 }
             }
         }
-
     }
     get length() {
         return this.buf.length;

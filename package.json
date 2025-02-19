@@ -1,29 +1,32 @@
 {
-  "name": "shellfbot",
-  "version": "1.0.0",
-  "description": "shell headless bots",
-  "main": "main.js",
-  "repository": "https://github.com/enbyte/ShellfBot",
-  "author": "hijinks",
-  "license": "unlicensed",
-  "private": true,
-  "type": "module",
-  "imports": {
-    "#api": "./src/api.js",
-    "#comm": "./src/comm.js",
-    "#dispatch": "./src/dispatch.js",
-    "#manager": "./src/manager.js",
-    "#player": "./src/player.js",
-    "#packet": "./src/packet.js"
-  },
-  "dependencies": {
-    "firebase": "^11.3.1",
-    "socks-proxy-agent": "^8.0.5",
-    "ws": "^8.18.0"
-  },
-  "devDependencies": {
-    "@eslint/js": "^9.20.0",
-    "eslint": "^9.20.1",
-    "globals": "^15.15.0"
-  }
+    "name": "shellfbot",
+    "version": "1.0.0",
+    "description": "shell headless bots",
+    "main": "main.js",
+    "repository": "https://github.com/enbyte/ShellfBot",
+    "author": "hijinks",
+    "license": "unlicensed",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "lint": "eslint --fix"
+    },
+    "imports": {
+        "#api": "./src/api.js",
+        "#comm": "./src/comm.js",
+        "#dispatch": "./src/dispatch.js",
+        "#manager": "./src/manager.js",
+        "#player": "./src/player.js",
+        "#packet": "./src/packet.js"
+    },
+    "dependencies": {
+        "firebase": "^11.3.1",
+        "socks-proxy-agent": "^8.0.5",
+        "ws": "^8.18.0"
+    },
+    "devDependencies": {
+        "@eslint/js": "^9.20.0",
+        "eslint": "^9.20.1",
+        "globals": "^15.15.0"
+    }
 }

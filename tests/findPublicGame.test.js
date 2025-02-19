@@ -4,13 +4,13 @@ const mm = new Matchmaker();
 
 await mm.getRegions();
 
-let randomRegion = mm.getRandomRegion();
+const randomRegion = mm.getRandomRegion();
 console.log('selected random region', randomRegion);
 
-let randomGamemode = mm.getRandomGameMode();
+const randomGamemode = mm.getRandomGameMode();
 console.log('selected random gamemode', randomGamemode);
 
-let games = await mm.findPublicGame({
+const games = await mm.findPublicGame({
     region: randomRegion,
     mode: randomGamemode
 })

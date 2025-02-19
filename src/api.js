@@ -1,6 +1,9 @@
 import WebSocket from 'ws';
+
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
+
+import { SocksProxyAgent } from 'socks-proxy-agent';
 
 firebase.initializeApp({
     "apiKey": "AIzaSyDP4SIjKaw6A4c-zvfYxICpbEjn1rRnN50",
@@ -17,31 +20,25 @@ async function fetchConstantsRaw() {
     return json;
 }
 
-async function query_api(request, prox = '') {
+async function queryAPI(request, prox = '') {
     let ws;
     if (prox) {
         ws = new WebSocket('wss://shellshock.io/services/', {
-            agent: proxy.agentify(prox)
+            agent: new SocksProxyAgent(prox)
         });
     } else {
         ws = new WebSocket('wss://shellshock.io/services/');
     }
 
-    const promise_open = new Promise((resolve, reject) => {
-        ws.on('open', () => {
-            resolve(ws);
-        });
-        ws.onerror = (err) => {
-            reject(err);
-        };
+    const openPromise = new Promise((resolve, reject) => {
+        ws.on('open', () => resolve(ws));
+        ws.onerror = (err) => reject(err);
     });
 
-    const connected_ws = await promise_open;
+    const connectedWs = await openPromise;
 
-    const send_promise = connected_ws.send(JSON.stringify(request));
-    await send_promise;
-
-
+    const sendPromise = connectedWs.send(JSON.stringify(request));
+    await sendPromise;
 
     const response = await new Promise((resolve, reject) => {
         ws.onmessage = (mes) => {
@@ -49,7 +46,7 @@ async function query_api(request, prox = '') {
                 const resp = JSON.parse(mes.data);
                 resolve(resp);
             } catch (e) {
-                console.log("Bad API JSON response in query_api with call: " + request.cmd + " and data: " + JSON.stringify(request));
+                console.log("Bad API JSON response in queryAPI with call: " + request.cmd + " and data: " + JSON.stringify(request));
                 console.log("Full data sent: " + JSON.stringify(request));
                 console.log("Full data received: " + mes);
                 console.log("Full error: " + e);
@@ -62,7 +59,7 @@ async function query_api(request, prox = '') {
 
 
     if (response.error) {
-        console.log("query_api error:", response.error);
+        console.log("queryAPI error:", response.error);
         return null;
     }
 
@@ -116,9 +113,10 @@ async function login(email, password, prox = '') {
         }
     }
 
+
     // let current_time = new Date().getTime();
 
-    let response = await query_api({
+    const response = await queryAPI({
         cmd: "auth",
         firebaseToken: token
     }, prox);
@@ -130,18 +128,18 @@ async function login(email, password, prox = '') {
 }
 
 async function anonymous(prox = '') {
-    let user = await firebase.auth().signInAnonymously();
-    let token = await user.user.getIdToken();
-    let response = await query_api({
+    const user = await firebase.auth().signInAnonymously();
+    const token = await user.user.getIdToken();
+    const response = await queryAPI({
         cmd: "auth",
         firebaseToken: token
-    });
+    }, prox);
     return response
 }
 
 export default {
     login,
-    query_api,
+    queryAPI,
     fetchConstantsRaw,
     anonymous
 }

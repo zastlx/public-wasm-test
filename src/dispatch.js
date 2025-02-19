@@ -3,11 +3,11 @@ import packet from '#packet';
 class SpawnDispatch {
     check(player) {
         if (!player.state.playing) {
-            if (player.lastDeathTime + 6000 < Date.now()) {
-                return true;
-            }
-            // console.log("Dispatch failed: < 6s since last spawn");
+            if (player.lastDeathTime + 6000 < Date.now()) { return true; }
         }
+
+        // console.log("Dispatch failed: < 6s since last spawn");
+
 
         return false;
     }

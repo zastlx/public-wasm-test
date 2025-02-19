@@ -2,7 +2,12 @@
 logins.json
 
 # Dependencies
-node_modules/
+node_modules
+
+# Lockfiles
+bun.lock
+yarn.lock
+package-lock.json
 
 # Mac Cache
 .DS_Store

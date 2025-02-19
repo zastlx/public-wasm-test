@@ -22,11 +22,8 @@ class Matchmaker {
     forceClose = false;
 
     constructor(customSessionId) {
-        if (customSessionId) {
-            this.sessionId = customSessionId;
-        } else {
-            this.createSessionId();
-        }
+        if (customSessionId) { this.sessionId = customSessionId; }
+        else { this.createSessionId(); }
 
         this.createSocket();
     }
@@ -41,11 +38,13 @@ class Matchmaker {
 
         this.ws.onopen = () => {
             this.connected = true;
-            if (this.sessionId) this.onceConnected.forEach(func => func());
+            if (this.sessionId) {
+                this.onceConnected.forEach(func => func());
+            }
         };
 
         this.ws.onclose = () => {
-            if (this.forceClose) return;
+            if (this.forceClose) { return; }
 
             this.connected = false;
             this.createSocket();
@@ -53,19 +52,17 @@ class Matchmaker {
     }
 
     async createSessionId() {
-        let j = await api.anonymous();
+        const j = await api.anonymous();
         this.sessionId = j.sessionId;
         console.log('matchmaker got sessionid', this.sessionId);
-        if (this.connected) this.onceConnected.forEach(func => func());
+        if (this.connected) { this.onceConnected.forEach(func => func()); }
     }
 
+    // eslint-disable-next-line require-await
     async waitForConnect() {
         return new Promise((res) => {
-            if (this.connected) {
-                res();
-            } else {
-                this.onceConnected.push(res);
-            }
+            if (this.connected) { res(); }
+            else { this.onceConnected.push(res); }
         });
     }
 
@@ -76,7 +73,7 @@ class Matchmaker {
             console.log('fetching regions');
 
             this.ws.onmessage = (e2) => {
-                let data2 = JSON.parse(e2.data);
+                const data2 = JSON.parse(e2.data);
                 if (data2.command == 'regionList') {
                     this.regionList = data2.regionList;
                     res(data2.regionList);
@@ -97,30 +94,20 @@ class Matchmaker {
         // params.region
         // params.mode -> params.gameType
         // params.isPublic -> params.playType
-        if (!params.region) {
-            throw new Error('did not specify a region in findGame, use <Matchmaker>.getRegions() for a list')
-        }
+        if (!params.region) { throw new Error('did not specify a region in findGame, use <Matchmaker>.getRegions() for a list') }
 
         if (this.regionList) {
-            let region = this.regionList.find(r => r.id == params.region);
-            if (!region) {
-                throw new Error('did not find region in regionList, if you are attempting to force a region, avoid calling getRegions()')
-            }
-        } else {
-            console.log('regionList not found, not validating findGame region, use <Matchmaker>.regionList() to check region')
-        }
+            const region = this.regionList.find(r => r.id == params.region);
+            if (!region) { throw new Error('did not find region in regionList, if you are attempting to force a region, avoid calling getRegions()') }
+        } else { console.log('regionList not found, not validating findGame region, use <Matchmaker>.regionList() to check region') }
 
-        if (!params.mode) {
-            throw new Error('did not specify a mode in findGame')
-        }
-        if (GameModes[params.mode] === undefined) {
-            throw new Error('invalid mode in findGame, see GameModes for a list')
-        }
+        if (!params.mode) { throw new Error('did not specify a mode in findGame') }
+        if (GameModes[params.mode] === undefined) { throw new Error('invalid mode in findGame, see GameModes for a list') }
 
         console.log('post-modification params', params);
 
         return new Promise((res) => {
-            let opts = {
+            const opts = {
                 command: "findGame",
                 region: params.region,
                 playType: PlayTypes.joinPublic,
@@ -129,8 +116,8 @@ class Matchmaker {
             };
 
             this.ws.onmessage = (e2) => {
-                let data2 = JSON.parse(e2.data);
-                if (data2.command == 'gameFound') res(data2);
+                const data2 = JSON.parse(e2.data);
+                if (data2.command == 'gameFound') { res(data2); }
             };
 
             this.ws.send(JSON.stringify(opts));
@@ -138,12 +125,12 @@ class Matchmaker {
     }
 
     getRandomRegion() {
-        if (!this.regionList) throw new Error('attempted to getRandomRegion() without fetching the regionList, use <Matchmaker>.getRegions() before calling getRandomRegion()');
+        if (!this.regionList) { throw new Error('attempted to getRandomRegion() without fetching the regionList, use <Matchmaker>.getRegions() before calling getRandomRegion()'); }
         return this.regionList[Math.floor(Math.random() * this.regionList.length)].id;
     }
 
     getRandomGameMode() {
-        let gameModeArray = Object.keys(GameModes);
+        const gameModeArray = Object.keys(GameModes);
         return gameModeArray[Math.floor(Math.random() * gameModeArray.length)];
     }
 
