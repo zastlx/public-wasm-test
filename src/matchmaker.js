@@ -1,20 +1,7 @@
 import { WebSocket } from 'ws';
 import api from '#api';
 
-import { USER_AGENT } from './constants';
-
-export const PlayTypes = {
-    joinPublic: 0,
-    createPrivate: 1,
-    joinPrivate: 2
-}
-
-export const GameModes = {
-    'ffa': 0,
-    'team': 1,
-    'spatula': 2,
-    'kotc': 3
-}
+import { GameModes, PlayTypes, USER_AGENT } from './constants';
 
 class Matchmaker {
     connected = false;

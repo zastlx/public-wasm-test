@@ -41,7 +41,7 @@ export default [
             'stylistic/no-tabs': 'error',
             'stylistic/object-curly-newline': ['error', {
                 'multiline': true,
-                'minProperties': 3,
+                'minProperties': 8,
                 'consistent': true
             }],
             'stylistic/object-curly-spacing': ['error', 'always'],

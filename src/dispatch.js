@@ -31,23 +31,38 @@ class ChatDispatch {
     }
 }
 
+class MeleeDispatch {
+    check(player) {
+        return player.state.playing && !player.state.reloading && !player.state.swappingGun && !player.state.usingMelee
+    }
+    execute(player) {
+        new packet.MeleePacket().execute(player.gameSocket);
+        player.usingMelee = true;
+        // gameloop every 33.33 (repeating) ms, 17 ticks, so 566.61 is the closest you get
+        setTimeout(() => {
+            player.usingMelee = false
+            // new ChatDispatch('end melee, start swap gun').execute(player);
+            player.swappingGun = true
+            setTimeout(() => {
+                player.swappingGun = false
+                // new ChatDispatch('end swap gun').execute(player);
+            }, 0.5 * player.state.weaponData.equipTime)
+        }, 566.61);
+    }
+}
+
 class ReloadDispatch {
     check(player) {
         return player.state.playing
     }
     execute(player) {
         new packet.ReloadPacket().execute(player.gameSocket);
-        player.reloading = true;
-        setTimeout(() => player.reloading = false, 2000); // TODO: yes
-    }
-}
 
-class FireDispatch {
-    check(player) {
-        return player.state.playing && player.state.weapons[player.state.weapon].ammo > 0;
-    }
-    execute(player) {
-        new packet.FirePacket(player).execute(player.gameSocket);
+        const isLongTime = player.state.weapons[player.state.weapon].ammo.rounds < 1;
+        const weaponData = player.state.weaponData;
+
+        player.reloading = true;
+        setTimeout(() => player.reloading = false, isLongTime ? weaponData.longReloadTime : weaponData.shortReloadTime);
     }
 }
 
@@ -56,14 +71,15 @@ class SwapWeaponDispatch {
         return player.state.playing && !player.state.reloading;
     }
     execute(player) {
+        player.state.weapon = +!player.state.weapon;
         new packet.SwapWeaponPacket(player).execute(player.gameSocket);
     }
 }
 
 export default {
     ChatDispatch,
-    FireDispatch,
     ReloadDispatch,
+    MeleeDispatch,
     SpawnDispatch,
     SwapWeaponDispatch
 }

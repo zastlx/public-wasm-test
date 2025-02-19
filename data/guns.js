@@ -311,3 +311,14 @@ AUG.accuracyRecover = 0.03;
 AUG.totalDamage = 34;
 AUG.adsMod = 0.6;
 AUG.movementAccuracyMod = 0.8;
+
+export {
+    Eggk47,
+    DozenGauge,
+    CSG1,
+    Cluck9mm,
+    RPEGG,
+    SMG,
+    M24,
+    AUG
+}

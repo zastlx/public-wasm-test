@@ -11,7 +11,9 @@ player.on('join', (_me, player) => {
 
 player.on('chat', (me, _player, msg) => {
     if (msg == 'spawn') me.dispatch(new dispatch.SpawnDispatch());
-    if (msg == 'swapWeapon') player.dispatch(new dispatch.SwapWeaponDispatch());
+    if (msg == 'activeWeapon') me.dispatch(new dispatch.ChatDispatch(`using the ${me.state.weaponIdx == 1 ? 'secondary' : 'primary'}`));
+    if (msg == 'weaponData0') console.log(player.state.players[0].state.weaponData);
+    if (msg == 'selfWeaponData') console.log(player.state.weaponData);
 })
 
 await player.join(process.argv[2]);

@@ -7,10 +7,10 @@ import api from '#api';
 import comm, {
     CommIn,
     CommOut,
-    updatePacketConstants 
+    updatePacketConstants
 } from '#comm';
 
-import { USER_AGENT } from './constants';
+import { findItemById, GameModesById, getWeaponFromMeshName, Maps, USER_AGENT } from './constants.js';
 
 const consts = await updatePacketConstants();
 const CommCode = consts[0];
@@ -41,13 +41,10 @@ class InGamePlayer {
             },
             weapon: this.data.weaponIdx_,
             weapons: [
-                {
-                    ammo: {}
-                },
-                {
-                    ammo: {}
-                }
+                { ammo: {} },
+                { ammo: {} }
             ],
+            weaponData: this.data.weaponData,
             buffer: {
                 0: {},
                 1: {},
@@ -86,15 +83,8 @@ class Player {
             loggedIn: false,
             playing: false,
             gameFound: false,
-            meta: {
-
-            },
-            me: {
-
-            },
-            players: {
-
-            },
+            me: {},
+            players: {},
             position: {
                 x: NaN,
                 y: NaN,
@@ -102,20 +92,19 @@ class Player {
             },
             jumping: false,
             climbing: false,
-            reloading: false, // TODO: yes
+            reloading: false, // TODO: test time values
+            swappingGun: false,
+            usingMelee: false,
             view: {
                 yaw: NaN,
                 pitch: NaN
             },
             weapon: 0,
             weapons: [
-                {
-                    ammo: {}
-                },
-                {
-                    ammo: {}
-                }
+                { ammo: {} },
+                { ammo: {} }
             ],
+            weaponData: {},
             grenades: 0,
             buffer: {
                 0: {},
@@ -126,9 +115,12 @@ class Player {
             hp: 100
         };
 
+        this.game = {
+            raw: {}, // the stuff returned by the matchmaker
+            code: ''
+        }
+
         this.loginData = null;
-        this.currentGameCode = null;
-        this.gameData = null;
 
         this._dispatches = [];
         this._packetQueue = [];
@@ -199,16 +191,17 @@ class Player {
             }
 
             if (mes.command == 'gameFound') {
-                this.currentGameCode = code.toUpperCase();
-                this.gameData = mes;
-                this.state.gameFound = true;
+                this.game.raw = mes;
+                delete this.game.raw.command; // pissed me off
+                this.game.code = code.toUpperCase();
+                this.gameFound = true;
             } else { console.log(mes); }
 
             if (mes.error && mes.error == 'gameNotFound') { throw new Error(`Game ${code} not found (likely expired).`) }
 
         }
 
-        while (!this.state.gameFound) { await new Promise(r => setTimeout(r, 10)); }
+        while (!this.gameFound) { await new Promise(r => setTimeout(r, 10)); }
 
     }
     #onGameMesssage(msg) { // to minify with vscode
@@ -242,7 +235,7 @@ class Player {
                 out.packInt8(CommCode.joinGame);
 
                 out.packString(this.name); // name
-                out.packString(this.gameData.uuid); // game id
+                out.packString(this.game.raw.uuid); // game id
 
                 out.packInt8(0); // hidebadge
                 out.packInt8(0); // weapon choice
@@ -260,16 +253,18 @@ class Player {
                 // console.log("My id is:", this.state.me.id);
                 this.state.me.team = CommIn.unPackInt8U();
                 // console.log("My team is:", this.state.me.team);
-                this.state.meta.gameType = CommIn.unPackInt8U();
-                // console.log("Gametype:", this.state.meta.gameType);
-                this.state.meta.map = CommIn.unPackInt8U();
-                // console.log("Map:", this.state.meta.map);
-                this.state.meta.playerLimit = CommIn.unPackInt8U();
-                // console.log("Player limit:", this.state.meta.playerLimit);
-                this.state.meta.isGameOwner = CommIn.unPackInt8U() == 1;
-                // console.log("Is game owner:", this.state.meta.isGameOwner);
-                this.state.meta.isPrivateGame = CommIn.unPackInt8U() == 1;
-                // console.log("Is private game:", this.state.meta.isPrivateGame);
+                this.game.gameModeId = CommIn.unPackInt8U(); // aka gameType
+                this.game.gameMode = GameModesById[this.game.gameModeId];
+                // console.log("Gametype:", this.game.gameMode, this.game.gameModeId);
+                this.game.mapIdx = CommIn.unPackInt8U();
+                this.game.map = Maps[this.game.mapIdx];
+                // console.log("Map:", this.game.map);
+                this.game.playerLimit = CommIn.unPackInt8U();
+                // console.log("Player limit:", this.game.playerLimit);
+                this.game.isGameOwner = CommIn.unPackInt8U() == 1;
+                // console.log("Is game owner:", this.game.isGameOwner);
+                this.game.isPrivate = CommIn.unPackInt8U() == 1;
+                // console.log("Is private game:", this.game.isPrivate);
 
                 // console.log('Successfully joined game.');
                 this.state.joinedGame = true;
@@ -300,7 +295,7 @@ class Player {
 
         console.log(`Joining ${code} using proxy ${this.useProxy ? this.proxy : 'none'}`);
 
-        this.gameSocket = new WebSocket(`wss://${this.gameData.subdomain}.shellshock.io/game/${this.gameData.id}`, {
+        this.gameSocket = new WebSocket(`wss://${this.game.raw.subdomain}.shellshock.io/game/${this.game.raw.id}`, {
             headers: {
                 'user-agent': USER_AGENT,
                 'accept-language': 'en-US,en;q=0.9'
@@ -317,8 +312,8 @@ class Player {
         this.gameSocket.onmessage = this.#onGameMesssage.bind(this);
 
         this.gameSocket.onclose = (e) => {
-            console.log('Game socket closed:', Object.entries(CloseCode).filter(([, v]) => v == e.code));
-            console.error(e)
+            console.log('Game socket closed:', e.code, Object.entries(CloseCode).filter(([, v]) => v == e.code));
+            console.log(this.gameSocket)
         }
 
         while (!this.state.joinedGame) { await new Promise(r => setTimeout(r, 1)); }
@@ -331,7 +326,7 @@ class Player {
             this._packetQueue.push(msg.data);
         }
 
-        this.state.meta.code = code;
+        this.game.code = code;
 
         console.log(`Successfully joined ${code}. Startup to join time: ${Date.now() - this.initTime} ms`);
     }
@@ -372,15 +367,15 @@ class Player {
             safename_: safename,
             charClass_: charClass,
             team_: CommIn.unPackInt8U(),
-            primaryWeaponItem_: CommIn.unPackInt16U(),
-            secondaryWeaponItem_: CommIn.unPackInt16U(), // b
+            primaryWeaponItem_: findItemById(CommIn.unPackInt16U()),
+            secondaryWeaponItem_: findItemById(CommIn.unPackInt16U()), // b
             shellColor_: CommIn.unPackInt8U(),
-            hatItem_: CommIn.unPackInt16U(),
-            stampItem_: CommIn.unPackInt16U(),
+            hatItem_: findItemById(CommIn.unPackInt16U()),
+            stampItem_: findItemById(CommIn.unPackInt16U()),
             unknownInt8: CommIn.unPackInt8(), // c
             otherUnknownInt8: CommIn.unPackInt8(),
-            grenadeItem_: CommIn.unPackInt16U(),
-            meleeItem_: CommIn.unPackInt16U(),
+            grenadeItem_: findItemById(CommIn.unPackInt16U()),
+            meleeItem_: findItemById(CommIn.unPackInt16U()),
             x_: CommIn.unPackFloat(),
             y_: CommIn.unPackFloat(),
             z_: CommIn.unPackFloat(),
@@ -416,6 +411,7 @@ class Player {
         playerData.stats_.kills = playerData.kills_;
         playerData.stats_.deaths = playerData.deaths_;
         playerData.stats_.streak = playerData.streak_;
+        playerData.weaponData = getWeaponFromMeshName(playerData.primaryWeaponItem_.item_data.meshName);
         if (!this.state.players[playerData.id_]) {
             this.state.players[playerData.id_] = new InGamePlayer(playerData.id_, playerData.team_, playerData);
         }
@@ -447,8 +443,13 @@ class Player {
             player.state.weapons[0].ammo.store = store0;
             player.state.weapons[1].ammo.rounds = rounds1;
             player.state.weapons[1].ammo.store = store1;
+
+            if (player == this) {
+                // import weaponData because it broked
+                player.state.weaponData = this.state.players[this.state.me.id].state.weaponData;
+            }
+
             player.state.grenades = grenades;
-            // eslint-disable-next-line stylistic/object-curly-newline
             player.state.position = { x: x, y: y, z: z };
             // console.log(`Player ${player.name} respawned at ${x}, ${y}, ${z}`);
             this._hooks['respawn'].forEach((fn) => this._liveCallbacks.push(fn.apply(this, [this, player])));

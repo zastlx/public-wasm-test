@@ -11,7 +11,7 @@ player.on('join', (_me, player) => {
 
 player.on('chat', (me, _player, msg) => {
     if (msg == 'spawn') me.dispatch(new dispatch.SpawnDispatch());
-    if (msg == 'swapWeapon') player.dispatch(new dispatch.SwapWeaponDispatch());
+    if (msg == 'melee') me.dispatch(new dispatch.MeleeDispatch());
 })
 
 await player.join(process.argv[2]);

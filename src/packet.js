@@ -38,13 +38,6 @@ function RespawnPacket() {
     return new Packet(CommCode.requestRespawn)
 }
 
-function FirePacket(player) {
-    // TODO: finish
-    return new Packet(CommCode.fire, [
-        { type: 'int8', val: player.id }
-    ])
-}
-
 function MeleePacket() {
     return new Packet(CommCode.melee)
 }
@@ -63,9 +56,8 @@ function SwapWeaponPacket(player) {
 
 export default {
     Packet,
-    RespawnPacket,
-    FirePacket,
-    MeleePacket,
     ChatPacket,
+    MeleePacket,
+    RespawnPacket,
     SwapWeaponPacket
 }

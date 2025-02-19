@@ -195,17 +195,6 @@ I want to...
     - `loggedIn`: " "
     - `playing`: false if not currently spawned in
     - `gameFound`: one guess (handles matchmaker socket)
-    - `meta`: {
-
-        - `code`: 🤯
-        - `gameType`: Int8, idk which is which
-        - `map`: Map index
-        - `playerLimit`: 🤯
-        - `isGameOwner`: 🤯
-        - `isPrivateGame`: 🤯
-
-        }
-
     - `me`: {
 
         - `id`: In-game id
@@ -223,7 +212,16 @@ I want to...
 
     }
  - `loginData`: raw response from firebase / auth api
- - `gameData`: raw response from matchmaker
+ - `game`: {
+    - `raw` - raw response from matchmaker
+    - `code` - the formatted game code
+    - `gameType`: Int8, idk which is which
+    - `mapIdx`: Map index
+    - `map`: Raw map data from [maps.json](./data/maps.json)
+    - `playerLimit`: 🤯
+    - `isGameOwner`: 🤯
+    - `isPrivate`: 🤯
+   }
 
 
 ## water break 🚰 😮‍💨
