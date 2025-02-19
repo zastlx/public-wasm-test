@@ -7,21 +7,25 @@ import player from "#player";
 
 import Matchmaker from './src/matchmaker.js';
 
-let player_list = [];
-let emails = []; // fill in here
-let passwords = []; // fill in here
+const playerList = [];
+const emails = []; // fill in here
+const passwords = []; // fill in here
 
 const loginJSONPath = path.join(import.meta.dirname, 'data', 'logins.json');
-if (fs.existsSync(loginJSONPath)) JSON.parse(fs.readFileSync(loginJSONPath)).accounts.forEach(element => {
-    emails.push(element.email);
-    passwords.push(element.password);
-});
-else fs.writeFileSync(loginJSONPath, JSON.stringify({
-    accounts: [
-        { email: 'example@example.com', password: 'example' },
-        { email: 'example2@example.com', password: 'example2' }
-    ]
-}, null, 4));
+if (fs.existsSync(loginJSONPath)) {
+    JSON.parse(fs.readFileSync(loginJSONPath)).accounts.forEach(element => {
+        emails.push(element.email);
+        passwords.push(element.password);
+    });
+}
+else {
+    fs.writeFileSync(loginJSONPath, JSON.stringify({
+        accounts: [
+            { email: 'example@example.com', password: 'example' },
+            { email: 'example2@example.com', password: 'example2' }
+        ]
+    }, null, 4));
+}
 
 if (emails.length == 0 || passwords.length == 0) {
     console.log("No logins found in logins.json, please add some.");
@@ -30,22 +34,19 @@ if (emails.length == 0 || passwords.length == 0) {
 
 const NUM_PLAYERS = 1;
 
-for (let i = 0; i < NUM_PLAYERS; i++) {
-    player_list.push(new player.Player(process.argv[3] || 'spammer'));
-}
+for (let i = 0; i < NUM_PLAYERS; i++) { playerList.push(new player.Player(process.argv[3] || 'spammer')); }
 
-let man = new manager.Manager(player_list);
+
+const man = new manager.Manager(playerList);
 
 man.on('chat', (me, player, msg) => {
-    if (msg == "spawn") {
-        me.dispatch(new dispatch.SpawnDispatch());
-    }
-}); 
+    if (msg == "spawn") { me.dispatch(new dispatch.SpawnDispatch()); }
+
+});
 
 man.on('respawn', (me, p) => {
-    if (me.name == p.name) {
-        me.dispatch(new dispatch.SpawnDispatch());
-    }
+    if (me.name == p.name) { me.dispatch(new dispatch.SpawnDispatch()); }
+
 });
 
 man.on('join', (me, player) => {
@@ -57,11 +58,11 @@ await man.login(emails, passwords);
 let gameCode = process.argv[2];
 if (!gameCode) {
     console.log('no game code specified, joining random game');
-    let mm = new Matchmaker(man.getSessionId());
+    const mm = new Matchmaker(man.getSessionId());
 
     await mm.getRegions();
 
-    let game = await mm.findPublicGame({
+    const game = await mm.findPublicGame({
         region: mm.getRandomRegion(),
         mode: mm.getRandomGameMode()
     });
@@ -73,6 +74,4 @@ if (!gameCode) {
 
 await man.join(gameCode);
 
-setInterval(async () => { 
-    man.update(); 
-}, 10);
+setInterval(() => man.update(), 10);

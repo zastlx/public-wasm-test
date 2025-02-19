@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {
+            "#api": ["./src/api.js"],
+            "#comm": ["./src/comm.js"],
+            "#dispatch": ["./src/dispatch.js"],
+            "#manager": ["./src/manager.js"],
+            "#player": ["./src/player.js"],
+            "#packet": ["./src/packet.js"]
+        }
+    }
+}
