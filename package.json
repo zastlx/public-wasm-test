@@ -1,9 +1,9 @@
 {
-  "name": "shellbot",
+  "name": "shellfbot",
   "version": "1.0.0",
   "description": "shell headless bots",
   "main": "main.js",
-  "repository": "https://github.com/enbyte/Shellfbot",
+  "repository": "https://github.com/enbyte/ShellfBot",
   "author": "hijinks",
   "license": "unlicensed",
   "private": true,
