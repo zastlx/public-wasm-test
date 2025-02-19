@@ -33,11 +33,11 @@ if (emails.length == 0 || passwords.length == 0) {
 
 const NUM_PLAYERS = 1;
 
-for (let i = 0; i < NUM_PLAYERS; i++) { playerList.push(new player.Player(process.argv[3] || 'spammer')); }
+for (let i = 0; i < NUM_PLAYERS; i++) { playerList.push(new player.Player({ name: process.argv[3] || 'spammer' })); }
 
 const man = new manager.Manager(playerList);
 
-man.on('chat', (me, player, msg) => {
+man.on('chat', (me, _player, msg) => {
     if (msg == 'spawn') { me.dispatch(new dispatch.SpawnDispatch()); }
 });
 
@@ -45,7 +45,7 @@ man.on('respawn', (me, p) => {
     if (me.name == p.name) { me.dispatch(new dispatch.SpawnDispatch()); }
 });
 
-man.on('join', (me, player) => {
+man.on('join', (_me, player) => {
     console.log(player.name, 'joined.');
 });
 
@@ -69,5 +69,3 @@ if (!gameCode) {
 }
 
 await man.join(gameCode);
-
-setInterval(() => man.update(), 10);

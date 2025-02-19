@@ -37,14 +37,15 @@ class `Player`:
 Keep reading for attribute documentation.
 
 #### Methods:
-`constructor(name: str = '', proxy: str = '')` - Sets the name/id to use when joining games (optional) and a socks4/5 proxy to use for joining the game.
+`constructor({ name: str = '', proxy: str = '', doUpdates: bool = true })` - Sets the name/id to use when joining games (optional) and a socks4/5 proxy to use for joining the game.
 
 Example usage:
 ```javascript
 let p0 = new Player(); // random name, no proxy
-let p1 = new Player('bot'); // name is bot, no proxy
-let p2 = new Player('', 'socks5://127.0.0.1') // random name, given proxy
-let p3 = new Player('bot', 'socks5://...'); // given name and proxy
+let p1 = new Player({ name: 'bot' }); // name is bot, no proxy
+let p2 = new Player({ proxy: 'socks5://127.0.0.1' }) // random name, given proxy
+let p3 = new Player({ name: 'bot', proxy: 'socks5://...' }); // given name and proxy
+let p4 = new Player({ name: 'bot', doUpdates: false }) // name is bot, will not autoupdate
 ```
 
 `async login(email: str, password: str)` - Logs the player into an account. Make sure to await this, or you will get some odd unintended side effects. Doesn't do any error handling. If a proxy was specified when the Player object was created, it will be used for the login. After the login is complete, `<player object>.state.loggedIn` will be true.
@@ -98,6 +99,8 @@ async function update_once() {
 
 update_once();
 ```
+
+This is automatically preformed every 10ms, unless you set `doUpdate` to false in the constructor.
 
 `dispatch(disp: dispatch.Dispatch)` - Adds a new dispatch to the player's dispatch list. See Architecture Details for more info on what a dispatch is.
 
@@ -264,9 +267,9 @@ await man.login(emails, passwords);
 
 `on(event, callback)` - " "
 
-`update()` - " "
+`update()` - Forcibly update all players. Usually done automatically, unless `doUpdate` = `false` on each player.
 
-`avgUpdateTime()` - Returns the average time (in ms) of an update step over the last 100 updates. Try to keep lowish, so the program will remain snappy.
+`avgUpdateTime()` - Returns the average time (in ms) of an update step over the last 100 updates. Try to keep lowish, so the program will remain snappy. Only works if you forcibly update the players (`doUpdate` = `false` on each player).
 
 #### Attributes:
  - `nUpdates`: number of update steps.
@@ -308,7 +311,7 @@ let CODE = 'jork-strp-club';
 let p = [];
 
 for (let i = 0; i < NUM_CREAMERS; i++) {
-    p.push(new player.Player('StreamCreamer'))
+    p.push(new player.Player({ name: 'StreamCreamer' }))
 }
 
 
@@ -325,13 +328,6 @@ man.on('respawn', (me, _) => {
 
 await man.login(EMAILS, PWS);
 await man.join(CODE);
-
-function upd() {
-    man.update()
-    setTimeout(upd, 10);
-}
-
-upd();
 ```
 
 ## Matchmaker Documentation

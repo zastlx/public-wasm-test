@@ -57,13 +57,16 @@ class InGamePlayer {
 }
 
 class Player {
-    constructor(id = '', proxy = '') {
-        this.proxy = proxy;
-        this.useProxy = proxy !== '';
+    constructor(params = {}) {
+        if (!params.name) { params.name = ''; }
+        if (!params.proxy) { params.proxy = ''; }
+        if (!params.doUpdate) { params.doUpdate = true; }
 
-        this.id = id ? id : Math.random().toString(36).substring(8);
+        this.proxy = params.proxy;
+        this.useProxy = !!params.proxy;
 
-        this.name = this.id
+        this.name = params.name || Math.random().toString(36).substring(8);
+        this.autoUpdate = params.doUpdate;
 
         this._hooks = {
             'chat': [],
@@ -329,6 +332,11 @@ class Player {
         this.game.code = code;
 
         console.log(`Successfully joined ${code}. Startup to join time: ${Date.now() - this.initTime} ms`);
+
+        if (this.autoUpdate) {
+            console.log('autoUpdate enabled...');
+            setInterval(() => this.update(), 10);
+        }
     }
     update() {
         if (!this.state.joinedGame) { throw new Error('Not playing, can\'t update. '); }
