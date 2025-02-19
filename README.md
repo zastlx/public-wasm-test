@@ -67,7 +67,7 @@ console.log(p.state.loggedIn) // true
 
 `<player obj>.gameSocket` will exist
 
-`<player obj>.state.meta.code` will be the code passed in.
+`<player obj>.game.code` will be the code passed in.
 
 Hooks will begin to fire. You can safely call `update()`.
 
@@ -78,7 +78,7 @@ let p = new Player() // ..., login, etc
 console.log(p.state.joinedGame) // false
 await p.join('four-kilo-coke')
 console.log(p.state.joinedGame) // true
-console.log(p.state.meta.code) // four-kilo-coke
+console.log(p.game.code) // four-kilo-coke
 ```
 
 `async update()` - Does the following, in the given order:
