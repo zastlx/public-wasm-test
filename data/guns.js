@@ -203,8 +203,8 @@ const M24 = class _M24 extends Gun {
             rounds: 1,
             capacity: 1,
             reload: 1,
-            store: 20,
-            storeMax: 20,
+            store: 12,
+            storeMax: 12,
             pickup: 4
         };
         this.hasScope = true;
