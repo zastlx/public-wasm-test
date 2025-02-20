@@ -97,8 +97,8 @@ class Player {
             swappingGun: false,
             usingMelee: false,
             view: {
-                yaw: 0,
-                pitch: 0
+                yaw: 0.0,
+                pitch: 0.0
             },
             weapon: 0,
             weapons: [
@@ -298,7 +298,7 @@ class Player {
         this.gameSocket.onmessage = this.#onGameMesssage.bind(this);
 
         this.gameSocket.onclose = (e) => {
-            console.log('Game socket closed:', e.code, Object.entries(CloseCode).filter(([, v]) => v == e.code));   
+            console.log('Game socket closed:', e.code, Object.entries(CloseCode).filter(([, v]) => v == e.code));
         }
 
         while (!this.state.joinedGame) { await new Promise(r => setTimeout(r, 1)); }
@@ -337,13 +337,14 @@ class Player {
             // Send out update packet
             const out = CommOut.getBuffer();
             out.packInt8(CommCode.syncMe);
-            out.packInt8(0); // stateIdx
-            out.packInt8(0); // serverStateIdx
+            out.packInt8(Math.random() * 128 | 0); // stateIdx
+            out.packInt8(this.state.serverStateIdx); // serverStateIdx
             for (let i = 0; i < 3; i++) {
                 out.packInt8(this.controlKeys); // controlkeys
                 out.packInt8(0); // shots (unused) 
-                out.packRadU(this.state.view.yaw || 1); // yaw
-                out.packRad(this.state.view.pitch || 5); // pitch
+                out.packRadU(this.state.view.yaw); // yaw
+                out.packRad(this.state.view.pitch); // pitch
+                out.packInt8(100); // ??? 
             }
             out.send(this.gameSocket);
             this.lastUpdateTime = Date.now();
@@ -582,6 +583,15 @@ class Player {
     }
 
     #processSyncMePacket() {
+        const id = CommIn.unPackInt8U();
+        const player = this.state.players[id];
+
+        CommIn.unPackInt8U(); // stateIdx
+
+        const serverStateIdx = CommIn.unPackInt8U();
+        player.serverStateIdx = serverStateIdx;
+
+        if (player.id == this.state.me.id) { this.state.serverStateIdx = serverStateIdx; }
         return;
     }
 
