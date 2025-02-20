@@ -7,8 +7,6 @@ import player from '#player';
 
 import Matchmaker from './src/matchmaker.js';
 
-import { Move } from './src/constants.js';
-
 const playerList = [];
 const emails = []; // fill in here
 const passwords = []; // fill in here

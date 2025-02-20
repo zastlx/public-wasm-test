@@ -387,7 +387,6 @@ class Player {
         let cb;
         while ((cb = this._liveCallbacks.shift()) !== undefined) { cb(); }
 
-
     }
     #processChatPacket() {
         const id = CommIn.unPackInt8U();
