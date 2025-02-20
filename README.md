@@ -7,7 +7,7 @@ https://github.com/enbyte/ShellfBot
 
 -->
 
-# ShellfBot Documentation
+# ShellfBot
 
 Creating bots in 10 lines since 2025
 
