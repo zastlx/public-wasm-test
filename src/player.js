@@ -4,11 +4,7 @@ import { WebSocket } from 'ws';
 
 import api from '#api';
 
-import comm, {
-    CommIn,
-    CommOut,
-    updatePacketConstants,
-} from '#comm';
+import comm, { CommIn, CommOut, updatePacketConstants } from '#comm';
 
 import { findItemById, GameModesById, getWeaponFromMeshName, Maps, USER_AGENT } from './constants.js';
 
@@ -101,8 +97,8 @@ class Player {
             swappingGun: false,
             usingMelee: false,
             view: {
-                yaw: NaN,
-                pitch: NaN
+                yaw: 0,
+                pitch: 0
             },
             weapon: 0,
             weapons: [
@@ -358,7 +354,7 @@ class Player {
         if (Date.now() - this.lastUpdateTime >= 50) {
             this._liveCallbacks.push(...this._hooks['tick'].map((fn) => fn.apply(this, [this])));
             // Send out update packet
-            let out = CommOut.getBuffer();
+            const out = CommOut.getBuffer();
             out.packInt8(CommCode.syncMe);
             out.packInt8(0); // stateIdx
             out.packInt8(0); // serverStateIdx
@@ -390,7 +386,6 @@ class Player {
 
         let cb;
         while ((cb = this._liveCallbacks.shift()) !== undefined) { cb(); }
-
 
 
     }

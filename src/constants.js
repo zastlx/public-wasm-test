@@ -52,5 +52,5 @@ export const Move = {
     JUMP: 16,
     FIRE: 32, // useless
     MELEE: 64, // useless
-    SCOPE: 128,
+    SCOPE: 128
 }
