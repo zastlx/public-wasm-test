@@ -342,8 +342,8 @@ class Player {
             for (let i = 0; i < 3; i++) {
                 out.packInt8(this.controlKeys); // controlkeys
                 out.packInt8(0); // shots (unused) 
-                out.packRadU(this.state.view.yaw); // yaw
-                out.packRad(this.state.view.pitch); // pitch
+                out.packRadU(this.state.view.yaw || 1); // yaw
+                out.packRad(this.state.view.pitch || 5); // pitch
             }
             out.send(this.gameSocket);
             this.lastUpdateTime = Date.now();
@@ -485,9 +485,9 @@ class Player {
         for (let i2 = 0; i2 < 3; i2++) {
             player.state.buffer[i2].controlKeys = CommIn.unPackInt8U();
             yaw = CommIn.unPackRadU();
-            player.state.buffer[i2].yaw_ = yaw
+            if (!isNaN(yaw)) { player.state.buffer[i2].yaw_ = yaw }
             pitch = CommIn.unPackRad();
-            player.state.buffer[i2].pitch_ = pitch
+            if (!isNaN(pitch)) { player.state.buffer[i2].pitch_ = pitch }
         }
         player.state.position.x = x;
         if (!player.state.jumping || Math.abs(player.state.position.y - y) > 0.5) { player.state.position.y = y; }
