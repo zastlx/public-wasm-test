@@ -35,7 +35,12 @@ if (emails.length == 0 || passwords.length == 0) {
 
 const NUM_PLAYERS = 1;
 
-for (let i = 0; i < NUM_PLAYERS; i++) { playerList.push(new player.Player({ name: process.argv[3] || 'spammer', updateInterval: 1})); }
+for (let i = 0; i < NUM_PLAYERS; i++) {
+    playerList.push(new player.Player({
+        name: 'spammer',
+        updateInterval: 1
+    }));
+}
 
 const man = new manager.Manager(playerList);
 
