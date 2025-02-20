@@ -1,7 +1,7 @@
 import { WebSocket } from 'ws';
 import api from '#api';
 
-import { GameModes, PlayTypes, USER_AGENT } from './constants';
+import { GameModes, PlayTypes, USER_AGENT } from './constants.js';
 
 class Matchmaker {
     connected = false;

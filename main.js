@@ -7,6 +7,8 @@ import player from '#player';
 
 import Matchmaker from './src/matchmaker.js';
 
+import { Move } from './src/constants.js';
+
 const playerList = [];
 const emails = []; // fill in here
 const passwords = []; // fill in here
@@ -33,7 +35,7 @@ if (emails.length == 0 || passwords.length == 0) {
 
 const NUM_PLAYERS = 1;
 
-for (let i = 0; i < NUM_PLAYERS; i++) { playerList.push(new player.Player({ name: process.argv[3] || 'spammer' })); }
+for (let i = 0; i < NUM_PLAYERS; i++) { playerList.push(new player.Player({ name: process.argv[3] || 'spammer', updateInterval: 1})); }
 
 const man = new manager.Manager(playerList);
 
@@ -42,7 +44,11 @@ man.on('chat', (me, _player, msg) => {
 });
 
 man.on('respawn', (me, p) => {
-    if (me.name == p.name) { me.dispatch(new dispatch.SpawnDispatch()); }
+    if (me.name == p.name) { 
+        me.dispatch(new dispatch.SpawnDispatch());
+        me.dispatch(new dispatch.MovementDispatch(Move.FORWARD | Move.JUMP));
+        console.log('respawned');
+    }
 });
 
 man.on('join', (_me, player) => {

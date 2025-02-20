@@ -7,7 +7,7 @@ import api from '#api';
 import comm, {
     CommIn,
     CommOut,
-    updatePacketConstants
+    updatePacketConstants,
 } from '#comm';
 
 import { findItemById, GameModesById, getWeaponFromMeshName, Maps, USER_AGENT } from './constants.js';
@@ -138,6 +138,8 @@ class Player {
         this.lastChatTime = -1;
         this.nUpdates = 0;
         this.lastUpdateTime = -1;
+
+        this.controlKeys = 0;
 
         this.initTime = Date.now();
 
@@ -354,7 +356,35 @@ class Player {
         this.drain();
 
         if (Date.now() - this.lastUpdateTime >= 100 ) {
-            this._liveCallbacks.extend(this._hooks['tick'].map((fn) => fn.apply(this, [this])));
+            this._liveCallbacks.push(...this._hooks['tick'].map((fn) => fn.apply(this, [this])));
+            // Send out update packet
+            let out = CommOut.getBuffer();
+            out.packInt8(CommCode.syncMe);
+            out.packInt8(0); // stateIdx
+            out.packInt8(0); // serverStateIdx
+            for (let i = 0; i < 3; i++) {
+                out.packInt8(this.controlKeys); // controlkeys
+                out.packInt8(0); // shots (unused) 
+                out.packRadU(this.state.view.yaw); // yaw
+                out.packRad(this.state.view.pitch); // pitch
+            }
+            out.send(this.gameSocket);
+            /*
+            var out = CommOut.getBuffer();
+      out.packInt8(CommCode.syncMe);
+      out.packInt8(Math.mod(me.stateIdx - FramesBetweenSyncs, stateBufferSize));
+      out.packInt8(me.serverStateIdx);
+      var startIdx = Math.mod(me.stateIdx - FramesBetweenSyncs, stateBufferSize);
+      for (var i2 = 0; i2 < FramesBetweenSyncs; i2++) {
+        var idx = Math.mod(startIdx + i2, stateBufferSize);
+        out.packInt8(me.stateBuffer[idx].controlKeys);
+        out.packInt8(me.stateBuffer[idx].shots);
+        out.packRadU(me.stateBuffer[idx].yaw_);
+        out.packRad(me.stateBuffer[idx].pitch_);
+        me.stateBuffer[Math.mod(idx - stateBufferSize / 2, stateBufferSize)].shots = 0;
+      }
+      out.send(ws);
+            */
         }
 
         let cb;

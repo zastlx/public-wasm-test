@@ -76,10 +76,29 @@ class SwapWeaponDispatch {
     }
 }
 
+class MovementDispatch {
+    constructor(controlKeys) {  
+        if (typeof controlKeys == typeof 0) {
+            this.controlKeys = controlKeys;
+        } else if (typeof controlKeys == typeof []) {
+            this.controlKeys = controlKeys.reduce((a, b) => a | b, 0);
+        }
+
+    }
+    check(player) {
+        return player.state.playing;
+
+    }
+    execute(player) {
+        player.controlKeys = this.controlKeys;
+    }
+}
+
 export default {
     ChatDispatch,
     ReloadDispatch,
     MeleeDispatch,
     SpawnDispatch,
-    SwapWeaponDispatch
+    SwapWeaponDispatch,
+    MovementDispatch
 }
