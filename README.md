@@ -28,6 +28,6 @@ https://raw.githubusercontent.com/enbyte/deobfs-shell-source/refs/heads/main/she
 <h3 align='center'>credits</h3>
 
 <p align='center'>
-  this repository was imagined & created by <a href='https://github.com/enbyte'>hijinks</a> and <a href='https://github.com/villainsrule'>1ust</a> :trollface:<br>
+  this repository was created & imagined by <a href='https://github.com/enbyte'>hijinks</a> with contributions from <a href='https://github.com/villainsrule'>1ust</a> :trollface:<br>
   special thanks to BWD for leaking the source, which made development 100x easier ❤️
 </p>
