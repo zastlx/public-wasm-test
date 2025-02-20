@@ -355,7 +355,7 @@ class Player {
 
         this.drain();
 
-        if (Date.now() - this.lastUpdateTime >= 100 ) {
+        if (Date.now() - this.lastUpdateTime >= 50) {
             this._liveCallbacks.push(...this._hooks['tick'].map((fn) => fn.apply(this, [this])));
             // Send out update packet
             let out = CommOut.getBuffer();
@@ -385,13 +385,14 @@ class Player {
       }
       out.send(ws);
             */
+            this.lastUpdateTime = Date.now();
         }
 
         let cb;
         while ((cb = this._liveCallbacks.shift()) !== undefined) { cb(); }
 
 
-        this.lastUpdateTime = Date.now();
+
     }
     #processChatPacket() {
         const id = CommIn.unPackInt8U();
@@ -621,6 +622,10 @@ class Player {
         return;
     }
 
+    #processSyncMePacket() {
+        return;
+    }
+
     handlePacket(packet) {
         CommIn.init(packet);
         this._hooks['packet'].forEach((fn) => this._liveCallbacks.push(fn.apply(this, [this, packet])));
@@ -668,6 +673,10 @@ class Player {
 
             case CommCode.reload:
                 this.#processReloadPacket(packet);
+                break;
+
+            case CommCode.syncMe:
+                this.#processSyncMePacket(packet);
                 break;
 
             default:

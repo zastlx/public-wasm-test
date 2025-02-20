@@ -59,7 +59,7 @@ await man.login(emails, passwords);
 
 let gameCode = process.argv[2];
 if (!gameCode) {
-    console.log('no game code specified, joining random game');
+    console.log('no game code specified, joinin game');
     const mm = new Matchmaker(man.getSessionId());
 
     await mm.getRegions();
