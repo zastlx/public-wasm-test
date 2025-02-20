@@ -3,16 +3,31 @@
 <3 bwd
 https://raw.githubusercontent.com/enbyte/deobfs-shell-source/refs/heads/main/shellshock.js
 
-https://github.com/enbyte/ShellfBot
-
 -->
 
-# ShellfBot
+<div align='center'>
+  <h1>shellfbot</h1>
+  <h3>creating bots in 10 lines since 2025</h3>
+  <p>
+    <a href='https://github.com/enbyte/ShellfBot'>github</a> | 
+    <a href='https://github.com/enbyte/ShellfBot/wiki'>documentation</a>
+    <!-- | <a href='https://npmjs.com/something'>npm</a> -->
+  </p>
+</div>
 
-Creating bots in 10 lines since 2025
+<br>
 
-Why this exists: Several of our projects seemed to rely on the same needs of joining a game and doing some simple tasks. This codebase exists as a unified, elegant, single point we can build upon.
+<h3 align='center'>why?</h3>
+<p align='center'>
+  Several of StateFarm's projects relied on the same simple game-related tasks.<br>
+  This codebase exists as a unified, elegant, single point we can build upon.
+</p>
 
-built by hijinks, enjoy
+<br>
 
-special thanks to BWD for leaking the source, this sped this up by about ten thousand times ❤️
+<h3 align='center'>credits</h3>
+
+<p align='center'>
+  this repository was imagined & created by <a href='https://github.com/enbyte'>hijinks</a> and <a href='https://github.com/villainsrule'>1ust</a> :trollface:<br>
+  special thanks to BWD for leaking the source, which made development 100x easier ❤️
+</p>
