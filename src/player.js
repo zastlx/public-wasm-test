@@ -97,8 +97,8 @@ class Player {
             swappingGun: false,
             usingMelee: false,
             view: {
-                yaw: NaN,
-                pitch: NaN
+                yaw: 0,
+                pitch: 0
             },
             weapon: 0,
             weapons: [
