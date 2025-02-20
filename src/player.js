@@ -490,8 +490,12 @@ class Player {
             pitch = CommIn.unPackRad();
             if (!isNaN(pitch)) { player.state.buffer[i2].pitch_ = pitch }
         }
+
         player.state.position.x = x;
-        if (!player.state.jumping || Math.abs(player.state.position.y - y) > 0.5) { player.state.position.y = y; }
+
+        if (!player.state.jumping || Math.abs(player.state.position.y - y) > 0.5) {
+            player.state.position.y = y;
+        }
 
         player.state.position.z = z;
         player.state.buffer[0].x = x;
@@ -591,7 +595,17 @@ class Player {
         const serverStateIdx = CommIn.unPackInt8U();
         player.serverStateIdx = serverStateIdx;
 
-        if (player.id == this.state.me.id) { this.state.serverStateIdx = serverStateIdx; }
+        if (player.id == this.state.me.id) {
+            this.state.serverStateIdx = serverStateIdx;
+        
+            const x = CommIn.unPackFloat();
+            const y = CommIn.unPackFloat();
+            const z = CommIn.unPackFloat();
+
+            this.state.position.x = x;
+            this.state.position.y = y;
+            this.state.position.z = z;
+        }
         return;
     }
 
