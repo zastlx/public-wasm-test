@@ -216,24 +216,6 @@ class Player {
 
         switch (cmd) {
             case CommCode.socketReady:
-                /*
-
-                var i=Ec.getBuffer();
-                i.packInt8(nc.joinGame)
-
-                i.packString(e.playerName)
-                i.packString(e.uuid)
-
-                i.packInt8(t)
-                i.packInt8(Tc.playerAccount.classIdx)
-
-                i.packInt32(Tc.playerAccount.session)
-                i.packString(Tc.playerAccount.firebaseId)
-                i.packString(Tc.playerAccount.sessionId)
-
-                i.send(Zw);
-
-                */
 
                 out = CommOut.getBuffer();
                 out.packInt8(CommCode.joinGame);
@@ -316,8 +298,7 @@ class Player {
         this.gameSocket.onmessage = this.#onGameMesssage.bind(this);
 
         this.gameSocket.onclose = (e) => {
-            console.log('Game socket closed:', e.code, Object.entries(CloseCode).filter(([, v]) => v == e.code));
-            console.log(this.gameSocket)
+            console.log('Game socket closed:', e.code, Object.entries(CloseCode).filter(([, v]) => v == e.code));   
         }
 
         while (!this.state.joinedGame) { await new Promise(r => setTimeout(r, 1)); }
@@ -352,7 +333,7 @@ class Player {
         this.drain();
 
         if (Date.now() - this.lastUpdateTime >= 50) {
-            this._liveCallbacks.push(...this._hooks['tick'].map((fn) => fn.apply(this, [this])));
+            this._liveCallbacks.push(...this._hooks.tick.map((fn) => fn.apply(this, [this])));
             // Send out update packet
             const out = CommOut.getBuffer();
             out.packInt8(CommCode.syncMe);
@@ -365,22 +346,6 @@ class Player {
                 out.packRad(this.state.view.pitch); // pitch
             }
             out.send(this.gameSocket);
-            /*
-            var out = CommOut.getBuffer();
-      out.packInt8(CommCode.syncMe);
-      out.packInt8(Math.mod(me.stateIdx - FramesBetweenSyncs, stateBufferSize));
-      out.packInt8(me.serverStateIdx);
-      var startIdx = Math.mod(me.stateIdx - FramesBetweenSyncs, stateBufferSize);
-      for (var i2 = 0; i2 < FramesBetweenSyncs; i2++) {
-        var idx = Math.mod(startIdx + i2, stateBufferSize);
-        out.packInt8(me.stateBuffer[idx].controlKeys);
-        out.packInt8(me.stateBuffer[idx].shots);
-        out.packRadU(me.stateBuffer[idx].yaw_);
-        out.packRad(me.stateBuffer[idx].pitch_);
-        me.stateBuffer[Math.mod(idx - stateBufferSize / 2, stateBufferSize)].shots = 0;
-      }
-      out.send(ws);
-            */
             this.lastUpdateTime = Date.now();
         }
 
@@ -395,7 +360,7 @@ class Player {
         const player = this.state.players[Object.keys(this.state.players).find(p => this.state.players[p].id == id)];
         // console.log(`Player ${player.name}: ${text} (flags: ${msgFlags})`);
         // console.log(`Their position: ${player.state.position.x}, ${player.state.position.y}, ${player.state.position.z}`);
-        this._hooks['chat'].forEach((fn) => this._liveCallbacks.push(fn.apply(this, [this, player, text, msgFlags])));
+        this._hooks.chat.forEach((fn) => this._liveCallbacks.push(fn.apply(this, [this, player, text, msgFlags])));
     }
     #processAddPlayerPacket() {
         const id_ = CommIn.unPackInt8U();
@@ -459,7 +424,7 @@ class Player {
             this.state.players[playerData.id_] = new InGamePlayer(playerData.id_, playerData.team_, playerData);
         }
 
-        this._hooks['join'].forEach((fn) => this._liveCallbacks.push(fn.apply(this, [this, this.state.players[playerData.id_]])));
+        this._hooks.join.forEach((fn) => this._liveCallbacks.push(fn.apply(this, [this, this.state.players[playerData.id_]])));
         // console.log(`I am ${this.state.me.id}, player ${playerData.id_} joined.`);
         const unp = CommIn.unPackInt8U();
         if (unp == CommCode.addPlayer) { // there is another player stacked
@@ -495,7 +460,7 @@ class Player {
             player.state.grenades = grenades;
             player.state.position = { x: x, y: y, z: z };
             // console.log(`Player ${player.name} respawned at ${x}, ${y}, ${z}`);
-            this._hooks['respawn'].forEach((fn) => this._liveCallbacks.push(fn.apply(this, [this, player])));
+            this._hooks.respawn.forEach((fn) => this._liveCallbacks.push(fn.apply(this, [this, player])));
         } else {
             // console.log(`Player ${id} not found. (me: ${this.state.me.id}) (respawn)`);
         }
@@ -540,7 +505,7 @@ class Player {
         if (player) {
             player.state.playing = false;
             // console.log(`Player ${player.name} paused.`);
-            this._hooks['pause'].forEach((fn) => this._liveCallbacks.push(fn.apply(this, [this, player])));
+            this._hooks.pause.forEach((fn) => this._liveCallbacks.push(fn.apply(this, [this, player])));
         }
     }
     #processSwapWeaponPacket() {
@@ -575,13 +540,13 @@ class Player {
         if (byPlayer) { byPlayer.state.kills++; }
         // console.log(`Player ${byPlayer.name} is on a streak of ${byPlayer.state.kills} kills.`);
 
-        this._hooks['death'].forEach((fn) => this._liveCallbacks.push(fn.apply(this, [this, killedPlayer, byPlayer])));
+        this._hooks.death.forEach((fn) => this._liveCallbacks.push(fn.apply(this, [this, killedPlayer, byPlayer])));
     }
 
     #processFirePacket() {
         const id = CommIn.unPackInt8U(); // there should be 6 floats after this, but that's irrelevant for our purposes 
         const player = this.state.players[id];
-        this._hooks['fire'].forEach((fn) => this._liveCallbacks.push(fn.apply(this, [this, player])));
+        this._hooks.fire.forEach((fn) => this._liveCallbacks.push(fn.apply(this, [this, player])));
     }
 
     #processCollectPacket() {
@@ -600,7 +565,7 @@ class Player {
             }
         }
 
-        this._hooks['collect'].forEach((fn) => {
+        this._hooks.collect.forEach((fn) => {
             this._liveCallbacks.push(fn.apply(this, [this, this.state.players[id], type, applyToWeaponIdx, itemId]))
         });
     }
@@ -622,7 +587,7 @@ class Player {
 
     handlePacket(packet) {
         CommIn.init(packet);
-        this._hooks['packet'].forEach((fn) => this._liveCallbacks.push(fn.apply(this, [this, packet])));
+        this._hooks.packet.forEach((fn) => this._liveCallbacks.push(fn.apply(this, [this, packet])));
         const cmd = CommIn.unPackInt8U();
         switch (cmd) {
             case CommCode.chat:
