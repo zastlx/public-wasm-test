@@ -1,6 +1,4 @@
-import * as comm from '#comm';
-
-const { CommCode, CommOut } = comm;
+import { CommCode, CommOut } from '#comm';
 
 class Packet {
     constructor(code, _args) {

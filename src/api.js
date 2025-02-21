@@ -1,6 +1,6 @@
-import WebSocket from 'ws';
-
 import { SocksProxyAgent } from 'socks-proxy-agent';
+import { WebSocket } from 'ws';
+
 import { USER_AGENT } from '#constants';
 
 const firebaseKey = 'AIzaSyDP4SIjKaw6A4c-zvfYxICpbEjn1rRnN50';
@@ -56,7 +56,7 @@ async function queryAPI(request, prox = '') {
     return response;
 }
 
-async function login(email, password, prox = '') {
+async function loginWithCredentials(email, password, prox = '') {
 
     /*
     DO NOT CALL RAW!!!! (you can if you want :3 it doesn't change anything)
@@ -127,7 +127,7 @@ async function login(email, password, prox = '') {
     return response;
 }
 
-async function anonymous(prox = '') {
+async function loginAnonymously(prox = '') {
     const request = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=' + firebaseKey, {
         method: 'POST',
         body: JSON.stringify({ returnSecureToken: true }),
@@ -145,9 +145,9 @@ async function anonymous(prox = '') {
     return response
 }
 
-export default {
-    login,
-    queryAPI,
+export {
     fetchConstantsRaw,
-    anonymous
+    loginAnonymously,
+    loginWithCredentials,
+    queryAPI
 }

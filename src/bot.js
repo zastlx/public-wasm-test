@@ -2,9 +2,8 @@
 import { SocksProxyAgent } from 'socks-proxy-agent';
 import { WebSocket } from 'ws';
 
-import api from '#api';
-
-import comm, { CommIn, CommOut, updatePacketConstants } from '#comm';
+import { loginAnonymously, loginWithCredentials } from '#api';
+import { CommIn, CommOut, StatsArr, updatePacketConstants } from '#comm';
 
 import GamePlayer from './bot/GamePlayer.js';
 
@@ -20,7 +19,7 @@ import {
     Maps,
     ShellStreak,
     USER_AGENT
-} from './constants.js';
+} from '#constants';
 
 const consts = await updatePacketConstants();
 const CommCode = consts[0];
@@ -156,7 +155,7 @@ class Bot {
     async login(email, pass) {
         const time = Date.now()
         this.email = email; this.pass = pass;
-        this.loginData = await api.login(email, pass, this.proxy ? this.proxy : '');
+        this.loginData = await loginWithCredentials(email, pass, this.proxy ? this.proxy : '');
         this.state.loggedIn = true;
         console.log('Logged in successfully. Time:', Date.now() - time, 'ms');
     }
@@ -181,7 +180,7 @@ class Bot {
     async matchmaker(code) {
         if (!this.state.loggedIn) {
             console.log('Not logged in, attempting to create anonymous user...');
-            this.loginData = await api.anonymous(this.proxy ? this.proxy : '');
+            this.loginData = await loginAnonymously(this.proxy ? this.proxy : '');
         }
 
         this.matchmakerSocket = new WebSocket('wss://shellshock.io/matchmaker/', {
@@ -441,7 +440,7 @@ class Bot {
         playerData.gameData_.private = CommIn.unPackInt8U();
         playerData.gameData_.gameType = CommIn.unPackInt8U();
         playerData.stats_ = {};
-        comm.StatsArr.forEach((stat) => playerData.stats_[stat] = 0);
+        StatsArr.forEach((stat) => playerData.stats_[stat] = 0);
         playerData.stats_.kills = playerData.kills_;
         playerData.stats_.deaths = playerData.deaths_;
         playerData.stats_.streak = playerData.streak_;

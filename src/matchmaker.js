@@ -1,7 +1,7 @@
 import { WebSocket } from 'ws';
-import api from '#api';
 
-import { GameModes, PlayTypes, USER_AGENT } from './constants.js';
+import { loginAnonymously } from '#api';
+import { GameModes, PlayTypes, USER_AGENT } from '#constants';
 
 class Matchmaker {
     connected = false;
@@ -44,7 +44,7 @@ class Matchmaker {
     }
 
     async createSessionId() {
-        const j = await api.anonymous();
+        const j = await loginAnonymously();
         this.sessionId = j.sessionId;
         console.log('matchmaker got sessionid', this.sessionId);
         if (this.connected) { this.onceConnected.forEach(func => func()); }
