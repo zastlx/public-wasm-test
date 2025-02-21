@@ -6,7 +6,16 @@ import api from '#api';
 
 import comm, { CommIn, CommOut, updatePacketConstants } from '#comm';
 
-import { CoopStagesById, CoopStates, findItemById, GameModesById, getWeaponFromMeshName, Maps, USER_AGENT } from './constants.js';
+import {
+    CoopStagesById,
+    CoopStates,
+    findItemById,
+    GameModesById,
+    getWeaponFromMeshName,
+    Maps,
+    ShellStreak,
+    USER_AGENT
+} from './constants.js';
 
 const consts = await updatePacketConstants();
 const CommCode = consts[0];
@@ -47,7 +56,8 @@ class InGamePlayer {
                 2: {}
             },
             kills: 0,
-            hp: 100
+            hp: 100,
+            hpShield: 0
         }
     }
 }
@@ -113,7 +123,9 @@ class Player {
                 2: {}
             },
             kills: 0,
-            hp: 100
+            hp: 100,
+            hpShield: 0,
+            streakRewards: []
         };
 
         this.game = {
@@ -140,6 +152,14 @@ class Player {
             playerLimit: 0,
             isGameOwner: false,
             isPrivate: true,
+
+            // game options
+            options: {
+                gravity: 1,
+                damage: 1,
+                healthRegen: 1,
+                weaponDisabled: []
+            },
 
             // data from metaGame
             teamScore: [0, 0, 0], // [0, blue, red] - no clue what 1st index is for
@@ -713,6 +733,90 @@ class Player {
         console.log(this.game);
     }
 
+    #processBeginStreakPacket() {
+        const id = CommIn.unPackInt8U();
+        const ksType = CommIn.unPackInt8U();
+        // const player = this.state.players[id];
+
+        if (id !== this.state.me.id) { return; } // once it's easier to dynamically update players we can do this =D
+
+        switch (ksType) {
+            case ShellStreak.HardBoiled:
+                this.state.hpShield = 100;
+                this.state.streakRewards.push(ShellStreak.HardBoiled);
+                break;
+            case ShellStreak.EggBreaker:
+                this.state.streakRewards.push(ShellStreak.EggBreaker);
+                break;
+            case ShellStreak.Restock:
+                // TODO: this.state.weaponData is it implemented?
+                break;
+            case ShellStreak.OverHeal:
+                this.state.hp = Math.min(200, this.state.hp + 100);
+                this.state.streakRewards.push(ShellStreak.OverHeal);
+                // TODO: figure otu how overheal counts down
+                break;
+            case ShellStreak.DoubleEggs:
+                this.state.streakRewards.push(ShellStreak.DoubleEggs);
+                break;
+            case ShellStreak.MiniEgg:
+                this.state.streakRewards.push(ShellStreak.MiniEgg);
+                break;
+        }
+    }
+
+    #processEndStreakPacket() {
+        const id = CommIn.unPackInt8U();
+        const ksType = CommIn.unPackInt8U();
+        // const player = this.state.players[id];
+
+        if (id !== this.state.me.id) { return; } // once it's easier to dynamically update players we can do this =D
+
+        const streaks = [
+            ShellStreak.EggBreaker,
+            ShellStreak.OverHeal,
+            ShellStreak.DoubleEggs,
+            ShellStreak.MiniEgg
+        ];
+
+        if (streaks.includes(ksType) && this.state.streakRewards.includes(ksType)) {
+            this.state.streakRewards = this.state.streakRewards.filter((r) => r != ksType);
+        }
+    }
+
+    #processHitShieldPacket() {
+        const hb = CommIn.unPackInt8U();
+        const hp = CommIn.unPackInt8U();
+
+        this.state.hpShield = hb;
+        this.state.hp = hp;
+
+        if (this.state.hpShield <= 0) {
+            this.state.streakRewards = this.state.streakRewards.filter((r) => r != ShellStreak.HardBoiled);
+        }
+    }
+
+    #processGameOptionsPacket() {
+        this.game.options
+        let gravity = CommIn.unPackInt8U();
+        let damage = CommIn.unPackInt8U();
+        let healthRegen = CommIn.unPackInt8U();
+
+        if (gravity < 1 || gravity > 4) { gravity = 4; }
+        if (damage < 0 || damage > 8) { damage = 4; }
+        if (healthRegen > 16) { healthRegen = 4; }
+
+        this.game.options.gravity = gravity / 4;
+        this.game.options.damage = damage / 4;
+        this.game.options.healthRegen = healthRegen / 4;
+
+        /*
+        let flags = CommIn.unPackInt8U(); // disable team changing, will do later
+        let weaponDisabled = G.classes.map(() => CommIn.unPackInt8U() === 1); // disabling specific weapons, need 2 handle that
+        */
+        return false;
+    }
+
     handlePacket(packet) {
         CommIn.init(packet);
         this._hooks.packet.forEach((fn) => this._liveCallbacks.push(fn.apply(this, [this, packet])));
@@ -772,6 +876,22 @@ class Player {
 
             case CommCode.metaGameState:
                 this.#processGameStatePacket(packet);
+                break;
+
+            case CommCode.beginShellStreak:
+                this.#processBeginStreakPacket(packet);
+                break;
+
+            case CommCode.endShellStreak:
+                this.#processEndStreakPacket(packet);
+                break;
+
+            case CommCode.hitMeHardBoiled:
+                this.#processHitShieldPacket(packet);
+                break;
+
+            case CommCode.gameOptions:
+                this.#processGameOptionsPacket(packet);
                 break;
 
             case CommCode.reload:

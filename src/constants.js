@@ -72,3 +72,12 @@ export const CoopStates = {
 };
 
 export const CoopStagesById = Object.fromEntries(Object.entries(CoopStates).map(([key, value]) => [value, key]));
+
+export const ShellStreak = {
+    HardBoiled: 1,
+    EggBreaker: 2,
+    Restock: 4,
+    OverHeal: 8,
+    DoubleEggs: 16,
+    MiniEgg: 32
+};
