@@ -70,3 +70,5 @@ export const CoopStates = {
     abandoned: 6,
     unclaimed: 7
 };
+
+export const CoopStagesById = Object.fromEntries(Object.entries(CoopStates).map(([key, value]) => [value, key]));

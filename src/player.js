@@ -6,7 +6,7 @@ import api from '#api';
 
 import comm, { CommIn, CommOut, updatePacketConstants } from '#comm';
 
-import { CoopStates, findItemById, GameModesById, getWeaponFromMeshName, Maps, USER_AGENT } from './constants.js';
+import { CoopStagesById, CoopStates, findItemById, GameModesById, getWeaponFromMeshName, Maps, USER_AGENT } from './constants.js';
 
 const consts = await updatePacketConstants();
 const CommCode = consts[0];
@@ -156,7 +156,9 @@ class Player {
             activeZone: 0,
             capturing: 0,
             captureProgress: 0,
-            numCapturing: 0
+            numCapturing: 0,
+            stageName: '',
+            capturePercent: 0.0
         }
 
         this.loginData = null;
@@ -686,6 +688,10 @@ class Player {
             this.game.numCapturing = CommIn.unPackInt8U(); // number of players capturing - number/1000
             this.game.teamScore[1] = CommIn.unPackInt8U(); // team 1 (blue) score
             this.game.teamScore[2] = CommIn.unPackInt8U(); // team 2 (red) score
+
+            // not in shell, for utility purposes =D
+            this.game.stageName = CoopStagesById[this.game.stage]; // name of the stage ('start' / 'capturing' / 'etc')
+            this.game.capturePercent = this.game.captureProgress / 1000; // progress of the capture as a percentage
         }
 
         if (this.game.gameModeId !== 2) {
