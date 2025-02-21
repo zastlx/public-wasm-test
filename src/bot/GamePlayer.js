@@ -1,3 +1,6 @@
+import { getWeaponClass } from '#constants';
+import { Cluck9mm } from '../../data/guns.js';
+
 export default class GamePlayer {
     constructor(id, team, playerData) {
         this.id = id;
@@ -24,12 +27,26 @@ export default class GamePlayer {
             pitch: this.data.pitch_
         };
 
-        this.weapon = this.data.weaponIdx_;
-        this.weapons = [
-            { ammo: {} },
-            { ammo: {} }
-        ];
-        this.weaponData = this.data.weaponData;
+        this.character = {
+            eggColor: playerData.shellColor_,
+            primaryGun: playerData.primaryWeaponItem_,
+            secondaryGun: playerData.secondaryWeaponItem_,
+            stamp: playerData.stampItem_,
+            hat: playerData.hatItem_,
+            grenade: playerData.grenadeItem_,
+            melee: playerData.meleeItem_
+        }
+
+        this.activeGun = this.data.weaponIdx_;
+        this.weapons = [{}, {}];
+
+        if (this.character.primaryGun) {
+            const weaponClass = getWeaponClass(this.character.primaryGun);
+
+            this.weapons[0] = new weaponClass();
+            this.weapons[1] = new Cluck9mm();
+        }
+
         this.grenades = 0;
 
         this.buffer = {

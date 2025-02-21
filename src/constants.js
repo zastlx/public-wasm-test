@@ -21,9 +21,9 @@ const MeshPartMappings = {
     smg: SMG
 }
 
-export const getWeaponFromMeshName = (meshName) => {
-    const mainPart = meshName.split('_')[1];
-    return new MeshPartMappings[mainPart]();
+export const getWeaponClass = (item) => {
+    const mainPart = item.item_data.meshName.split('_')[1];
+    return MeshPartMappings[mainPart];
 }
 
 export const GameModes = {

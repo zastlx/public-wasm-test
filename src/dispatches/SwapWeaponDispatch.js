@@ -6,7 +6,7 @@ export default class SwapWeaponDispatch {
     }
 
     execute(bot) {
-        bot.me.weapon = +!bot.me.weapon;
-        new packet.SwapWeaponPacket(bot.me.weapon).execute(bot.gameSocket);
+        bot.me.activeGun = +!bot.me.activeGun;
+        new packet.SwapWeaponPacket(bot.me.activeGun).execute(bot.gameSocket);
     }
 }

@@ -12,9 +12,9 @@ player.on('join', (_bot, player) => {
 player.on('chat', (bot, _player, msg) => {
     if (msg == 'spawn') bot.dispatch(new dispatch.SpawnDispatch());
 
-    if (msg == 'activeWeapon') bot.dispatch(new dispatch.ChatDispatch(`using the ${bot.me.weapon == 1 ? 'secondary' : 'primary'}`));
-    if (msg == 'weaponData0') console.log(bot.players[0].weaponData);
-    if (msg == 'selfWeaponData') console.log(bot.me.weaponData);
+    if (msg == 'activeWeapon') bot.dispatch(new dispatch.ChatDispatch(`using the ${bot.me.activeGun == 1 ? 'secondary' : 'primary'}`));
+    if (msg == 'weapons0') console.log(bot.players[0].weapons);
+    if (msg == 'selfWeapons') console.log(bot.me.weapons);
 
     if (msg == 'game') console.log(bot.game);
     if (msg == 'players') console.log(bot.players);

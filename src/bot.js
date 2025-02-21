@@ -17,16 +17,11 @@ import {
     GameModes,
     GameModesById,
     GameOptionFlags,
-    getWeaponFromMeshName,
     Maps,
     PlayTypes,
     ShellStreak,
     USER_AGENT
 } from '#constants';
-
-import { Cluck9mm } from '../data/guns.js';
-
-const cluck9mm = new Cluck9mm();
 
 const consts = await updatePacketConstants();
 const CommCode = consts[0];
@@ -523,16 +518,18 @@ class Bot {
             social_: CommIn.unPackLongString(),
             hideBadge_: CommIn.unPackInt8U()
         };
+
         playerData.gameData_ = {};
         playerData.gameData_.mapIdx = CommIn.unPackInt8U();
         playerData.gameData_.private = CommIn.unPackInt8U();
         playerData.gameData_.gameType = CommIn.unPackInt8U();
+
         playerData.stats_ = {};
         StatsArr.forEach((stat) => playerData.stats_[stat] = 0);
         playerData.stats_.kills = playerData.kills_;
         playerData.stats_.deaths = playerData.deaths_;
         playerData.stats_.streak = playerData.streak_;
-        playerData.weaponData = getWeaponFromMeshName(playerData.primaryWeaponItem_.item_data.meshName);
+
         if (!this.players[playerData.id_]) {
             this.players[playerData.id_] = new GamePlayer(playerData.id_, playerData.team_, playerData);
 
@@ -824,12 +821,12 @@ class Bot {
                 player.grenades = 3;
 
                 // main weapon
-                player.weapons[0].ammo.rounds = player.weaponData.ammo.capacity;
-                player.weapons[0].ammo.store = player.weaponData.ammo.store;
+                player.weapons[0].ammo.rounds = player.weapons[0].ammo.capacity;
+                player.weapons[0].ammo.store = player.weapons[0].ammo.storeMax;
 
                 // secondary, always cluck9mm
-                player.weapons[1].ammo.rounds = cluck9mm.ammo.capacity;
-                player.weapons[1].ammo.store = cluck9mm.ammo.store;
+                player.weapons[1].ammo.rounds = player.weapons[1].ammo.capacity;
+                player.weapons[1].ammo.store = player.weapons[1].ammo.storeMax;
                 break;
             }
 

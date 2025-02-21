@@ -8,10 +8,10 @@ export default class ReloadDispatch {
     execute(bot) {
         new packet.ReloadPacket().execute(bot.gameSocket);
 
-        const isLongTime = bot.me.weapons[bot.me.weapon].ammo.rounds < 1;
-        const weaponData = bot.me.weaponData;
+        const activeWeapon = bot.me.weapons[bot.me.activeGun];
+        const isLongTime = activeWeapon.ammo.rounds < 1;
 
         bot.state.reloading = true;
-        setTimeout(() => bot.state.reloading = false, isLongTime ? weaponData.longReloadTime : weaponData.shortReloadTime);
+        setTimeout(() => bot.state.reloading = false, isLongTime ? activeWeapon.longReloadTime : activeWeapon.shortReloadTime);
     }
 }

@@ -18,7 +18,7 @@ export default class MeleeDispatch {
             setTimeout(() => {
                 // new ChatDispatch('end swap gun').execute(player);
                 bot.swappingGun = false
-            }, 0.5 * bot.me.weaponData.equipTime)
+            }, 0.5 * bot.weapons[0].equipTime)
         }, 566.61);
     }
 }
