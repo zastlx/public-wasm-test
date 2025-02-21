@@ -7,7 +7,7 @@ export default class GamePlayer {
         this.data = playerData;
 
         this.joinedGame = true;
-        this.playing = false;
+        this.playing = playerData.playing_;
         this.position = {
             x: this.data.x_,
             y: this.data.y_,

@@ -21,6 +21,10 @@ import {
     USER_AGENT
 } from '#constants';
 
+import { Cluck9mm } from '../data/guns.js';
+
+const cluck9mm = new Cluck9mm();
+
 const consts = await updatePacketConstants();
 const CommCode = consts[0];
 const CloseCode = consts[1];
@@ -447,6 +451,22 @@ class Bot {
         playerData.weaponData = getWeaponFromMeshName(playerData.primaryWeaponItem_.item_data.meshName);
         if (!this.players[playerData.id_]) {
             this.players[playerData.id_] = new GamePlayer(playerData.id_, playerData.team_, playerData);
+
+            const player = this.players[playerData.id_];
+
+            if (player.playing) {
+                player.healthInterval = setInterval(() => {
+                    if (player.hp < 1) { return; }
+
+                    const regenSpeed = 0.1 * (this.game.isPrivate ? this.game.options.healthRegen : 1);
+
+                    if (player.streakRewards.includes(ShellStreak.OverHeal)) {
+                        player.hp = Math.max(100, player.hp - regenSpeed);
+                    } else {
+                        player.hp = Math.min(100, player.hp + regenSpeed);
+                    }
+                }, 33);
+            }
         }
 
         if (this.me.id == playerData.id_) {
@@ -486,6 +506,22 @@ class Bot {
             player.position = { x: x, y: y, z: z };
             // console.log(`Player ${player.name} respawned at ${x}, ${y}, ${z}`);
             this._hooks.respawn.forEach((fn) => this._liveCallbacks.push(fn.apply(this, [this, player])));
+
+            if (player.healthInterval) {
+                clearInterval(player.healthInterval);
+            }
+
+            player.healthInterval = setInterval(() => {
+                if (player.hp < 1) { return; }
+
+                const regenSpeed = 0.1 * (this.game.isPrivate ? this.game.options[GameOptionFlags.healthRegen] : 1);
+
+                if (player.streakRewards.includes(ShellStreak.OverHeal)) {
+                    player.hp = Math.max(100, player.hp - regenSpeed);
+                } else {
+                    player.hp = Math.min(100, player.hp + regenSpeed);
+                }
+            }, 33);
         } else {
             // console.log(`Player ${id} not found. (me: ${this.me.id}) (respawn)`);
         }
@@ -700,14 +736,22 @@ class Bot {
                 player.streakRewards.push(ShellStreak.EggBreaker);
                 break;
 
-            case ShellStreak.Restock:
-                // TODO: player.weaponData is it implemented?
+            case ShellStreak.Restock: {
+                player.grenades = 3;
+
+                // main weapon
+                player.weapons[0].ammo.rounds = player.weaponData.ammo.capacity;
+                player.weapons[0].ammo.store = player.weaponData.ammo.store;
+
+                // secondary, always cluck9mm
+                player.weapons[1].ammo.rounds = cluck9mm.ammo.capacity;
+                player.weapons[1].ammo.store = cluck9mm.ammo.store;
                 break;
+            }
 
             case ShellStreak.OverHeal:
                 player.hp = Math.min(200, player.hp + 100);
                 player.streakRewards.push(ShellStreak.OverHeal);
-                // TODO: figure otu how overheal counts down
                 break;
 
             case ShellStreak.DoubleEggs:
@@ -814,6 +858,17 @@ class Bot {
         }, this.pingInterval);
     }
 
+    #processSwitchTeamPacket() {
+        const id = CommIn.unPackInt8U();
+        const toTeam = CommIn.unPackInt8U();
+        const player = this.players[id];
+
+        if (!player) { return; }
+
+        player.team = toTeam;
+        player.kills = 0;        
+    }
+
     handlePacket(packet) {
         CommIn.init(packet);
         this._hooks.packet.forEach((fn) => this._liveCallbacks.push(fn.apply(this, [this, packet])));
@@ -897,6 +952,10 @@ class Bot {
 
             case CommCode.ping:
                 this.#processPingPacket(packet);
+                break;
+
+            case CommCode.switchTeam:
+                this.#processSwitchTeamPacket(packet);
                 break;
 
             case CommCode.reload:
