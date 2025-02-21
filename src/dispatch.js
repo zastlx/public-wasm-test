@@ -6,6 +6,7 @@ import ReloadDispatch from './dispatches/ReloadDispatch.js';
 import ReportPlayerDispatch from './dispatches/ReportPlayerDispatch.js';
 import SpawnDispatch from './dispatches/SpawnDispatch.js';
 import SwapWeaponDispatch from './dispatches/SwapWeaponDispatch.js';
+import SwitchTeamDispatch from './dispatches/SwitchTeamDispatch.js';
 
 export {
     ChatDispatch,
@@ -15,7 +16,8 @@ export {
     ReloadDispatch,
     ReportPlayerDispatch,
     SpawnDispatch,
-    SwapWeaponDispatch
+    SwapWeaponDispatch,
+    SwitchTeamDispatch
 }
 
 export default {
@@ -26,5 +28,6 @@ export default {
     ReloadDispatch,
     ReportPlayerDispatch,
     SpawnDispatch,
-    SwapWeaponDispatch
+    SwapWeaponDispatch,
+    SwitchTeamDispatch
 }

@@ -54,3 +54,8 @@ export const Move = {
     MELEE: 64, // useless
     SCOPE: 128
 }
+
+export const TEAM = {
+    blue: 1,
+    red: 2
+};

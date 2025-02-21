@@ -216,7 +216,6 @@ class Player {
 
         switch (cmd) {
             case CommCode.socketReady:
-
                 out = CommOut.getBuffer();
                 out.packInt8(CommCode.joinGame);
 
@@ -231,10 +230,9 @@ class Player {
                 out.packString(this.loginData.sessionId); // session id
 
                 out.send(this.gameSocket);
-
                 break;
-            case CommCode.gameJoined:
 
+            case CommCode.gameJoined:
                 this.state.me.id = CommIn.unPackInt8U();
                 // console.log("My id is:", this.state.me.id);
                 this.state.me.team = CommIn.unPackInt8U();
@@ -255,14 +253,15 @@ class Player {
                 // console.log('Successfully joined game.');
                 this.state.joinedGame = true;
                 this.state.lastDeathTime = Date.now();
-
                 break;
+
             case CommCode.eventModifier:
                 // console.log("Echoed eventModifier"); // why the fuck do you need to do this
                 out = CommOut.getBuffer();
                 out.packInt8(CommCode.eventModifier);
                 out.send(this.gameSocket);
                 break;
+
             default:
                 try {
                     console.log('Received but did not handle a:', Object.entries(CommCode).filter(([, v]) => v == cmd)[0][0], cmd);
@@ -272,10 +271,9 @@ class Player {
                 console.log('!!! This message means the startup sequence received an unexpected packet.');
                 console.log('!!! Try refreshing comm codes. If you still see this error, contact hijinks');
                 throw new Error('Unexpected packet received during startup: ' + cmd);
-
         }
-
     }
+
     async join(code) {
         await this.matchmaker(code);
 
@@ -320,6 +318,7 @@ class Player {
             setInterval(() => this.update(), this.updateInterval);
         }
     }
+
     update() {
         if (!this.state.joinedGame) { throw new Error('Not playing, can\'t update. '); }
 
@@ -354,6 +353,7 @@ class Player {
         while ((cb = this._liveCallbacks.shift()) !== undefined) { cb(); }
 
     }
+
     #processChatPacket() {
         const id = CommIn.unPackInt8U();
         const msgFlags = CommIn.unPackInt8U();
@@ -363,6 +363,7 @@ class Player {
         // console.log(`Their position: ${player.state.position.x}, ${player.state.position.y}, ${player.state.position.z}`);
         this._hooks.chat.forEach((fn) => this._liveCallbacks.push(fn.apply(this, [this, player, text, msgFlags])));
     }
+
     #processAddPlayerPacket() {
         const id_ = CommIn.unPackInt8U();
         const uniqueId = CommIn.unPackString();
@@ -466,6 +467,7 @@ class Player {
             // console.log(`Player ${id} not found. (me: ${this.state.me.id}) (respawn)`);
         }
     }
+
     #processExternalSyncPacket() {
         const id = CommIn.unPackInt8U();
         const x = CommIn.unPackFloat();
@@ -504,6 +506,7 @@ class Player {
         player.state.climbing = climbing;
         // console.log(`Player ${player.name} is now at ${x}, ${y}, ${z} (climbing = ${climbing})`);
     }
+
     #processPausePacket() {
         const id = CommIn.unPackInt8U();
         const player = this.state.players[id];
@@ -513,6 +516,7 @@ class Player {
             this._hooks.pause.forEach((fn) => this._liveCallbacks.push(fn.apply(this, [this, player])));
         }
     }
+
     #processSwapWeaponPacket() {
         const id = CommIn.unPackInt8U();
         const weaponIdx = CommIn.unPackInt8U();
@@ -522,6 +526,7 @@ class Player {
             player.state.weapon = weaponIdx;
         }
     }
+
     #processDeathPacket() {
         const killedId = CommIn.unPackInt8U();
         const byId = CommIn.unPackInt8U();
@@ -597,7 +602,7 @@ class Player {
 
         if (player.id == this.state.me.id) {
             this.state.serverStateIdx = serverStateIdx;
-        
+
             const x = CommIn.unPackFloat();
             const y = CommIn.unPackFloat();
             const z = CommIn.unPackFloat();
@@ -667,6 +672,7 @@ class Player {
                 break;
         }
     }
+
     on(event, cb) {
         if (Object.keys(this._hooks).includes(event)) {
             this._hooks[event].push(cb);
@@ -674,7 +680,6 @@ class Player {
             throw new Error(`Event ${event} is not a valid hook (valid: ${Object.keys(this._hooks)})`);
         }
     }
-
 }
 
 export default {

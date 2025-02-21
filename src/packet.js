@@ -61,11 +61,16 @@ function ReportPacket(userId, reasonInt) {
     ]);
 }
 
+function TeamSwitchingTraitorPacket() {
+    return new Packet(CommCode.switchTeam);
+}
+
 export default {
     Packet,
     ChatPacket,
     MeleePacket,
     ReportPacket,
     RespawnPacket,
-    SwapWeaponPacket
+    SwapWeaponPacket,
+    TeamSwitchingTraitorPacket
 }
