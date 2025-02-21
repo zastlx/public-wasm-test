@@ -13,6 +13,7 @@ import {
     CoopStagesById,
     CoopStates,
     findItemById,
+    GameActions,
     GameModesById,
     GameOptionFlags,
     getWeaponFromMeshName,
@@ -760,18 +761,33 @@ class Bot {
         return false;
     }
 
-    /*
-    options: {
-                isLocked: false,
-                noManualTeamChange: false,
-                noAutoTeamChange: false,
-                // array of weapons from eggk to trihard
-                // false = alloed to use
-                // true = cannot use
-                weaponsDisabled: Array(7).fill(false),
-                mustUseSecondary: false // if weaponsDisabled is ALL true
-            },
-            */
+    #processGameActionPacket() {
+        const action = CommIn.unPackInt8U();
+
+        if (action == GameActions.pause) {
+            console.log('settings changed, gameOwner changed game settings, force paused');
+            this.me.playing = false;
+        }
+
+        if (action == GameActions.reset) {
+            console.log('owner reset game');
+
+            this.me.kills = 0;
+            this.game.teamScore = [0, 0, 0];
+
+            this.game.spatula.controlledBy = 0;
+            this.game.spatula.controlledByTeam = 0;
+            this.game.spatula.coords = { x: 0, y: 0, z: 0 };
+
+            this.game.stage = CoopStates.capturing;
+            this.game.activeZone = 0;
+            this.game.capturing = 0;
+            this.game.captureProgress = 0;
+            this.game.numCapturing = 0;
+            this.game.stageName = CoopStagesById[CoopStates.capturing];
+            this.game.capturePercent = 0.0;
+        }
+    }
 
     handlePacket(packet) {
         CommIn.init(packet);
@@ -848,6 +864,10 @@ class Bot {
 
             case CommCode.gameOptions:
                 this.#processGameOptionsPacket(packet);
+                break;
+
+            case CommCode.gameAction:
+                this.#processGameActionPacket(packet);
                 break;
 
             case CommCode.reload:

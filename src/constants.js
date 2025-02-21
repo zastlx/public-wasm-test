@@ -92,3 +92,8 @@ export const GameOptionFlags = {
     noTeamChange: 2,
     noTeamShuffle: 4
 }
+
+export const GameActions = {
+    reset: 1,
+    pause: 2
+};
