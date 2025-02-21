@@ -1,18 +1,18 @@
 import packet from '#packet';
 
 export default class SpawnDispatch {
-    check(player) {
-        if (!player.state.playing) {
-            if (player.lastDeathTime + 6000 < Date.now()) { return true; }
-        }
+    check(bot) {
+        if (!bot.me.playing && (bot.lastDeathTime + 6000) < Date.now()) { return true; }
 
         // console.log("Dispatch failed: < 6s since last spawn");
 
         return false;
     }
-    execute(player) {
-        new packet.RespawnPacket().execute(player.gameSocket);
-        player.lastSpawnedTime = Date.now();
-        player.state.playing = true;
+
+    execute(bot) {
+        new packet.RespawnPacket().execute(bot.gameSocket);
+
+        bot.lastSpawnedTime = Date.now();
+        bot.me.playing = true;
     }
 }

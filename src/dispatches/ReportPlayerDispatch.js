@@ -25,20 +25,22 @@ export default class ReportPlayerDispatch {
             }
         }
     }
-    check(player) {
-        return !!player.game
+
+    check(bot) {
+        return bot.state.joinedGame;
     }
-    execute(player) {
+
+    execute(bot) {
         let target;
 
         if (this.id !== 'undefined') {
-            target = player.state.players[this.id.toString()];
+            target = bot.players[this.id.toString()];
         } else if (this.name !== 'undefined') {
-            target = player.state.players.find(player => player.name == this.name);
+            target = bot.players.find(player => player.name == this.name);
         }
 
         if (!target) { throw new Error('target player for ReportPlayerDispatch not found') }
 
-        new packet.ReportPacket(target, this.reasonInt).execute(player.gameSocket);
+        new packet.ReportPacket(target, this.reasonInt).execute(bot.gameSocket);
     }
 }

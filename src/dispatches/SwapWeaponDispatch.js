@@ -1,11 +1,12 @@
 import packet from '#packet';
 
 export default class SwapWeaponDispatch {
-    check(player) {
-        return player.state.playing && !player.state.reloading;
+    check(bot) {
+        return bot.me.playing && !bot.state.reloading && !bot.state.swappingGun && !bot.state.usingMelee;
     }
-    execute(player) {
-        player.state.weapon = +!player.state.weapon;
-        new packet.SwapWeaponPacket(player).execute(player.gameSocket);
+
+    execute(bot) {
+        bot.me.weapon = +!bot.me.weapon;
+        new packet.SwapWeaponPacket(bot.me.weapon).execute(bot.gameSocket);
     }
 }

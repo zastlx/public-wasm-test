@@ -48,9 +48,9 @@ function ChatPacket(msg) {
     ]);
 }
 
-function SwapWeaponPacket(player) {
+function SwapWeaponPacket(weaponId) {
     return new Packet(CommCode.swapWeapon, [
-        { type: 'int8', val: player.state.weapon }
+        { type: 'int8', val: weaponId }
     ]);
 }
 

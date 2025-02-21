@@ -4,12 +4,14 @@ export default class ChatDispatch {
     constructor(msg) {
         this.msg = msg;
     }
-    check(player) {
-        return (player.state.joinedGame && (player.lastChatTime + 3000) < Date.now());
+
+    check(bot) {
+        return (bot.state.joinedGame && (bot.lastChatTime + 3000) < Date.now());
     }
-    execute(player) {
+
+    execute(bot) {
         console.log('Sending chat message:', this.msg);
-        new packet.ChatPacket(this.msg).execute(player.gameSocket);
-        player.lastChatTime = Date.now();
+        new packet.ChatPacket(this.msg).execute(bot.gameSocket);
+        bot.lastChatTime = Date.now();
     }
 }

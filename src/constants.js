@@ -23,7 +23,7 @@ const MeshPartMappings = {
 
 export const getWeaponFromMeshName = (meshName) => {
     const mainPart = meshName.split('_')[1];
-    return MeshPartMappings[mainPart];
+    return new MeshPartMappings[mainPart]();
 }
 
 export const GameModes = {
@@ -81,3 +81,8 @@ export const ShellStreak = {
     DoubleEggs: 16,
     MiniEgg: 32
 };
+
+export const CollectTypes = {
+    AMMO: 0,
+    GRENADE: 1
+}

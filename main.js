@@ -1,9 +1,9 @@
 import fs from 'fs';
-
 import path from 'path';
+
+import Bot from '#bot';
 import dispatch from '#dispatch';
 import manager from '#manager';
-import player from '#player';
 
 import Matchmaker from './src/matchmaker.js';
 
@@ -33,22 +33,24 @@ if (emails.length == 0 || passwords.length == 0) {
 
 const NUM_PLAYERS = 1;
 
-for (let i = 0; i < NUM_PLAYERS; i++) { playerList.push(new player.Player({ name: process.argv[3] || 'spammer', updateInterval: 1 })); }
+for (let i = 0; i < NUM_PLAYERS; i++) { playerList.push(new Bot({ name: process.argv[3] || 'spammer', updateInterval: 1 })); }
 
 const man = new manager.Manager(playerList);
 
-man.on('chat', (me, _player, msg) => {
-    if (msg == 'spawn') { me.dispatch(new dispatch.SpawnDispatch()); }
+man.on('chat', (bot, _player, msg) => {
+    if (msg == 'spawn') {
+        bot.dispatch(new dispatch.SpawnDispatch());
+    }
 });
 
-man.on('respawn', (me, p) => {
-    if (me.name == p.name) {
-        me.dispatch(new dispatch.SpawnDispatch());
+man.on('respawn', (bot, p) => {
+    if (bot.me.name == p.name) {
+        bot.dispatch(new dispatch.SpawnDispatch());
         console.log('respawned');
     }
 });
 
-man.on('join', (_me, player) => {
+man.on('join', (_bot, player) => {
     console.log(player.name, 'joined.');
 });
 

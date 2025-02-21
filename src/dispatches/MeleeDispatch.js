@@ -1,21 +1,24 @@
 import packet from '#packet';
 
 export default class MeleeDispatch {
-    check(player) {
-        return player.state.playing && !player.state.reloading && !player.state.swappingGun && !player.state.usingMelee
+    check(bot) {
+        return bot.me.playing && !bot.state.reloading && !bot.state.swappingGun && !bot.state.usingMelee;
     }
-    execute(player) {
-        new packet.MeleePacket().execute(player.gameSocket);
-        player.usingMelee = true;
+
+    execute(bot) {
+        new packet.MeleePacket().execute(bot.gameSocket);
+        bot.usingMelee = true;
+
         // gameloop every 33.33 (repeating) ms, 17 ticks, so 566.61 is the closest you get
         setTimeout(() => {
-            player.usingMelee = false
             // new ChatDispatch('end melee, start swap gun').execute(player);
-            player.swappingGun = true
+            bot.usingMelee = false
+            bot.swappingGun = true
+
             setTimeout(() => {
-                player.swappingGun = false
                 // new ChatDispatch('end swap gun').execute(player);
-            }, 0.5 * player.state.weaponData.equipTime)
+                bot.swappingGun = false
+            }, 0.5 * bot.me.weaponData.equipTime)
         }, 566.61);
     }
 }

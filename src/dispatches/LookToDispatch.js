@@ -1,15 +1,15 @@
-export default class LookAtDispatch {
+export default class LookToDispatch {
     constructor(yaw, pitch) {
         this.yaw = yaw;
         this.pitch = pitch;
     }
 
-    check(player) {
-        return player.state.playing;
+    check(bot) {
+        return bot.me.playing;
     }
 
-    execute(player) {
-        if (this.yaw) { player.state.view.yaw = this.yaw; }
-        if (this.pitch) { player.state.view.pitch = this.pitch; }
+    execute(bot) {
+        if (this.yaw) { bot.me.view.yaw = this.yaw; }
+        if (this.pitch) { bot.me.view.pitch = this.pitch; }
     }
 }
