@@ -9,5 +9,8 @@ bun.lock
 yarn.lock
 package-lock.json
 
+# Protected
+.env
+
 # Mac Cache
 .DS_Store
