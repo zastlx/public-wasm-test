@@ -2,9 +2,11 @@ export default class GamePlayer {
     constructor(id, team, playerData) {
         this.id = id;
         this.team = team;
-        this.name = playerData.name_;
 
         this.data = playerData;
+
+        this.name = playerData.name_;
+        this.uniqueId = playerData.uniqueId_;
 
         this.joinedGame = true;
         this.playing = playerData.playing_;

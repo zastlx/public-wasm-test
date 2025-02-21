@@ -6,6 +6,7 @@ import { loginAnonymously, loginWithCredentials } from '#api';
 import { CommIn, CommOut, StatsArr, updatePacketConstants } from '#comm';
 
 import GamePlayer from './bot/GamePlayer.js';
+import Matchmaker from './matchmaker.js';
 
 import {
     CollectTypes,
@@ -13,10 +14,12 @@ import {
     CoopStates,
     findItemById,
     GameActions,
+    GameModes,
     GameModesById,
     GameOptionFlags,
     getWeaponFromMeshName,
     Maps,
+    PlayTypes,
     ShellStreak,
     USER_AGENT
 } from '#constants';
@@ -140,7 +143,6 @@ class Bot {
         this._packetQueue = [];
 
         this.gameSocket = null;
-        this.matchmakerSocket = null;
 
         this.ping = 0;
         this.lastPingTime = -1;
@@ -181,50 +183,50 @@ class Bot {
         }
     }
 
-    async matchmaker(code) {
+    async #initMatchmaker() {
         if (!this.state.loggedIn) {
             console.log('Not logged in, attempting to create anonymous user...');
             this.loginData = await loginAnonymously(this.proxy ? this.proxy : '');
         }
 
-        this.matchmakerSocket = new WebSocket('wss://shellshock.io/matchmaker/', {
-            headers: {
-                'user-agent': USER_AGENT,
-                'accept-language': 'en-US,en;q=0.9'
-            },
-            agent: this.proxy ? new SocksProxyAgent(this.proxy) : null
-        });
-
-        this.matchmakerSocket.onopen = () => {
-            this.matchmakerSocket.send(JSON.stringify({
-                command: 'joinGame',
-                id: code,
-                observe: false,
-                sessionId: this.loginData.sessionId
-            }))
+        if (!this.matchmaker) {
+            console.log('No matchmaker, creating instance')
+            this.matchmaker = new Matchmaker(this.loginData.sessionId, this.proxy);
+            await this.matchmaker.getRegions();
         }
+    }
 
-        this.matchmakerSocket.onmessage = (msg) => {
-            let mes;
+    async #joinGameWithCode(code) {
+        await this.#initMatchmaker();
 
-            try {
-                mes = JSON.parse(msg.data);
-            } catch {
-                console.log('Error parsing message:', msg.data);
-            }
-
+        const listener = (mes) => {
             if (mes.command == 'gameFound') {
                 this.game.raw = mes;
+                this.game.code = code;
                 delete this.game.raw.command; // pissed me off
-                this.game.code = code.toUpperCase();
+
                 this.gameFound = true;
-            } else { console.log(mes); }
+            } else {
+                console.log(mes);
+            }
 
-            if (mes.error && mes.error == 'gameNotFound') { throw new Error(`Game ${code} not found (likely expired).`) }
+            if (mes.error && mes.error == 'gameNotFound') {
+                throw new Error(`Game ${code} not found (likely expired).`)
+            }
+        };
 
-        }
+        this.matchmaker.on('msg', listener);
+
+        this.matchmaker.send({
+            command: 'joinGame',
+            id: code,
+            observe: false,
+            sessionId: this.loginData.sessionId
+        })
 
         while (!this.gameFound) { await new Promise(r => setTimeout(r, 10)); }
+
+        this.matchmaker.off('msg', listener);
     }
 
     #onGameMesssage(msg) { // to minify with vscode
@@ -281,6 +283,26 @@ class Bot {
                 out.send(this.gameSocket);
                 break;
 
+            case CommCode.requestGameOptions: {
+                out = CommOut.getBuffer();
+                out.packInt8(CommCode.gameOptions);
+                out.packInt8(this.game.options.gravity * 4);
+                out.packInt8(this.game.options.damage * 4);
+                out.packInt8(this.game.options.healthRegen * 4);
+
+                const flags =
+                    (this.game.options.locked ? 1 : 0) |
+                    (this.game.options.noTeamChange ? 2 : 0) |
+                    (this.game.options.noTeamShuffle ? 4 : 0);
+
+                out.packInt8(flags);
+
+                this.game.options.weaponsDisabled.forEach((v) => {
+                    out.packInt8(v ? 1 : 0);
+                });
+                break;
+            }
+
             default:
                 try {
                     console.log('Received but did not handle a:', Object.entries(CommCode).filter(([, v]) => v == cmd)[0][0], cmd);
@@ -293,10 +315,74 @@ class Bot {
         }
     }
 
-    async join(code) {
-        await this.matchmaker(code);
+    // region - a region id ('useast', 'germany', etc)
+    // mode - a mode name that corresponds to a GameMode id
+    // map - the name of a map
+    async createPrivateGame(opts = {}) {
+        await this.#initMatchmaker();
 
-        console.log(`Joining ${code} using proxy ${this.proxy || 'none'}`);
+        if (!opts.region) { throw new Error('pass a region: createPrivateGame({ region: "useast", ... })') }
+        if (!this.matchmaker.regionList.find(r => r.id == opts.region)) {
+            throw new Error('invalid region, see <bot>.matchmaker.regionList for a region list (pass an "id")')
+        }
+
+        if (!opts.mode) { throw new Error('pass a mode: createPrivateGame({ mode: "ffa", ... })') }
+        if (GameModes[opts.mode] == undefined) { throw new Error('invalid mode, see GameModes for a list') }
+
+        if (!opts.map) { throw new Error('pass a map: createPrivateGame({ map: "downfall", ... })') }
+
+        const map = Maps.find(m => m.name.toLowerCase() == opts.map.toLowerCase());
+        const mapIdx = Maps.indexOf(map);
+
+        if (mapIdx == -1) { throw new Error('invalid map, see the Maps constant for a list') }
+
+        const listener = (msg) => {
+            if (msg.command == 'gameFound') {
+                this.game.raw = msg;
+                this.game.code = this.game.raw.id;
+                delete this.game.raw.command;
+
+                this.gameFound = true;
+            }
+        };
+
+        this.matchmaker.on('msg', listener);
+
+        this.matchmaker.send({
+            command: 'findGame',
+            region: opts.region,
+            playType: PlayTypes.createPrivate,
+            gameType: GameModes[opts.mode],
+            sessionId: this.loginData.sessionId,
+            noobLobby: false,
+            map: mapIdx
+        });
+
+        while (!this.gameFound) { await new Promise(r => setTimeout(r, 10)); }
+
+        this.matchmaker.off('msg', listener);
+
+        return this.game.raw;
+    }
+
+    async join(data) {
+        if (typeof data == 'string') {
+            // this is a string code that we can pass and get the needed info from
+            await this.#joinGameWithCode(data);
+        } else if (typeof data == 'object') {
+            if (!this.state.loggedIn) {
+                console.log('passed an object but you still need to be logged in!!')
+                this.loginData = await loginAnonymously(this.proxy ? this.proxy : '');
+            }
+            // this is a game object that we can pass and get the needed info from
+            this.game.raw = data;
+            this.game.code = this.game.raw.id;
+            delete this.game.raw.command;
+
+            this.gameFound = true;
+        }
+
+        console.log(`Joining ${this.game.raw.id} using proxy ${this.proxy || 'none'}`);
 
         this.gameSocket = new WebSocket(`wss://${this.game.raw.subdomain}.shellshock.io/game/${this.game.raw.id}`, {
             headers: {
@@ -328,9 +414,7 @@ class Bot {
             this._packetQueue.push(msg.data);
         }
 
-        this.game.code = code;
-
-        console.log(`Successfully joined ${code}. Startup to join time: ${Date.now() - this.initTime} ms`);
+        console.log(`Successfully joined ${this.game.code}. Startup to join time: ${Date.now() - this.initTime} ms`);
 
         if (this.autoUpdate) {
             console.log('autoUpdate enabled...');
@@ -866,7 +950,7 @@ class Bot {
         if (!player) { return; }
 
         player.team = toTeam;
-        player.kills = 0;        
+        player.kills = 0;
     }
 
     handlePacket(packet) {

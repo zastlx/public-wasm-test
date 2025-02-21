@@ -1,4 +1,6 @@
+import BootPlayerDispatch from './dispatches/BootPlayerDispatch.js';
 import ChatDispatch from './dispatches/ChatDispatch.js';
+import GameOptionsDispatch from './dispatches/GameOptionsDispatch.js';
 import LookAtDispatch from './dispatches/LookAtDispatch.js';
 import LookToDispatch from './dispatches/LookToDispatch.js';
 import MeleeDispatch from './dispatches/MeleeDispatch.js';
@@ -10,7 +12,9 @@ import SwapWeaponDispatch from './dispatches/SwapWeaponDispatch.js';
 import SwitchTeamDispatch from './dispatches/SwitchTeamDispatch.js';
 
 export {
+    BootPlayerDispatch,
     ChatDispatch,
+    GameOptionsDispatch,
     LookAtDispatch,
     LookToDispatch,
     MeleeDispatch,
@@ -23,7 +27,9 @@ export {
 }
 
 export default {
+    BootPlayerDispatch,
     ChatDispatch,
+    GameOptionsDispatch,
     LookAtDispatch,
     LookToDispatch,
     MeleeDispatch,
