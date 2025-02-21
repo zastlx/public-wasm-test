@@ -1,18 +1,9 @@
 import WebSocket from 'ws';
 
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/auth';
-
 import { SocksProxyAgent } from 'socks-proxy-agent';
+import { USER_AGENT } from '#constants';
 
-firebase.initializeApp({
-    'apiKey': 'AIzaSyDP4SIjKaw6A4c-zvfYxICpbEjn1rRnN50',
-    'authDomain': 'shellshockio-181719.firebaseapp.com',
-    'databaseURL': 'https://shellshockio-181719.firebaseio.com',
-    'projectId': 'shellshockio-181719',
-    'storageBucket': 'shellshockio-181719.appspot.com',
-    'messagingSenderId': '68327206324'
-});
+const firebaseKey = 'AIzaSyDP4SIjKaw6A4c-zvfYxICpbEjn1rRnN50';
 
 async function fetchConstantsRaw() {
     const resp = await fetch('https://raw.githubusercontent.com/StateFarmNetwork/client-keys/refs/heads/main/constants_latest.json');
@@ -89,13 +80,25 @@ async function login(email, password, prox = '') {
     */
 
     let SUCCESS = false;
-    let user, token;
+    let request, body, token;
     let k = 0;
 
     while (!SUCCESS) {
         try {
-            user = await firebase.auth().signInWithEmailAndPassword(email, password);
-            token = await user.user.getIdToken();
+            request = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=' + firebaseKey, {
+                method: 'POST',
+                body: JSON.stringify({
+                    email: email,
+                    password: password,
+                    returnSecureToken: true
+                }),
+                headers: {
+                    'user-agent': USER_AGENT,
+                    'x-client-version': 'Chrome/JsCore/9.17.2/FirebaseCore-web'
+                }
+            })
+            body = await request.json();
+            token = body.idToken;
             SUCCESS = true;
         } catch (error) {
             ++k;
@@ -125,8 +128,16 @@ async function login(email, password, prox = '') {
 }
 
 async function anonymous(prox = '') {
-    const user = await firebase.auth().signInAnonymously();
-    const token = await user.user.getIdToken();
+    const request = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=' + firebaseKey, {
+        method: 'POST',
+        body: JSON.stringify({ returnSecureToken: true }),
+        headers: {
+            'user-agent': USER_AGENT,
+            'x-client-version': 'Chrome/JsCore/9.17.2/FirebaseCore-web'
+        }
+    })
+    const body = await request.json();
+    const token = body.idToken;
     const response = await queryAPI({
         cmd: 'auth',
         firebaseToken: token
