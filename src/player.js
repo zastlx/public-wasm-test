@@ -6,7 +6,7 @@ import api from '#api';
 
 import comm, { CommIn, CommOut, updatePacketConstants } from '#comm';
 
-import { findItemById, GameModesById, getWeaponFromMeshName, Maps, USER_AGENT } from './constants.js';
+import { CoopStates, findItemById, GameModesById, getWeaponFromMeshName, Maps, USER_AGENT } from './constants.js';
 
 const consts = await updatePacketConstants();
 const CommCode = consts[0];
@@ -117,8 +117,47 @@ class Player {
         };
 
         this.game = {
-            raw: {}, // the stuff returned by the matchmaker
-            code: ''
+            raw: {}, // matchmaker response
+            state: {}, // metaGameState
+            code: '',
+
+            // data given on sign in
+            gameModeId: 0, // assume ffa
+            gameMode: GameModesById[0], // assume ffa
+            mapIdx: 0,
+            map: {
+                filename: '',
+                hash: '',
+                name: '',
+                modes: {
+                    FFA: false,
+                    Teams: false,
+                    Spatula: false,
+                    King: false
+                },
+                availability: 'both',
+                numPlayers: '18'
+            },
+            playerLimit: 0,
+            isGameOwner: false,
+            isPrivate: true,
+
+            // data from metaGame
+            teamScore: [0, 0, 0], // [0, blue, red] - no clue what 1st index is for
+
+            // data from spatula game
+            spatula: {
+                coords: { x: 0, y: 0, z: 0 },
+                controlledBy: 0,
+                controlledByTeam: 0
+            },
+
+            // data from kotc
+            stage: CoopStates.capturing,
+            activeZone: 0,
+            capturing: 0,
+            captureProgress: 0,
+            numCapturing: 0
         }
 
         this.loginData = null;
@@ -587,10 +626,6 @@ class Player {
         player.state.hp = hp;
     }
 
-    #processReloadPacket() {
-        return;
-    }
-
     #processSyncMePacket() {
         const id = CommIn.unPackInt8U();
         const player = this.state.players[id];
@@ -612,6 +647,49 @@ class Player {
             this.state.position.z = z;
         }
         return;
+    }
+
+    #processEventModifierPacket() {
+        const out = CommOut.getBuffer();
+        out.packInt8(CommCode.eventModifier);
+        out.send(this.gameSocket);
+    }
+
+    #processRemovePlayerPacket() {
+        const id = CommIn.unPackInt8U();
+        delete this.state.players[id.toString()];
+    }
+
+    #processGameStatePacket() {
+        if (this.game.gameModeId == 2) { // spatula
+            this.game.state.teamScore[1] = CommIn.unPackInt16U();
+            this.game.state.teamScore[2] = CommIn.unPackInt16U();
+
+            const spatulaCoords = {
+                x: CommIn.unPackFloat(),
+                y: CommIn.unPackFloat(),
+                z: CommIn.unPackFloat()
+            };
+
+            const controlledBy = CommIn.unPackInt8U();
+            const controlledByTeam = CommIn.unPackInt8U();
+
+            this.game.state.spatula = {
+                coords: spatulaCoords,
+                controlledBy: controlledBy,
+                controlledByTeam: controlledByTeam
+            };
+        } else if (this.game.gameModeId == 3) { // kotc
+            this.game.state.stage = CommIn.unPackInt8U(); // constants.CoopStates
+            this.game.state.activeZone = CommIn.unPackInt8U(); // a number to represent which 'active zone' kotc is using
+            this.game.state.capturing = CommIn.unPackInt8U(); // the team capturing, named "teams" in shell src
+            this.game.state.captureProgress = CommIn.unPackInt16U(); // progress of the coop capture
+            this.game.state.numCapturing = CommIn.unPackInt8U(); // number of players capturing
+            this.game.state.teamScore[1] = CommIn.unPackInt8U(); // team 1 (blue) score
+            this.game.state.teamScore[2] = CommIn.unPackInt8U(); // team 2 (red) score
+        }
+
+        console.log(this.game);
     }
 
     handlePacket(packet) {
@@ -659,12 +737,28 @@ class Player {
                 this.#processHitThemPacket(packet);
                 break;
 
-            case CommCode.reload:
-                this.#processReloadPacket(packet);
-                break;
-
             case CommCode.syncMe:
                 this.#processSyncMePacket(packet);
+                break;
+
+            case CommCode.eventModifier:
+                this.#processEventModifierPacket(packet);
+                break;
+
+            case CommCode.removePlayer:
+                this.#processRemovePlayerPacket(packet);
+                break;
+
+            case CommCode.metaGameState:
+                this.#processGameStatePacket(packet);
+                break;
+
+            case CommCode.reload:
+            case CommCode.spawnItem:
+            case CommCode.explode:
+            case CommCode.melee:
+            case CommCode.throwGrenade:
+                // do nothing
                 break;
 
             default:

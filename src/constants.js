@@ -59,3 +59,14 @@ export const TEAM = {
     blue: 1,
     red: 2
 };
+
+export const CoopStates = {
+    start: 0,
+    score: 1,
+    win: 2,
+    capturing: 3,
+    contested: 4,
+    takeover: 5,
+    abandoned: 6,
+    unclaimed: 7
+};
