@@ -54,10 +54,18 @@ function SwapWeaponPacket(player) {
     ]);
 }
 
+function ReportPacket(userId, reasonInt) {
+    return new Packet(CommCode.reportPlayer, [
+        { type: 'string', val: userId },
+        { type: 'int8', val: reasonInt }
+    ]);
+}
+
 export default {
     Packet,
     ChatPacket,
     MeleePacket,
+    ReportPacket,
     RespawnPacket,
     SwapWeaponPacket
 }

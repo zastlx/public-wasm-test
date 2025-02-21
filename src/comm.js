@@ -300,15 +300,7 @@ export const StatsArr = [
     'kotcWins'
 ];
 
-export const ReportReasons = {
-    'report_reason_cheating': 1,
-    'report_reason_harassment': 2,
-    'report_reason_offensive': 4,
-    'report_reason_other': 8
-}
-
 export default {
-    ReportReasons,
     Pool,
     CommIn,
     CommOut,
