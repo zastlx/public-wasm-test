@@ -1,5 +1,5 @@
 export default class MovementDispatch {
-    constructor(controlKeys) {  
+    constructor(controlKeys) {
         if (typeof controlKeys == typeof 0) {
             this.controlKeys = controlKeys;
         } else if (typeof controlKeys == typeof []) {
@@ -7,11 +7,12 @@ export default class MovementDispatch {
         }
 
     }
-    check(player) {
-        return player.state.playing;
 
+    check(bot) {
+        return bot.me.playing;
     }
-    execute(player) {
-        player.controlKeys = this.controlKeys;
+
+    execute(bot) {
+        bot.controlKeys = this.controlKeys;
     }
 }

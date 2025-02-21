@@ -2,67 +2,48 @@
 import { SocksProxyAgent } from 'socks-proxy-agent';
 import { WebSocket } from 'ws';
 
-import api from '#api';
+import { loginAnonymously, loginWithCredentials } from '#api';
+import { CommIn, CommOut, StatsArr, updatePacketConstants } from '#comm';
 
-import comm, { CommIn, CommOut, updatePacketConstants } from '#comm';
+import GamePlayer from './bot/GamePlayer.js';
 
-import { CoopStagesById, CoopStates, findItemById, GameModesById, getWeaponFromMeshName, Maps, USER_AGENT } from './constants.js';
+import {
+    CollectTypes,
+    CoopStagesById,
+    CoopStates,
+    findItemById,
+    GameActions,
+    GameModesById,
+    GameOptionFlags,
+    getWeaponFromMeshName,
+    Maps,
+    ShellStreak,
+    USER_AGENT
+} from '#constants';
+
+import { Cluck9mm } from '../data/guns.js';
+
+const cluck9mm = new Cluck9mm();
 
 const consts = await updatePacketConstants();
 const CommCode = consts[0];
 const CloseCode = consts[1];
 
-class InGamePlayer {
-    constructor(id, team, playerData) {
-        this.id = id;
-        this.team = team;
-
-        this.name = playerData.name_;
-
-        this.data = playerData;
-
-        this.state = {
-            joinedGame: true,
-            playing: false,
-            position: {
-                x: this.data.x_,
-                y: this.data.y_,
-                z: this.data.z_
-            },
-            jumping: false,
-            climbing: false,
-            view: {
-                yaw: this.data.yaw_,
-                pitch: this.data.pitch_
-            },
-            weapon: this.data.weaponIdx_,
-            weapons: [
-                { ammo: {} },
-                { ammo: {} }
-            ],
-            weaponData: this.data.weaponData,
-            buffer: {
-                0: {},
-                1: {},
-                2: {}
-            },
-            kills: 0,
-            hp: 100
-        }
-    }
-}
-
-class Player {
+class Bot {
+    // params.name - the bot name
+    // params.proxy - a socks(4|5) proxy
+    // params.doUpdate - whether to auto update
+    // params.updateInterval - the auto update interval
+    // params.doPing - whether to auto ping (for bot.<ping>)
+    // params.pingInterval - the ping interval
     constructor(params = {}) {
-        if (!params.name) { params.name = ''; }
-        if (!params.proxy) { params.proxy = ''; }
-        if (!params.doUpdate) { params.doUpdate = true; }
-
-        this.proxy = params.proxy;
-        this.useProxy = !!params.proxy;
-
+        this.proxy = params.proxy || '';
         this.name = params.name || Math.random().toString(36).substring(8);
-        this.autoUpdate = params.doUpdate;
+
+        this.autoPing = params.doPing || true;
+        this.autoUpdate = params.doUpdate || true;
+
+        this.pingInterval = params.pingInterval || 1000;
         this.updateInterval = params.updateInterval || 5;
 
         this._hooks = {
@@ -79,42 +60,19 @@ class Player {
 
         this._liveCallbacks = [];
 
+        // private information NOT FOR OTHER PLAYERS!!
         this.state = {
-            joinedGame: false,
             loggedIn: false,
-            playing: false,
             gameFound: false,
-            me: {},
-            players: {},
-            position: {
-                x: NaN,
-                y: NaN,
-                z: NaN
-            },
-            jumping: false,
-            climbing: false,
-            reloading: false, // TODO: test time values
+
+            // once we implement more packets these may be moved to "players"
+            reloading: false,
             swappingGun: false,
-            usingMelee: false,
-            view: {
-                yaw: 0.0,
-                pitch: 0.0
-            },
-            weapon: 0,
-            weapons: [
-                { ammo: {} },
-                { ammo: {} }
-            ],
-            weaponData: {},
-            grenades: 0,
-            buffer: {
-                0: {},
-                1: {},
-                2: {}
-            },
-            kills: 0,
-            hp: 100
-        };
+            usingMelee: false
+        }
+
+        this.players = {}
+        this.me = new GamePlayer(this.id, 0, {})
 
         this.game = {
             raw: {}, // matchmaker response
@@ -140,6 +98,21 @@ class Player {
             playerLimit: 0,
             isGameOwner: false,
             isPrivate: true,
+
+            // game options
+            options: {
+                gravity: 1,
+                damage: 1,
+                healthRegen: 1,
+                locked: false,
+                noTeamChange: false,
+                noTeamShuffle: false,
+                // array of weapons from eggk to trihard
+                // false = alloed to use
+                // true = cannot use
+                weaponsDisabled: Array(7).fill(false),
+                mustUseSecondary: false // if weaponsDisabled is ALL true
+            },
 
             // data from metaGame
             teamScore: [0, 0, 0], // [0, blue, red] - no clue what 1st index is for
@@ -169,27 +142,32 @@ class Player {
         this.gameSocket = null;
         this.matchmakerSocket = null;
 
+        this.ping = 0;
         this.lastPingTime = -1;
+
         this.lastDeathTime = -1;
         this.lastChatTime = -1;
-        this.nUpdates = 0;
+
         this.lastUpdateTime = -1;
+        this.nUpdates = 0;
 
         this.controlKeys = 0;
 
         this.initTime = Date.now();
-
     }
+
     async login(email, pass) {
         const time = Date.now()
         this.email = email; this.pass = pass;
-        this.loginData = await api.login(email, pass, this.proxy ? this.proxy : '');
+        this.loginData = await loginWithCredentials(email, pass, this.proxy ? this.proxy : '');
         this.state.loggedIn = true;
         console.log('Logged in successfully. Time:', Date.now() - time, 'ms');
     }
+
     dispatch(disp) {
         this._dispatches.push(disp);
     }
+
     drain() {
         for (let i = 0; i < this._dispatches.length; i++) {
             const disp = this._dispatches[i];
@@ -202,10 +180,11 @@ class Player {
             }
         }
     }
+
     async matchmaker(code) {
         if (!this.state.loggedIn) {
             console.log('Not logged in, attempting to create anonymous user...');
-            this.loginData = await api.anonymous(this.proxy ? this.proxy : '');
+            this.loginData = await loginAnonymously(this.proxy ? this.proxy : '');
         }
 
         this.matchmakerSocket = new WebSocket('wss://shellshock.io/matchmaker/', {
@@ -213,7 +192,7 @@ class Player {
                 'user-agent': USER_AGENT,
                 'accept-language': 'en-US,en;q=0.9'
             },
-            agent: this.useProxy ? new SocksProxyAgent(this.proxy) : null
+            agent: this.proxy ? new SocksProxyAgent(this.proxy) : null
         });
 
         this.matchmakerSocket.onopen = () => {
@@ -246,8 +225,8 @@ class Player {
         }
 
         while (!this.gameFound) { await new Promise(r => setTimeout(r, 10)); }
-
     }
+
     #onGameMesssage(msg) { // to minify with vscode
         CommIn.init(msg.data);
 
@@ -273,10 +252,10 @@ class Player {
                 break;
 
             case CommCode.gameJoined:
-                this.state.me.id = CommIn.unPackInt8U();
-                // console.log("My id is:", this.state.me.id);
-                this.state.me.team = CommIn.unPackInt8U();
-                // console.log("My team is:", this.state.me.team);
+                this.me.id = CommIn.unPackInt8U();
+                // console.log("My id is:", this.me.id);
+                this.me.team = CommIn.unPackInt8U();
+                // console.log("My team is:", this.me.team);
                 this.game.gameModeId = CommIn.unPackInt8U(); // aka gameType
                 this.game.gameMode = GameModesById[this.game.gameModeId];
                 // console.log("Gametype:", this.game.gameMode, this.game.gameModeId);
@@ -292,7 +271,7 @@ class Player {
 
                 // console.log('Successfully joined game.');
                 this.state.joinedGame = true;
-                this.state.lastDeathTime = Date.now();
+                this.lastDeathTime = Date.now();
                 break;
 
             case CommCode.eventModifier:
@@ -317,14 +296,14 @@ class Player {
     async join(code) {
         await this.matchmaker(code);
 
-        console.log(`Joining ${code} using proxy ${this.useProxy ? this.proxy : 'none'}`);
+        console.log(`Joining ${code} using proxy ${this.proxy || 'none'}`);
 
         this.gameSocket = new WebSocket(`wss://${this.game.raw.subdomain}.shellshock.io/game/${this.game.raw.id}`, {
             headers: {
                 'user-agent': USER_AGENT,
                 'accept-language': 'en-US,en;q=0.9'
             },
-            agent: this.useProxy ? new SocksProxyAgent(this.proxy) : null
+            agent: this.proxy ? new SocksProxyAgent(this.proxy) : null
         });
 
         this.gameSocket.binaryType = 'arraybuffer';
@@ -357,6 +336,14 @@ class Player {
             console.log('autoUpdate enabled...');
             setInterval(() => this.update(), this.updateInterval);
         }
+
+        if (this.autoPing) {
+            console.log('autoPing enabled...');
+            const out = CommOut.getBuffer();
+            out.packInt8(CommCode.ping);
+            out.send(this.gameSocket);
+            this.lastPingTime = Date.now();
+        }
     }
 
     update() {
@@ -377,12 +364,12 @@ class Player {
             const out = CommOut.getBuffer();
             out.packInt8(CommCode.syncMe);
             out.packInt8(Math.random() * 128 | 0); // stateIdx
-            out.packInt8(this.state.serverStateIdx); // serverStateIdx
+            out.packInt8(this.me.serverStateIdx); // serverStateIdx
             for (let i = 0; i < 3; i++) {
                 out.packInt8(this.controlKeys); // controlkeys
-                out.packInt8(0); // shots (unused) 
-                out.packRadU(this.state.view.yaw); // yaw
-                out.packRad(this.state.view.pitch); // pitch
+                out.packInt8(0); // shots (unused)
+                out.packRadU(this.me.view.yaw); // yaw
+                out.packRad(this.me.view.pitch); // pitch
                 out.packInt8(100); // ??? 
             }
             out.send(this.gameSocket);
@@ -398,9 +385,9 @@ class Player {
         const id = CommIn.unPackInt8U();
         const msgFlags = CommIn.unPackInt8U();
         const text = CommIn.unPackString().valueOf();
-        const player = this.state.players[Object.keys(this.state.players).find(p => this.state.players[p].id == id)];
+        const player = this.players[Object.keys(this.players).find(p => this.players[p].id == id)];
         // console.log(`Player ${player.name}: ${text} (flags: ${msgFlags})`);
-        // console.log(`Their position: ${player.state.position.x}, ${player.state.position.y}, ${player.state.position.z}`);
+        // console.log(`Their position: ${player.position.x}, ${player.position.y}, ${player.position.z}`);
         this._hooks.chat.forEach((fn) => this._liveCallbacks.push(fn.apply(this, [this, player, text, msgFlags])));
     }
 
@@ -457,17 +444,37 @@ class Player {
         playerData.gameData_.private = CommIn.unPackInt8U();
         playerData.gameData_.gameType = CommIn.unPackInt8U();
         playerData.stats_ = {};
-        comm.StatsArr.forEach((stat) => playerData.stats_[stat] = 0);
+        StatsArr.forEach((stat) => playerData.stats_[stat] = 0);
         playerData.stats_.kills = playerData.kills_;
         playerData.stats_.deaths = playerData.deaths_;
         playerData.stats_.streak = playerData.streak_;
         playerData.weaponData = getWeaponFromMeshName(playerData.primaryWeaponItem_.item_data.meshName);
-        if (!this.state.players[playerData.id_]) {
-            this.state.players[playerData.id_] = new InGamePlayer(playerData.id_, playerData.team_, playerData);
+        if (!this.players[playerData.id_]) {
+            this.players[playerData.id_] = new GamePlayer(playerData.id_, playerData.team_, playerData);
+
+            const player = this.players[playerData.id_];
+
+            if (player.playing) {
+                player.healthInterval = setInterval(() => {
+                    if (player.hp < 1) { return; }
+
+                    const regenSpeed = 0.1 * (this.game.isPrivate ? this.game.options.healthRegen : 1);
+
+                    if (player.streakRewards.includes(ShellStreak.OverHeal)) {
+                        player.hp = Math.max(100, player.hp - regenSpeed);
+                    } else {
+                        player.hp = Math.min(100, player.hp + regenSpeed);
+                    }
+                }, 33);
+            }
         }
 
-        this._hooks.join.forEach((fn) => this._liveCallbacks.push(fn.apply(this, [this, this.state.players[playerData.id_]])));
-        // console.log(`I am ${this.state.me.id}, player ${playerData.id_} joined.`);
+        if (this.me.id == playerData.id_) {
+            this.me = this.players[playerData.id_];
+        }
+
+        this._hooks.join.forEach((fn) => this._liveCallbacks.push(fn.apply(this, [this, this.players[playerData.id_]])));
+        // console.log(`I am ${this.me.id}, player ${playerData.id_} joined.`);
         const unp = CommIn.unPackInt8U();
         if (unp == CommCode.addPlayer) { // there is another player stacked
             this.#processAddPlayerPacket();
@@ -485,26 +492,38 @@ class Player {
         const rounds1 = CommIn.unPackInt8U();
         const store1 = CommIn.unPackInt8U();
         const grenades = CommIn.unPackInt8U();
-        const player = id == this.state.me.id ? this : this.state.players[id];
+        const player = id == this.me.id ? this.me : this.players[id];
         if (player) {
-            player.state.playing = true;
-            player.state.randomSeed = seed;
-            player.state.weapons[0].ammo.rounds = rounds0;
-            player.state.weapons[0].ammo.store = store0;
-            player.state.weapons[1].ammo.rounds = rounds1;
-            player.state.weapons[1].ammo.store = store1;
+            player.playing = true;
+            player.randomSeed = seed;
 
-            if (player == this) {
-                // import weaponData because it broked
-                player.state.weaponData = this.state.players[this.state.me.id].state.weaponData;
-            }
+            player.weapons[0].ammo.rounds = rounds0;
+            player.weapons[0].ammo.store = store0;
+            player.weapons[1].ammo.rounds = rounds1;
+            player.weapons[1].ammo.store = store1;
 
-            player.state.grenades = grenades;
-            player.state.position = { x: x, y: y, z: z };
+            player.grenades = grenades;
+            player.position = { x: x, y: y, z: z };
             // console.log(`Player ${player.name} respawned at ${x}, ${y}, ${z}`);
             this._hooks.respawn.forEach((fn) => this._liveCallbacks.push(fn.apply(this, [this, player])));
+
+            if (player.healthInterval) {
+                clearInterval(player.healthInterval);
+            }
+
+            player.healthInterval = setInterval(() => {
+                if (player.hp < 1) { return; }
+
+                const regenSpeed = 0.1 * (this.game.isPrivate ? this.game.options[GameOptionFlags.healthRegen] : 1);
+
+                if (player.streakRewards.includes(ShellStreak.OverHeal)) {
+                    player.hp = Math.max(100, player.hp - regenSpeed);
+                } else {
+                    player.hp = Math.min(100, player.hp + regenSpeed);
+                }
+            }, 33);
         } else {
-            // console.log(`Player ${id} not found. (me: ${this.state.me.id}) (respawn)`);
+            // console.log(`Player ${id} not found. (me: ${this.me.id}) (respawn)`);
         }
     }
 
@@ -514,8 +533,8 @@ class Player {
         const y = CommIn.unPackFloat();
         const z = CommIn.unPackFloat();
         const climbing = CommIn.unPackInt8U();
-        const player = this.state.players[id];
-        if (!player || player.id == this.state.me.id) {
+        const player = this.players[id];
+        if (!player || player.id == this.me.id) {
             for (let i2 = 0; i2 < 3 /* FramesBetweenSyncs */; i2++) {
                 CommIn.unPackInt8U();
                 CommIn.unPackRadU();
@@ -523,35 +542,34 @@ class Player {
             }
         }
 
-        player.state.index = 0;
         let yaw, pitch;
         for (let i2 = 0; i2 < 3; i2++) {
-            player.state.buffer[i2].controlKeys = CommIn.unPackInt8U();
+            player.buffer[i2].controlKeys = CommIn.unPackInt8U();
             yaw = CommIn.unPackRadU();
-            if (!isNaN(yaw)) { player.state.buffer[i2].yaw_ = yaw }
+            if (!isNaN(yaw)) { player.buffer[i2].yaw_ = yaw }
             pitch = CommIn.unPackRad();
-            if (!isNaN(pitch)) { player.state.buffer[i2].pitch_ = pitch }
+            if (!isNaN(pitch)) { player.buffer[i2].pitch_ = pitch }
         }
 
-        player.state.position.x = x;
+        player.position.x = x;
 
-        if (!player.state.jumping || Math.abs(player.state.position.y - y) > 0.5) {
-            player.state.position.y = y;
+        if (!player.jumping || Math.abs(player.position.y - y) > 0.5) {
+            player.position.y = y;
         }
 
-        player.state.position.z = z;
-        player.state.buffer[0].x = x;
-        player.state.buffer[0].y = y;
-        player.state.buffer[0].z = z;
-        player.state.climbing = climbing;
+        player.position.z = z;
+        player.buffer[0].x = x;
+        player.buffer[0].y = y;
+        player.buffer[0].z = z;
+        player.climbing = climbing;
         // console.log(`Player ${player.name} is now at ${x}, ${y}, ${z} (climbing = ${climbing})`);
     }
 
     #processPausePacket() {
         const id = CommIn.unPackInt8U();
-        const player = this.state.players[id];
+        const player = this.players[id];
         if (player) {
-            player.state.playing = false;
+            player.playing = false;
             // console.log(`Player ${player.name} paused.`);
             this._hooks.pause.forEach((fn) => this._liveCallbacks.push(fn.apply(this, [this, player])));
         }
@@ -559,11 +577,11 @@ class Player {
 
     #processSwapWeaponPacket() {
         const id = CommIn.unPackInt8U();
-        const weaponIdx = CommIn.unPackInt8U();
+        const newWeaponId = CommIn.unPackInt8U();
 
-        const player = this.state.players[id];
+        const player = this.players[id];
         if (player) {
-            player.state.weapon = weaponIdx;
+            player.weapon = newWeaponId;
         }
     }
 
@@ -572,8 +590,8 @@ class Player {
         const byId = CommIn.unPackInt8U();
         // const rs = CommIn.unPackInt8U();
 
-        const killedPlayer = killedId == this.state.me.id ? this : this.state.players[killedId];
-        const byPlayer = byId == this.state.me.id ? this : this.state.players[byId];
+        const killedPlayer = killedId == this.me.id ? this : this.players[killedId];
+        const byPlayer = byId == this.me.id ? this : this.players[byId];
 
         /*
         const byPlayerLastDmg = CommIn.unPackInt8U();
@@ -581,72 +599,64 @@ class Player {
         */
 
         if (killedPlayer) {
-            killedPlayer.state.playing = false;
-            killedPlayer.state.kills = 0;
+            killedPlayer.playing = false;
+            killedPlayer.kills = 0;
             killedPlayer.lastDeathTime = Date.now();
             // console.log(`Player ${killedPlayer.name} died.`);
         }
 
-        if (byPlayer) { byPlayer.state.kills++; }
-        // console.log(`Player ${byPlayer.name} is on a streak of ${byPlayer.state.kills} kills.`);
+        if (byPlayer) { byPlayer.kills++; }
+        // console.log(`Player ${byPlayer.name} is on a streak of ${byPlayer.kills} kills.`);
 
         this._hooks.death.forEach((fn) => this._liveCallbacks.push(fn.apply(this, [this, killedPlayer, byPlayer])));
     }
 
     #processFirePacket() {
         const id = CommIn.unPackInt8U(); // there should be 6 floats after this, but that's irrelevant for our purposes 
-        const player = this.state.players[id];
+        const player = this.players[id];
         this._hooks.fire.forEach((fn) => this._liveCallbacks.push(fn.apply(this, [this, player])));
     }
 
     #processCollectPacket() {
-        const id = CommIn.unPackInt8U();
+        const playerId = CommIn.unPackInt8U();
         const type = CommIn.unPackInt8U();
         const applyToWeaponIdx = CommIn.unPackInt8U();
         const itemId = CommIn.unPackInt16U();
-        const AMMO = 0; const GRENADE = 1;
-        if (id == this.state.me.id) {
-            if (type == AMMO) {
-                return; // FIXME: Implement
-            } else if (type == GRENADE) {
-                this.state.grenades >= 3 ? this.state.grenades = 3 : this.state.grenades++;
-            } else {
-                console.log('#processCollectPacket: Invalid collect type', type);
-            }
+
+        const player = this.players[playerId];
+
+        if (type == CollectTypes.AMMO) {
+            return; // TODO: Implement
+        }
+
+        if (type == CollectTypes.GRENADE) {
+            player.grenades >= 3 ? player.grenades = 3 : player.grenades++;
         }
 
         this._hooks.collect.forEach((fn) => {
-            this._liveCallbacks.push(fn.apply(this, [this, this.state.players[id], type, applyToWeaponIdx, itemId]))
+            this._liveCallbacks.push(fn.apply(this, [this, player, type, applyToWeaponIdx, itemId]))
         });
     }
 
     #processHitThemPacket() {
         const id = CommIn.unPackInt8U();
         const hp = CommIn.unPackInt8U();
-        const player = this.state.players[id];
-        player.state.hp = hp;
+        const player = this.players[id];
+        player.hp = hp;
     }
 
     #processSyncMePacket() {
         const id = CommIn.unPackInt8U();
-        const player = this.state.players[id];
+        const player = this.players[id];
 
         CommIn.unPackInt8U(); // stateIdx
 
         const serverStateIdx = CommIn.unPackInt8U();
         player.serverStateIdx = serverStateIdx;
 
-        if (player.id == this.state.me.id) {
-            this.state.serverStateIdx = serverStateIdx;
-
-            const x = CommIn.unPackFloat();
-            const y = CommIn.unPackFloat();
-            const z = CommIn.unPackFloat();
-
-            this.state.position.x = x;
-            this.state.position.y = y;
-            this.state.position.z = z;
-        }
+        player.position.x = CommIn.unPackFloat();
+        player.position.y = CommIn.unPackFloat();
+        player.position.z = CommIn.unPackFloat();
         return;
     }
 
@@ -658,7 +668,7 @@ class Player {
 
     #processRemovePlayerPacket() {
         const id = CommIn.unPackInt8U();
-        delete this.state.players[id.toString()];
+        delete this.players[id.toString()];
     }
 
     #processGameStatePacket() {
@@ -709,8 +719,154 @@ class Player {
         if (this.game.gameModeId !== 3 && this.game.gameModeId !== 2) {
             delete this.game.teamScore;
         }
+    }
 
-        console.log(this.game);
+    #processBeginStreakPacket() {
+        const id = CommIn.unPackInt8U();
+        const ksType = CommIn.unPackInt8U();
+        const player = this.players[id];
+
+        switch (ksType) {
+            case ShellStreak.HardBoiled:
+                player.hpShield = 100;
+                player.streakRewards.push(ShellStreak.HardBoiled);
+                break;
+
+            case ShellStreak.EggBreaker:
+                player.streakRewards.push(ShellStreak.EggBreaker);
+                break;
+
+            case ShellStreak.Restock: {
+                player.grenades = 3;
+
+                // main weapon
+                player.weapons[0].ammo.rounds = player.weaponData.ammo.capacity;
+                player.weapons[0].ammo.store = player.weaponData.ammo.store;
+
+                // secondary, always cluck9mm
+                player.weapons[1].ammo.rounds = cluck9mm.ammo.capacity;
+                player.weapons[1].ammo.store = cluck9mm.ammo.store;
+                break;
+            }
+
+            case ShellStreak.OverHeal:
+                player.hp = Math.min(200, player.hp + 100);
+                player.streakRewards.push(ShellStreak.OverHeal);
+                break;
+
+            case ShellStreak.DoubleEggs:
+                player.streakRewards.push(ShellStreak.DoubleEggs);
+                break;
+
+            case ShellStreak.MiniEgg:
+                player.streakRewards.push(ShellStreak.MiniEgg);
+                break;
+        }
+    }
+
+    #processEndStreakPacket() {
+        const id = CommIn.unPackInt8U();
+        const ksType = CommIn.unPackInt8U();
+        const player = this.players[id];
+
+        const streaks = [
+            ShellStreak.EggBreaker,
+            ShellStreak.OverHeal,
+            ShellStreak.DoubleEggs,
+            ShellStreak.MiniEgg
+        ];
+
+        if (streaks.includes(ksType) && player.streakRewards.includes(ksType)) {
+            player.streakRewards = player.streakRewards.filter((r) => r != ksType);
+        }
+    }
+
+    #processHitShieldPacket() {
+        const hb = CommIn.unPackInt8U();
+        const hp = CommIn.unPackInt8U();
+
+        this.me.hpShield = hb;
+        this.me.hp = hp;
+
+        if (this.me.hpShield <= 0) {
+            this.me.streakRewards = this.me.streakRewards.filter((r) => r != ShellStreak.HardBoiled);
+        }
+    }
+
+    #processGameOptionsPacket() {
+        this.game.options
+        let gravity = CommIn.unPackInt8U();
+        let damage = CommIn.unPackInt8U();
+        let healthRegen = CommIn.unPackInt8U();
+
+        if (gravity < 1 || gravity > 4) { gravity = 4; }
+        if (damage < 0 || damage > 8) { damage = 4; }
+        if (healthRegen > 16) { healthRegen = 4; }
+
+        this.game.options.gravity = gravity / 4;
+        this.game.options.damage = damage / 4;
+        this.game.options.healthRegen = healthRegen / 4;
+
+        const rawFlags = CommIn.unPackInt8U();
+
+        Object.keys(GameOptionFlags).forEach((optionFlagName) => {
+            const value = rawFlags & GameOptionFlags[optionFlagName] ? 1 : 0;
+            this.game.options[optionFlagName] = value;
+        });
+
+        this.game.options.weaponsDisabled = Array.from({ length: 7 }, () => CommIn.unPackInt8U() === 1);
+        this.game.options.mustUseSecondary = this.game.options.weaponsDisabled.every((v) => v);
+        return false;
+    }
+
+    #processGameActionPacket() {
+        const action = CommIn.unPackInt8U();
+
+        if (action == GameActions.pause) {
+            console.log('settings changed, gameOwner changed game settings, force paused');
+            this.me.playing = false;
+        }
+
+        if (action == GameActions.reset) {
+            console.log('owner reset game');
+
+            this.me.kills = 0;
+            this.game.teamScore = [0, 0, 0];
+
+            this.game.spatula.controlledBy = 0;
+            this.game.spatula.controlledByTeam = 0;
+            this.game.spatula.coords = { x: 0, y: 0, z: 0 };
+
+            this.game.stage = CoopStates.capturing;
+            this.game.activeZone = 0;
+            this.game.capturing = 0;
+            this.game.captureProgress = 0;
+            this.game.numCapturing = 0;
+            this.game.stageName = CoopStagesById[CoopStates.capturing];
+            this.game.capturePercent = 0.0;
+        }
+    }
+
+    #processPingPacket() {
+        this.ping = Date.now() - this.lastPingTime;
+
+        setTimeout(() => {
+            const out = CommOut.getBuffer();
+            out.packInt8(CommCode.ping);
+            out.send(this.gameSocket);
+            this.lastPingTime = Date.now();
+        }, this.pingInterval);
+    }
+
+    #processSwitchTeamPacket() {
+        const id = CommIn.unPackInt8U();
+        const toTeam = CommIn.unPackInt8U();
+        const player = this.players[id];
+
+        if (!player) { return; }
+
+        player.team = toTeam;
+        player.kills = 0;        
     }
 
     handlePacket(packet) {
@@ -774,6 +930,34 @@ class Player {
                 this.#processGameStatePacket(packet);
                 break;
 
+            case CommCode.beginShellStreak:
+                this.#processBeginStreakPacket(packet);
+                break;
+
+            case CommCode.endShellStreak:
+                this.#processEndStreakPacket(packet);
+                break;
+
+            case CommCode.hitMeHardBoiled:
+                this.#processHitShieldPacket(packet);
+                break;
+
+            case CommCode.gameOptions:
+                this.#processGameOptionsPacket(packet);
+                break;
+
+            case CommCode.gameAction:
+                this.#processGameActionPacket(packet);
+                break;
+
+            case CommCode.ping:
+                this.#processPingPacket(packet);
+                break;
+
+            case CommCode.switchTeam:
+                this.#processSwitchTeamPacket(packet);
+                break;
+
             case CommCode.reload:
             case CommCode.spawnItem:
             case CommCode.explode:
@@ -797,6 +981,4 @@ class Player {
     }
 }
 
-export default {
-    Player
-};
+export default Bot;

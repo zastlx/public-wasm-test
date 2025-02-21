@@ -3,11 +3,11 @@
         "baseUrl": ".",
         "paths": {
             "#api": ["./src/api.js"],
+            "#bot": ["./src/bot.js"],
             "#comm": ["./src/comm.js"],
             "#constants": ["./src/constants.js"],
             "#dispatch": ["./src/dispatch.js"],
             "#manager": ["./src/manager.js"],
-            "#player": ["./src/player.js"],
             "#packet": ["./src/packet.js"]
         }
     }

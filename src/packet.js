@@ -1,6 +1,4 @@
-import * as comm from '#comm';
-
-const { CommCode, CommOut } = comm;
+import { CommCode, CommOut } from '#comm';
 
 class Packet {
     constructor(code, _args) {
@@ -48,9 +46,9 @@ function ChatPacket(msg) {
     ]);
 }
 
-function SwapWeaponPacket(player) {
+function SwapWeaponPacket(weaponId) {
     return new Packet(CommCode.swapWeapon, [
-        { type: 'int8', val: player.state.weapon }
+        { type: 'int8', val: weaponId }
     ]);
 }
 

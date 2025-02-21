@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-import api from '#api';
+import { fetchConstantsRaw } from '#api';
 
 export class Pool {
     constructor(constructorFn, size) {
@@ -222,7 +222,7 @@ export async function updatePacketConstants() {
     let consts;
 
     if (Date.now() - lastTime > 1000 * 60 * 60 * 24) {
-        const rawConsts = await api.fetchConstantsRaw();
+        const rawConsts = await fetchConstantsRaw();
         const rawCommCodes = rawConsts.vars.CommCode;
         const rawCloseCodes = rawConsts.vars.CloseCode;
 

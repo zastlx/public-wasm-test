@@ -23,7 +23,7 @@ const MeshPartMappings = {
 
 export const getWeaponFromMeshName = (meshName) => {
     const mainPart = meshName.split('_')[1];
-    return MeshPartMappings[mainPart];
+    return new MeshPartMappings[mainPart]();
 }
 
 export const GameModes = {
@@ -72,3 +72,28 @@ export const CoopStates = {
 };
 
 export const CoopStagesById = Object.fromEntries(Object.entries(CoopStates).map(([key, value]) => [value, key]));
+
+export const ShellStreak = {
+    HardBoiled: 1,
+    EggBreaker: 2,
+    Restock: 4,
+    OverHeal: 8,
+    DoubleEggs: 16,
+    MiniEgg: 32
+};
+
+export const CollectTypes = {
+    AMMO: 0,
+    GRENADE: 1
+}
+
+export const GameOptionFlags = {
+    locked: 1,
+    noTeamChange: 2,
+    noTeamShuffle: 4
+}
+
+export const GameActions = {
+    reset: 1,
+    pause: 2
+};

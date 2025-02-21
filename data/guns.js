@@ -1,8 +1,6 @@
 const Gun = class {
-    constructor(player) {
+    constructor() {
         this.dmgTypeId = 0;
-        this.player_ = player;
-        this.scene = this.player_.scene;
         this.highPrecision = false;
         this.equipTime = 13;
         this.stowWeaponTime = 13;
@@ -24,8 +22,8 @@ Gun.reloadTimeMod = 1;
 
 // eggk47
 const Eggk47 = class _Eggk47 extends Gun {
-    constructor(player) {
-        super(player);
+    constructor() {
+        super();
         this.ammo = {
             rounds: 30,
             capacity: 30,
@@ -51,8 +49,8 @@ Eggk47.tracer = 1;
 
 // p90 / scrambler
 const DozenGauge = class _DozenGauge extends Gun {
-    constructor(player) {
-        super(player);
+    constructor() {
+        super();
         this.ammo = {
             rounds: 2,
             capacity: 2,
@@ -78,8 +76,8 @@ DozenGauge.tracer = 0;
 
 // free ranger
 const CSG1 = class _CSG1 extends Gun {
-    constructor(player) {
-        super(player);
+    constructor() {
+        super();
         this.ammo = {
             rounds: 15,
             // Number of rounds currently loaded
@@ -113,8 +111,8 @@ CSG1.tracer = 0;
 
 // secondary / 9mm
 const Cluck9mm = class _Cluck9mm extends Gun {
-    constructor(player) {
-        super(player);
+    constructor() {
+        super();
         this.ammo = {
             rounds: 15,
             capacity: 15,
@@ -141,8 +139,8 @@ Cluck9mm.tracer = 0;
 
 // rpegg / rpg
 const RPEGG = class _RPEGG extends Gun {
-    constructor(player) {
-        super(player);
+    constructor() {
+        super();
         this.ammo = {
             rounds: 1,
             capacity: 1,
@@ -170,8 +168,8 @@ RPEGG.velocity = 0.4;
 
 // whipper
 const SMG = class _SMG extends Gun {
-    constructor(player) {
-        super(player);
+    constructor() {
+        super();
         this.ammo = {
             rounds: 40,
             capacity: 40,
@@ -197,8 +195,8 @@ SMG.tracer = 2;
 
 // crackshot
 const M24 = class _M24 extends Gun {
-    constructor(player) {
-        super(player);
+    constructor() {
+        super();
         this.ammo = {
             rounds: 1,
             capacity: 1,
@@ -225,8 +223,8 @@ M24.tracer = 0;
 
 // trihard / tri-hard
 const AUG = class _AUG extends Gun {
-    constructor(player) {
-        super(player);
+    constructor() {
+        super();
         this.ammo = {
             rounds: 24,
             capacity: 24,
