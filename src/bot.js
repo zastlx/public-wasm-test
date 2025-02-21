@@ -27,16 +27,20 @@ const CommCode = consts[0];
 const CloseCode = consts[1];
 
 class Bot {
+    // params.name - the bot name
+    // params.proxy - a socks(4|5) proxy
+    // params.doUpdate - whether to auto update
+    // params.updateInterval - the auto update interval
+    // params.doPing - whether to auto ping (for bot.<ping>)
+    // params.pingInterval - the ping interval
     constructor(params = {}) {
-        if (!params.name) { params.name = ''; }
-        if (!params.proxy) { params.proxy = ''; }
-        if (!params.doUpdate) { params.doUpdate = true; }
-
-        this.proxy = params.proxy;
-        this.useProxy = !!params.proxy;
-
+        this.proxy = params.proxy || '';
         this.name = params.name || Math.random().toString(36).substring(8);
-        this.autoUpdate = params.doUpdate;
+
+        this.autoPing = params.doPing || true;
+        this.autoUpdate = params.doUpdate || true;
+
+        this.pingInterval = params.pingInterval || 1000;
         this.updateInterval = params.updateInterval || 5;
 
         this._hooks = {
@@ -135,11 +139,14 @@ class Bot {
         this.gameSocket = null;
         this.matchmakerSocket = null;
 
+        this.ping = 0;
         this.lastPingTime = -1;
+
         this.lastDeathTime = -1;
         this.lastChatTime = -1;
-        this.nUpdates = 0;
+
         this.lastUpdateTime = -1;
+        this.nUpdates = 0;
 
         this.controlKeys = 0;
 
@@ -182,7 +189,7 @@ class Bot {
                 'user-agent': USER_AGENT,
                 'accept-language': 'en-US,en;q=0.9'
             },
-            agent: this.useProxy ? new SocksProxyAgent(this.proxy) : null
+            agent: this.proxy ? new SocksProxyAgent(this.proxy) : null
         });
 
         this.matchmakerSocket.onopen = () => {
@@ -286,14 +293,14 @@ class Bot {
     async join(code) {
         await this.matchmaker(code);
 
-        console.log(`Joining ${code} using proxy ${this.useProxy ? this.proxy : 'none'}`);
+        console.log(`Joining ${code} using proxy ${this.proxy || 'none'}`);
 
         this.gameSocket = new WebSocket(`wss://${this.game.raw.subdomain}.shellshock.io/game/${this.game.raw.id}`, {
             headers: {
                 'user-agent': USER_AGENT,
                 'accept-language': 'en-US,en;q=0.9'
             },
-            agent: this.useProxy ? new SocksProxyAgent(this.proxy) : null
+            agent: this.proxy ? new SocksProxyAgent(this.proxy) : null
         });
 
         this.gameSocket.binaryType = 'arraybuffer';
@@ -325,6 +332,14 @@ class Bot {
         if (this.autoUpdate) {
             console.log('autoUpdate enabled...');
             setInterval(() => this.update(), this.updateInterval);
+        }
+
+        if (this.autoPing) {
+            console.log('autoPing enabled...');
+            const out = CommOut.getBuffer();
+            out.packInt8(CommCode.ping);
+            out.send(this.gameSocket);
+            this.lastPingTime = Date.now();
         }
     }
 
@@ -789,6 +804,17 @@ class Bot {
         }
     }
 
+    #processPingPacket() {
+        this.ping = Date.now() - this.lastPingTime;
+
+        setTimeout(() => {
+            const out = CommOut.getBuffer();
+            out.packInt8(CommCode.ping);
+            out.send(this.gameSocket);
+            this.lastPingTime = Date.now();
+        }, this.pingInterval);
+    }
+
     handlePacket(packet) {
         CommIn.init(packet);
         this._hooks.packet.forEach((fn) => this._liveCallbacks.push(fn.apply(this, [this, packet])));
@@ -868,6 +894,10 @@ class Bot {
 
             case CommCode.gameAction:
                 this.#processGameActionPacket(packet);
+                break;
+
+            case CommCode.ping:
+                this.#processPingPacket(packet);
                 break;
 
             case CommCode.reload:
