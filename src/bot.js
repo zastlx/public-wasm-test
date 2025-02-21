@@ -95,7 +95,14 @@ class Bot {
                 gravity: 1,
                 damage: 1,
                 healthRegen: 1,
-                weaponDisabled: []
+                isLocked: false,
+                noManualTeamChange: false,
+                noAutoTeamChange: false,
+                // array of weapons from eggk to trihard
+                // false = alloed to use
+                // true = cannot use
+                weaponsDisabled: Array(7).fill(false),
+                mustUseSecondary: false // if weaponsDisabled is ALL true
             },
 
             // data from metaGame
@@ -740,12 +747,27 @@ class Bot {
         this.game.options.damage = damage / 4;
         this.game.options.healthRegen = healthRegen / 4;
 
+        // this.game.options.flags
+
         /*
         let flags = CommIn.unPackInt8U(); // disable team changing, will do later
         let weaponDisabled = G.classes.map(() => CommIn.unPackInt8U() === 1); // disabling specific weapons, need 2 handle that
         */
         return false;
     }
+
+    /*
+    options: {
+                isLocked: false,
+                noManualTeamChange: false,
+                noAutoTeamChange: false,
+                // array of weapons from eggk to trihard
+                // false = alloed to use
+                // true = cannot use
+                weaponsDisabled: Array(7).fill(false),
+                mustUseSecondary: false // if weaponsDisabled is ALL true
+            },
+            */
 
     handlePacket(packet) {
         CommIn.init(packet);

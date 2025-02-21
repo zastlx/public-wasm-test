@@ -45,4 +45,16 @@ export default class GamePlayer {
         this.randomSeed = 0;
         this.serverStateIdx = 0;
     }
+
+    dispatch() {
+        throw new Error('you cannot call this function from a GamePlayer. call dispatch() on an instance of Bot instead.');
+    }
+
+    join() {
+        throw new Error('you cannot call this function from a GamePlayer. call join() on an instance of Bot instead.');
+    }
+
+    update() {
+        throw new Error('you cannot call this function from a GamePlayer. call update() on an instance of Bot instead.');
+    }
 }

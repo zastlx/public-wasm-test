@@ -86,3 +86,9 @@ export const CollectTypes = {
     AMMO: 0,
     GRENADE: 1
 }
+
+export const GameOptionFlags = {
+    locked: 1,
+    noTeamChange: 2,
+    noTeamShuffle: 4
+}
