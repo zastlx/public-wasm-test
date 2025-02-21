@@ -118,7 +118,6 @@ class Player {
 
         this.game = {
             raw: {}, // matchmaker response
-            state: {}, // metaGameState
             code: '',
 
             // data given on sign in
@@ -662,8 +661,8 @@ class Player {
 
     #processGameStatePacket() {
         if (this.game.gameModeId == 2) { // spatula
-            this.game.state.teamScore[1] = CommIn.unPackInt16U();
-            this.game.state.teamScore[2] = CommIn.unPackInt16U();
+            this.game.teamScore[1] = CommIn.unPackInt16U();
+            this.game.teamScore[2] = CommIn.unPackInt16U();
 
             const spatulaCoords = {
                 x: CommIn.unPackFloat(),
@@ -674,19 +673,35 @@ class Player {
             const controlledBy = CommIn.unPackInt8U();
             const controlledByTeam = CommIn.unPackInt8U();
 
-            this.game.state.spatula = {
+            this.game.spatula = {
                 coords: spatulaCoords,
                 controlledBy: controlledBy,
                 controlledByTeam: controlledByTeam
             };
         } else if (this.game.gameModeId == 3) { // kotc
-            this.game.state.stage = CommIn.unPackInt8U(); // constants.CoopStates
-            this.game.state.activeZone = CommIn.unPackInt8U(); // a number to represent which 'active zone' kotc is using
-            this.game.state.capturing = CommIn.unPackInt8U(); // the team capturing, named "teams" in shell src
-            this.game.state.captureProgress = CommIn.unPackInt16U(); // progress of the coop capture
-            this.game.state.numCapturing = CommIn.unPackInt8U(); // number of players capturing
-            this.game.state.teamScore[1] = CommIn.unPackInt8U(); // team 1 (blue) score
-            this.game.state.teamScore[2] = CommIn.unPackInt8U(); // team 2 (red) score
+            this.game.stage = CommIn.unPackInt8U(); // constants.CoopStates
+            this.game.activeZone = CommIn.unPackInt8U(); // a number to represent which 'active zone' kotc is using
+            this.game.capturing = CommIn.unPackInt8U(); // the team capturing, named "teams" in shell src
+            this.game.captureProgress = CommIn.unPackInt16U(); // progress of the coop capture
+            this.game.numCapturing = CommIn.unPackInt8U(); // number of players capturing - number/1000
+            this.game.teamScore[1] = CommIn.unPackInt8U(); // team 1 (blue) score
+            this.game.teamScore[2] = CommIn.unPackInt8U(); // team 2 (red) score
+        }
+
+        if (this.game.gameModeId !== 2) {
+            delete this.game.spatula;
+        }
+
+        if (this.game.gameModeId !== 3) {
+            delete this.game.stage;
+            delete this.game.activeZone;
+            delete this.game.capturing;
+            delete this.game.captureProgress;
+            delete this.game.numCapturing
+        }
+
+        if (this.game.gameModeId !== 3 && this.game.gameModeId !== 2) {
+            delete this.game.teamScore;
         }
 
         console.log(this.game);
