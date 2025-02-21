@@ -14,6 +14,7 @@ import {
     CoopStates,
     findItemById,
     GameModesById,
+    GameOptionFlags,
     getWeaponFromMeshName,
     Maps,
     ShellStreak,
@@ -95,9 +96,9 @@ class Bot {
                 gravity: 1,
                 damage: 1,
                 healthRegen: 1,
-                isLocked: false,
-                noManualTeamChange: false,
-                noAutoTeamChange: false,
+                locked: false,
+                noTeamChange: false,
+                noTeamShuffle: false,
                 // array of weapons from eggk to trihard
                 // false = alloed to use
                 // true = cannot use
@@ -747,12 +748,15 @@ class Bot {
         this.game.options.damage = damage / 4;
         this.game.options.healthRegen = healthRegen / 4;
 
-        // this.game.options.flags
+        const rawFlags = CommIn.unPackInt8U();
 
-        /*
-        let flags = CommIn.unPackInt8U(); // disable team changing, will do later
-        let weaponDisabled = G.classes.map(() => CommIn.unPackInt8U() === 1); // disabling specific weapons, need 2 handle that
-        */
+        Object.keys(GameOptionFlags).forEach((optionFlagName) => {
+            const value = rawFlags & GameOptionFlags[optionFlagName] ? 1 : 0;
+            this.game.options[optionFlagName] = value;
+        });
+
+        this.game.options.weaponsDisabled = Array.from({ length: 7 }, () => CommIn.unPackInt8U() === 1);
+        this.game.options.mustUseSecondary = this.game.options.weaponsDisabled.every((v) => v);
         return false;
     }
 
