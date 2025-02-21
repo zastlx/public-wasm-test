@@ -6,7 +6,7 @@ https://raw.githubusercontent.com/enbyte/deobfs-shell-source/refs/heads/main/she
 -->
 
 <div align='center'>
-  <h1>shellfbot</h1>
+  <h1>yolkbot</h1>
   <h3>creating bots in 10 lines since 2025</h3>
   <p>
     <a href='https://github.com/enbyte/ShellfBot'>github</a> | 

@@ -5,13 +5,13 @@ import Bot from '#bot';
 import dispatch from '#dispatch';
 import manager from '#manager';
 
-import Matchmaker from './src/matchmaker.js';
+import Matchmaker from '../src/matchmaker.js';
 
 const playerList = [];
 const emails = []; // fill in here
 const passwords = []; // fill in here
 
-const loginJSONPath = path.join(import.meta.dirname, 'data', 'logins.json');
+const loginJSONPath = path.join(import.meta.dirname, '..', 'data', 'logins.json');
 if (fs.existsSync(loginJSONPath)) {
     JSON.parse(fs.readFileSync(loginJSONPath)).accounts.forEach(element => {
         emails.push(element.email);
