@@ -435,6 +435,10 @@ class Bot {
 
             this.gameFound = true;
         }
+        
+        if (!this.game.raw.id || !this.game.raw.subdomain) {
+            throw new Error('invalid game data passed to <bot>.join');
+        }
 
         console.log(`Joining ${this.game.raw.id} using proxy ${this.proxy || 'none'}`);
 

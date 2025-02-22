@@ -1,4 +1,8 @@
 class FireDispatch {
+    constructor(amount) {
+        this.amount = amount || 1;
+    }
+
     check(bot) {
         return bot.me.playing &&
             !bot.state.reloading &
@@ -8,7 +12,7 @@ class FireDispatch {
     }
 
     execute(bot) {
-        bot.state.shotsFired++;
+        bot.state.shotsFired += this.amount || 1;
     }
 }
 
