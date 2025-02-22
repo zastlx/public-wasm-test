@@ -11,20 +11,7 @@ export const Items = JSON.parse(fs.readFileSync(itemPath));
 
 export const findItemById = (id) => Items.find(item => item.id === id);
 
-const MeshPartMappings = {
-    aug: AUG,
-    csg1: CSG1,
-    dozenGauge: DozenGauge,
-    eggk47: Eggk47,
-    m24: M24,
-    rpegg: RPEGG,
-    smg: SMG
-}
-
-export const getWeaponClass = (item) => {
-    const mainPart = item.item_data.meshName.split('_')[1];
-    return MeshPartMappings[mainPart];
-}
+export const gunIndexes = [Eggk47, DozenGauge, CSG1, RPEGG, SMG, M24, AUG];
 
 export const GameModes = {
     'ffa': 0,

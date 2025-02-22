@@ -17,6 +17,7 @@ import {
     GameModes,
     GameModesById,
     GameOptionFlags,
+    gunIndexes,
     Maps,
     PlayTypes,
     ShellStreak,
@@ -950,6 +951,39 @@ class Bot {
         player.kills = 0;
     }
 
+    #processChangeCharacterPacket() {
+        const id = CommIn.unPackInt8U();
+        const weaponIndex = CommIn.unPackInt8U();
+
+        const primaryWeaponIdx = CommIn.unPackInt16U();
+        const secondaryWeaponIdx = CommIn.unPackInt16U();
+        const shellColor = CommIn.unPackInt8U();
+        const hatIdx = CommIn.unPackInt16U();
+        const stampIdx = CommIn.unPackInt16U();
+        const grenadeIdx = CommIn.unPackInt16U();
+        const meleeIdx = CommIn.unPackInt16U();
+
+        const primaryWeaponItem = findItemById(primaryWeaponIdx);
+        const secondaryWeaponItem = findItemById(secondaryWeaponIdx);
+        const hatItem = findItemById(hatIdx);
+        const stampItem = findItemById(stampIdx);
+        const grenadeItem = findItemById(grenadeIdx);
+        const meleeItem = findItemById(meleeIdx);
+
+        const player = this.players[id];
+        if (player) {
+            player.character.eggColor = shellColor;
+            player.character.primaryGun = primaryWeaponItem;
+            player.character.secondaryGun = secondaryWeaponItem;
+            player.character.stamp = stampItem;
+            player.character.hat = hatItem;
+            player.character.grenade = grenadeItem;
+            player.character.melee = meleeItem;
+
+            player.weapons[0] = new gunIndexes[weaponIndex]();
+        }
+    }
+
     handlePacket(packet) {
         CommIn.init(packet);
         this._hooks.packet.forEach((fn) => this._liveCallbacks.push(fn.apply(this, [this, packet])));
@@ -1037,6 +1071,10 @@ class Bot {
 
             case CommCode.switchTeam:
                 this.#processSwitchTeamPacket(packet);
+                break;
+
+            case CommCode.changeCharacter:
+                this.#processChangeCharacterPacket(packet);
                 break;
 
             case CommCode.reload:

@@ -1,4 +1,4 @@
-import { getWeaponClass } from '#constants';
+import { gunIndexes } from '#constants';
 import { Cluck9mm } from '../../data/guns.js';
 
 export default class GamePlayer {
@@ -41,7 +41,7 @@ export default class GamePlayer {
         this.weapons = [{}, {}];
 
         if (this.character.primaryGun) {
-            const weaponClass = getWeaponClass(this.character.primaryGun);
+            const weaponClass = gunIndexes[this.character.primaryGun.exclusive_for_class];
 
             this.weapons[0] = new weaponClass();
             this.weapons[1] = new Cluck9mm();
