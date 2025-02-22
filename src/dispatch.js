@@ -5,8 +5,10 @@ import LookAtDispatch from './dispatches/LookAtDispatch.js';
 import LookToDispatch from './dispatches/LookToDispatch.js';
 import MeleeDispatch from './dispatches/MeleeDispatch.js';
 import MovementDispatch from './dispatches/MovementDispatch.js';
+import PauseDispatch from './dispatches/PauseDispatch.js';
 import ReloadDispatch from './dispatches/ReloadDispatch.js';
 import ReportPlayerDispatch from './dispatches/ReportPlayerDispatch.js';
+import SaveLoadoutDispatch from './dispatches/SaveLoadoutDispatch.js';
 import SpawnDispatch from './dispatches/SpawnDispatch.js';
 import SwapWeaponDispatch from './dispatches/SwapWeaponDispatch.js';
 import SwitchTeamDispatch from './dispatches/SwitchTeamDispatch.js';
@@ -19,8 +21,10 @@ export {
     LookToDispatch,
     MeleeDispatch,
     MovementDispatch,
+    PauseDispatch,
     ReloadDispatch,
     ReportPlayerDispatch,
+    SaveLoadoutDispatch,
     SpawnDispatch,
     SwapWeaponDispatch,
     SwitchTeamDispatch
@@ -34,8 +38,10 @@ export default {
     LookToDispatch,
     MeleeDispatch,
     MovementDispatch,
+    PauseDispatch,
     ReloadDispatch,
     ReportPlayerDispatch,
+    SaveLoadoutDispatch,
     SpawnDispatch,
     SwapWeaponDispatch,
     SwitchTeamDispatch

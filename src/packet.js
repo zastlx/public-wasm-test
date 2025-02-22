@@ -90,12 +90,24 @@ function BootPacket(uniqueId) {
     ]);
 }
 
+function ChangeCharacterPacket(gunId) {
+    return new Packet(CommCode.changeCharacter, [
+        { type: 'int8', val: gunId }
+    ]);
+}
+
+function PausePacket() {
+    return new Packet(CommCode.pause);
+}
+
 export default {
     Packet,
     BootPacket,
+    ChangeCharacterPacket,
     ChatPacket,
     GameOptionsPacket,
     MeleePacket,
+    PausePacket,
     ReportPacket,
     RespawnPacket,
     SwapWeaponPacket,

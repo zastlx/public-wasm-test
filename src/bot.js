@@ -980,6 +980,7 @@ class Bot {
             player.character.grenade = grenadeItem;
             player.character.melee = meleeItem;
 
+            player.selectedGun = weaponIndex;
             player.weapons[0] = new gunIndexes[weaponIndex]();
         }
     }
