@@ -6,7 +6,7 @@ import Manager from '#manager';
 import SpawnDispatch from '#dispatch/SpawnDispatch.js';
 
 const playerList = [];
-const NUM_PLAYERS = 16;
+const NUM_PLAYERS = 5;
 
 for (let i = 0; i < NUM_PLAYERS; i++) {
     playerList.push(new Bot({ name: process.argv[3] || 'selfbot' }));
@@ -19,6 +19,7 @@ man.on('join', (_bot, player) => {
 });
 
 man.on('chat', (bot, _player, msg) => {
+    console.log(bot.me.name, bot.me.id, _player.name, msg);
     if (msg == 'spawn') bot.dispatch(new SpawnDispatch());
 });
 

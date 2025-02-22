@@ -45,18 +45,8 @@ class Bot {
         this.pingInterval = params.pingInterval || 1000;
         this.updateInterval = params.updateInterval || 5;
 
-        this._hooks = {
-            'chat': [],
-            'join': [],
-            'death': [],
-            'fire': [],
-            'collect': [],
-            'pause': [],
-            'respawn': [],
-            'packet': [],
-            'tick': []
-        }
-
+        this._hooks = {};
+        this._globalHooks = [];
         this._liveCallbacks = [];
 
         // private information NOT FOR OTHER PLAYERS!!
@@ -435,7 +425,7 @@ class Bot {
 
             this.gameFound = true;
         }
-        
+
         if (!this.game.raw.id || !this.game.raw.subdomain) {
             throw new Error('invalid game data passed to <bot>.join');
         }
@@ -501,7 +491,8 @@ class Bot {
         this.drain();
 
         if (Date.now() - this.lastUpdateTime >= 50) {
-            this._liveCallbacks.push(...this._hooks.tick.map((fn) => fn.apply(this, [this])));
+            this.#emit('tick');
+
             // Send out update packet
             const out = CommOut.getBuffer();
             out.packInt8(CommCode.syncMe);
@@ -522,7 +513,30 @@ class Bot {
 
         let cb;
         while ((cb = this._liveCallbacks.shift()) !== undefined) { cb(); }
+    }
 
+    on(event, cb) {
+        if (Object.keys(this._hooks).includes(event)) {
+            this._hooks[event].push(cb);
+        } else {
+            this._hooks[event] = [cb];
+        }
+    }
+
+    onAny(cb) {
+        this._globalHooks.push(cb);
+    }
+
+    #emit(event, ...args) {
+        if (this._hooks[event]) {
+            for (const cb of this._hooks[event]) {
+                this._liveCallbacks.push(() => cb(...args));
+            }
+        }
+
+        for (const cb of this._globalHooks) {
+            this._liveCallbacks.push(() => cb(event, ...args));
+        }
     }
 
     #processChatPacket() {
@@ -532,7 +546,7 @@ class Bot {
         const player = this.players[Object.keys(this.players).find(p => this.players[p].id == id)];
         // console.log(`Player ${player.name}: ${text} (flags: ${msgFlags})`);
         // console.log(`Their position: ${player.position.x}, ${player.position.y}, ${player.position.z}`);
-        this._hooks.chat.forEach((fn) => this._liveCallbacks.push(fn.apply(this, [this, player, text, msgFlags])));
+        this.#emit('chat', player, text, msgFlags);
     }
 
     #processAddPlayerPacket() {
@@ -619,8 +633,8 @@ class Bot {
             this.me = this.players[playerData.id_];
         }
 
-        this._hooks.join.forEach((fn) => this._liveCallbacks.push(fn.apply(this, [this, this.players[playerData.id_]])));
-        // console.log(`I am ${this.me.id}, player ${playerData.id_} joined.`);
+        this.#emit('playerJoin', this.players[playerData.id_]);
+
         const unp = CommIn.unPackInt8U();
         if (unp == CommCode.addPlayer) { // there is another player stacked
             this.#processAddPlayerPacket();
@@ -651,7 +665,7 @@ class Bot {
             player.grenades = grenades;
             player.position = { x: x, y: y, z: z };
             // console.log(`Player ${player.name} respawned at ${x}, ${y}, ${z}`);
-            this._hooks.respawn.forEach((fn) => this._liveCallbacks.push(fn.apply(this, [this, player])));
+            this.#emit('playerRespawn', player);
 
             if (player.healthInterval) {
                 clearInterval(player.healthInterval);
@@ -716,7 +730,7 @@ class Bot {
         const player = this.players[id];
         if (player) {
             player.playing = false;
-            this._hooks.pause.forEach((fn) => this._liveCallbacks.push(fn.apply(this, [this, player])));
+            this.#emit('playerPause', player);
         }
     }
 
@@ -726,7 +740,8 @@ class Bot {
 
         const player = this.players[id];
         if (player) {
-            player.weapon = newWeaponId;
+            player.activeGun = newWeaponId;
+            this.#emit('playerSwapWeapon', player, player.weapons[player.activeGun]);
         }
     }
 
@@ -735,25 +750,25 @@ class Bot {
         const byId = CommIn.unPackInt8U();
         // const rs = CommIn.unPackInt8U();
 
-        const killedPlayer = this.players[killedId];
-        const byPlayer = this.players[byId];
+        const killed = this.players[killedId];
+        const killer = this.players[byId];
 
         /*
-        const byPlayerLastDmg = CommIn.unPackInt8U();
-        const killedByPlayerLastDmg = CommIn.unPackInt8U();
+        const killerLastDmg = CommIn.unPackInt8U();
+        const killedLastDmg = CommIn.unPackInt8U();
         */
 
-        if (killedPlayer) {
-            killedPlayer.playing = false;
-            killedPlayer.kills = 0;
-            killedPlayer.lastDeathTime = Date.now();
-            // console.log(`Player ${killedPlayer.name} died.`);
+        if (killed) {
+            killed.playing = false;
+            killed.kills = 0;
+            killed.lastDeathTime = Date.now();
+            // console.log(`Player ${killed.name} died.`);
         }
 
-        if (byPlayer) { byPlayer.kills++; }
-        // console.log(`Player ${byPlayer.name} is on a streak of ${byPlayer.kills} kills.`);
+        if (killer) { killer.kills++; }
+        // console.log(`Player ${killer.name} is on a streak of ${killer.kills} kills.`);
 
-        this._hooks.death.forEach((fn) => this._liveCallbacks.push(fn.apply(this, [this, killedPlayer, byPlayer])));
+        this.#emit('playerDeath', killed, killer); // killed, killer
     }
 
     #processFirePacket() {
@@ -762,7 +777,7 @@ class Bot {
 
         player.weapons[player.activeGun].ammo.rounds--;
 
-        this._hooks.fire.forEach((fn) => this._liveCallbacks.push(fn.apply(this, [this, player])));
+        this.#emit('fire', player);
     }
 
     #processCollectPacket() {
@@ -774,18 +789,15 @@ class Bot {
         const player = this.players[playerId];
 
         if (type == CollectTypes.AMMO) {
-            const playerWeapon = player.weapons[player.activeGun];
+            const playerWeapon = player.weapons[applyToWeaponIdx];
             playerWeapon.ammo.store = Math.min(playerWeapon.ammo.storeMax, playerWeapon.ammo.store + playerWeapon.ammo.pickup);
-            return;
+            this.#emit('collectAmmo', player, playerWeapon, itemId);
         }
 
         if (type == CollectTypes.GRENADE) {
             player.grenades >= 3 ? player.grenades = 3 : player.grenades++;
+            this.#emit('collectGrenade', player, itemId);
         }
-
-        this._hooks.collect.forEach((fn) => {
-            this._liveCallbacks.push(fn.apply(this, [this, player, type, applyToWeaponIdx, itemId]))
-        });
     }
 
     #processHitThemPacket() {
@@ -793,11 +805,13 @@ class Bot {
         const hp = CommIn.unPackInt8U();
         const player = this.players[id];
         player.hp = hp;
+        this.#emit('playerHit', player, player.hp);
     }
 
     #processHitMePacket() {
         const hp = CommIn.unPackInt8U();
         this.me.hp = hp;
+        this.#emit('selfHit', this.me, this.me.hp);
     }
 
     #processSyncMePacket() {
@@ -809,10 +823,21 @@ class Bot {
         const serverStateIdx = CommIn.unPackInt8U();
         player.serverStateIdx = serverStateIdx;
 
-        player.position.x = CommIn.unPackFloat();
-        player.position.y = CommIn.unPackFloat();
-        player.position.z = CommIn.unPackFloat();
-        return;
+        const newX = CommIn.unPackFloat();
+        const newY = CommIn.unPackFloat();
+        const newZ = CommIn.unPackFloat();
+
+        const oldX = player.position.x;
+        const oldY = player.position.y;
+        const oldZ = player.position.z;
+
+        player.position.x = newX;
+        player.position.y = newY;
+        player.position.z = newZ;
+
+        if (oldX != newX || oldY != newY || oldZ != newZ) {
+            this.#emit('serverMoveSelf', player, { x: oldX, y: oldY, z: oldZ }, { x: newX, y: newY, z: newZ });
+        }
     }
 
     #processEventModifierPacket() {
@@ -823,7 +848,11 @@ class Bot {
 
     #processRemovePlayerPacket() {
         const id = CommIn.unPackInt8U();
+        const removedPlayer = { ...this.players[id] }; // creates a snapshot of the player since they'll be deleted
+
         delete this.players[id.toString()];
+
+        this.#emit('playerLeave', removedPlayer);
     }
 
     #processGameStatePacket() {
@@ -845,6 +874,8 @@ class Bot {
                 controlledBy: controlledBy,
                 controlledByTeam: controlledByTeam
             };
+
+            this.#emit('gameStateChange', this.game);
         } else if (this.game.gameModeId == 3) { // kotc
             this.game.stage = CommIn.unPackInt8U(); // constants.CoopStates
             this.game.activeZone = CommIn.unPackInt8U(); // a number to represent which 'active zone' kotc is using
@@ -857,6 +888,8 @@ class Bot {
             // not in shell, for utility purposes =D
             this.game.stageName = CoopStagesById[this.game.stage]; // name of the stage ('start' / 'capturing' / 'etc')
             this.game.capturePercent = this.game.captureProgress / 1000; // progress of the capture as a percentage
+
+            this.#emit('gameStateChange', this.game);
         }
 
         if (this.game.gameModeId !== 2) {
@@ -917,6 +950,8 @@ class Bot {
                 player.streakRewards.push(ShellStreak.MiniEgg);
                 break;
         }
+
+        this.#emit('beginStreakReward', ksType, player);
     }
 
     #processEndStreakPacket() {
@@ -934,6 +969,8 @@ class Bot {
         if (streaks.includes(ksType) && player.streakRewards.includes(ksType)) {
             player.streakRewards = player.streakRewards.filter((r) => r != ksType);
         }
+
+        this.#emit('endStreakReward', ksType, player);
     }
 
     #processHitShieldPacket() {
@@ -945,11 +982,13 @@ class Bot {
 
         if (this.me.hpShield <= 0) {
             this.me.streakRewards = this.me.streakRewards.filter((r) => r != ShellStreak.HardBoiled);
+            this.#emit('selfLoseShield');
+        } else {
+            this.#emit('selfHitShield', this.me.hpShield);
         }
     }
 
     #processGameOptionsPacket() {
-        this.game.options
         let gravity = CommIn.unPackInt8U();
         let damage = CommIn.unPackInt8U();
         let healthRegen = CommIn.unPackInt8U();
@@ -971,6 +1010,8 @@ class Bot {
 
         this.game.options.weaponsDisabled = Array.from({ length: 7 }, () => CommIn.unPackInt8U() === 1);
         this.game.options.mustUseSecondary = this.game.options.weaponsDisabled.every((v) => v);
+
+        this.#emit('gameOptionsChange', this.game.options);
         return false;
     }
 
@@ -979,6 +1020,7 @@ class Bot {
 
         if (action == GameActions.pause) {
             console.log('settings changed, gameOwner changed game settings, force paused');
+            this.#emit('gameForcePause');
             setTimeout(() => this.me.playing = false, 3000);
         }
 
@@ -999,11 +1041,15 @@ class Bot {
             this.game.numCapturing = 0;
             this.game.stageName = CoopStagesById[CoopStates.capturing];
             this.game.capturePercent = 0.0;
+
+            this.#emit('gameReset');
         }
     }
 
     #processPingPacket() {
         this.ping = Date.now() - this.lastPingTime;
+
+        this.#emit('pingUpdate', this.ping);
 
         setTimeout(() => {
             const out = CommOut.getBuffer();
@@ -1022,6 +1068,8 @@ class Bot {
 
         player.team = toTeam;
         player.kills = 0;
+
+        this.#emit('playerSwitchTeam', player, toTeam);
     }
 
     #processChangeCharacterPacket() {
@@ -1045,6 +1093,9 @@ class Bot {
 
         const player = this.players[id];
         if (player) {
+            const oldCharacter = { ...player.character };
+            const oldWeaponIdx = player.selectedGun;
+
             player.character.eggColor = shellColor;
             player.character.primaryGun = primaryWeaponItem;
             player.character.secondaryGun = secondaryWeaponItem;
@@ -1055,16 +1106,20 @@ class Bot {
 
             player.selectedGun = weaponIndex;
             player.weapons[0] = new gunIndexes[weaponIndex]();
+
+            this.#emit('playerChangeCharacter', player, oldCharacter, player.character, oldWeaponIdx, player.selectedGun);
         }
     }
 
     #processUpdateBalancePacket() {
         const newBalance = CommIn.unPackInt32U();
         this.account.eggBalance = newBalance;
+        this.#emit('balanceUpdate', newBalance);
     }
 
     #processRespawnDeniedPacket() {
         this.me.playing = false;
+        this.#emit('respawnFail');
     }
 
     // we do this since reload doesn't get emitted to ourselves
@@ -1083,11 +1138,13 @@ class Bot {
 
         playerActiveWeapon.ammo.rounds += newRounds;
         playerActiveWeapon.ammo.store -= newRounds;
+
+        this.#emit('playerReload', player, playerActiveWeapon);
     }
 
     handlePacket(packet) {
         CommIn.init(packet);
-        this._hooks.packet.forEach((fn) => this._liveCallbacks.push(fn.apply(this, [this, packet])));
+        this.#emit('packet', packet);
         const cmd = CommIn.unPackInt8U();
         switch (cmd) {
             case CommCode.chat:
@@ -1204,14 +1261,6 @@ class Bot {
             default:
                 console.log(`I got but did not handle a: ${Object.entries(CommCode).filter(([, v]) => v == cmd)[0][0]} (${cmd})`);
                 break;
-        }
-    }
-
-    on(event, cb) {
-        if (Object.keys(this._hooks).includes(event)) {
-            this._hooks[event].push(cb);
-        } else {
-            throw new Error(`Event ${event} is not a valid hook (valid: ${Object.keys(this._hooks)})`);
         }
     }
 }
