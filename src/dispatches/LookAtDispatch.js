@@ -14,11 +14,11 @@ const radDifference = function (fromAngle, toAngle) {
 const setPrecision = function (value) { return Math.round(value * 8192) / 8192 }; // required precision
 
 const calculateYaw = function (pos) {
-    return setPrecision(mod(Math.atan2(pos.x, pos.z), PI2));
+    return setPrecision(mod(Math.atan2(pos.z, -pos.x), PI2));
 };
 
 const calculatePitch = function (pos) {
-    return setPrecision(-Math.atan2(pos.y, Math.hypot(pos.x, pos.z)) % 1.5);
+    return setPrecision(Math.atan2(pos.y, Math.hypot(pos.x, pos.z)));
 };
 
 class LookAtDispatch {
@@ -39,9 +39,9 @@ class LookAtDispatch {
     execute(bot) {
         let target;
 
-        if (this.id !== 'undefined') {
+        if (this.id !== undefined) {
             target = bot.players[this.id.toString()];
-        } else if (this.name !== 'undefined') {
+        } else if (this.name !== undefined) {
             target = bot.players.find(player => player.name == this.name);
         }
 
