@@ -1,6 +1,6 @@
 import packet from '#packet';
 
-export default class ChatDispatch {
+class ChatDispatch {
     constructor(msg) {
         this.msg = msg;
     }
@@ -15,3 +15,5 @@ export default class ChatDispatch {
         bot.lastChatTime = Date.now();
     }
 }
+
+export default ChatDispatch;

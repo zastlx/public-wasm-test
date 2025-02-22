@@ -1,6 +1,6 @@
 import packet from '#packet';
 
-export default class ReportPlayerDispatch {
+class ReportPlayerDispatch {
     constructor(idOrName, reasons = {}) {
         if (typeof idOrName == 'number') {
             this.id = idOrName
@@ -44,3 +44,5 @@ export default class ReportPlayerDispatch {
         new packet.ReportPacket(target, this.reasonInt).execute(bot.gameSocket);
     }
 }
+
+export default ReportPlayerDispatch;

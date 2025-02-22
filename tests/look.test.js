@@ -1,7 +1,10 @@
 /* eslint-disable curly */
 
-import dispatch from '#dispatch';
 import Bot from '#bot';
+
+import LookAtDispatch from '#dispatch/LookAtDispatch.js';
+import LookToDispatch from '#dispatch/LookToDispatch.js';
+import SpawnDispatch from '#dispatch/SpawnDispatch.js';
 
 const player = new Bot({ name: 'selfbot' });
 
@@ -10,18 +13,18 @@ player.on('join', (_bot, player) => {
 });
 
 player.on('chat', (bot, _player, msg) => {
-    if (msg == 'spawn') bot.dispatch(new dispatch.SpawnDispatch());
-    if (msg == 'lookAtMe') bot.dispatch(new dispatch.LookAtDispatch(_player.id));
+    if (msg == 'spawn') bot.dispatch(new SpawnDispatch());
+    if (msg == 'lookAtMe') bot.dispatch(new LookAtDispatch(_player.id));
 
     if (msg.startsWith('yaw ')) {
         const yaw = parseFloat(msg.split(' ')[1]);
-        bot.dispatch(new dispatch.LookToDispatch(yaw, null));
+        bot.dispatch(new LookToDispatch(yaw, null));
     }
 
     if (msg.startsWith('pitch ')) {
         const pitch = parseFloat(msg.split(' ')[1]);
-        bot.dispatch(new dispatch.LookToDispatch(null, pitch));
+        bot.dispatch(new LookToDispatch(null, pitch));
     }
 })
 
-await player.join(process.argv[2]);
+await player.join(process.env.GAME_CODE || process.argv[2]);

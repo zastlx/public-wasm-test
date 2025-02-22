@@ -3,7 +3,10 @@ import { SocksProxyAgent } from 'socks-proxy-agent';
 import { WebSocket } from 'ws';
 
 import { loginAnonymously, loginWithCredentials } from '#api';
-import { CommIn, CommOut, StatsArr, updatePacketConstants } from '#comm';
+
+import CommIn from './comm/CommIn.js';
+import CommOut from './comm/CommOut.js';
+import { CloseCode, CommCode } from './comm/Codes.js';
 
 import GamePlayer from './bot/GamePlayer.js';
 import Matchmaker from './matchmaker.js';
@@ -21,12 +24,9 @@ import {
     Maps,
     PlayTypes,
     ShellStreak,
+    StatsArr,
     USER_AGENT
 } from '#constants';
-
-const consts = await updatePacketConstants();
-const CommCode = consts[0];
-const CloseCode = consts[1];
 
 class Bot {
     // params.name - the bot name
@@ -160,6 +160,7 @@ class Bot {
         this.loginData = await loginWithCredentials(email, pass, this.proxy ? this.proxy : '');
         this.state.loggedIn = true;
         console.log('Logged in successfully. Time:', Date.now() - time, 'ms');
+        return this.loginData;
     }
 
     dispatch(disp) {

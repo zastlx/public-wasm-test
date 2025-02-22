@@ -2,10 +2,10 @@ import fs from 'fs';
 import path from 'path';
 
 import Bot from '#bot';
-import dispatch from '#dispatch';
-import manager from '#manager';
+import Manager from '#manager';
+import Matchmaker from '#matchmaker';
 
-import Matchmaker from '../src/matchmaker.js';
+import SpawnDispatch from '#dispatch/SpawnDispatch.js';
 
 const playerList = [];
 const emails = []; // fill in here
@@ -35,17 +35,17 @@ const NUM_PLAYERS = 1;
 
 for (let i = 0; i < NUM_PLAYERS; i++) { playerList.push(new Bot({ name: process.argv[3] || 'spammer', updateInterval: 1 })); }
 
-const man = new manager.Manager(playerList);
+const man = new Manager(playerList);
 
 man.on('chat', (bot, _player, msg) => {
     if (msg == 'spawn') {
-        bot.dispatch(new dispatch.SpawnDispatch());
+        bot.dispatch(new SpawnDispatch());
     }
 });
 
 man.on('respawn', (bot, p) => {
     if (bot.me.name == p.name) {
-        bot.dispatch(new dispatch.SpawnDispatch());
+        bot.dispatch(new SpawnDispatch());
         console.log('respawned');
     }
 });
@@ -56,7 +56,7 @@ man.on('join', (_bot, player) => {
 
 await man.login(emails, passwords);
 
-let gameCode = process.argv[2];
+let gameCode = process.env.GAME_CODE || process.argv[2];
 if (!gameCode) {
     console.log('no game code specified, joininr game');
     const mm = new Matchmaker(man.getSessionId());

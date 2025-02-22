@@ -1,4 +1,4 @@
-export default class MovementDispatch {
+class MovementDispatch {
     constructor(controlKeys) {
         if (typeof controlKeys == typeof 0) {
             this.controlKeys = controlKeys;
@@ -16,3 +16,5 @@ export default class MovementDispatch {
         bot.controlKeys = this.controlKeys;
     }
 }
+
+export default MovementDispatch;

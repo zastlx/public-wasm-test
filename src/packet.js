@@ -1,4 +1,5 @@
-import { CommCode, CommOut } from '#comm';
+import CommOut from './comm/CommOut.js';
+import { CommCode } from './comm/Codes.js';
 
 class Packet {
     constructor(code, _args) {

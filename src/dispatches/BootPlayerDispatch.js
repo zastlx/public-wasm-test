@@ -1,6 +1,6 @@
 import packet from '#packet';
 
-export default class BootPlayerDispatch {
+class BootPlayerDispatch {
     constructor(uniqueId) {
         this.uniqueId = uniqueId;
     }
@@ -13,3 +13,5 @@ export default class BootPlayerDispatch {
         new packet.BootPacket(this.uniqueId).execute(bot.gameSocket);
     }
 }
+
+export default BootPlayerDispatch;

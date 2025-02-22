@@ -1,4 +1,4 @@
-export default class LookToDispatch {
+class LookToDispatch {
     constructor(yaw, pitch) {
         this.yaw = yaw;
         this.pitch = pitch;
@@ -13,3 +13,5 @@ export default class LookToDispatch {
         if (this.pitch) { bot.me.view.pitch = this.pitch; }
     }
 }
+
+export default LookToDispatch;

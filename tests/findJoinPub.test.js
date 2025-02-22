@@ -1,5 +1,5 @@
 import Bot from '#bot';
-import Matchmaker from '../src/matchmaker.js';
+import Matchmaker from '#matchmaker';
 
 const mm = new Matchmaker();
 

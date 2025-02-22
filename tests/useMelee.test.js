@@ -1,7 +1,9 @@
 /* eslint-disable curly */
 
-import dispatch from '#dispatch';
 import Bot from '#bot';
+
+import MeleeDispatch from '#dispatch/MeleeDispatch.js';
+import SpawnDispatch from '#dispatch/SpawnDispatch.js';
 
 const player = new Bot({ name: 'selfbot' });
 
@@ -10,8 +12,8 @@ player.on('join', (_bot, player) => {
 });
 
 player.on('chat', (bot, _player, msg) => {
-    if (msg == 'spawn') bot.dispatch(new dispatch.SpawnDispatch());
-    if (msg == 'melee') bot.dispatch(new dispatch.MeleeDispatch());
+    if (msg == 'spawn') bot.dispatch(new SpawnDispatch());
+    if (msg == 'melee') bot.dispatch(new MeleeDispatch());
 })
 
-await player.join(process.argv[2]);
+await player.join(process.env.GAME_CODE || process.argv[2]);

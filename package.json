@@ -22,9 +22,9 @@
 
         "./api": "./src/api.js",
         "./bot": "./src/bot.js",
-        "./comm": "./src/comm.js",
+        "./comm": "./src/comm/index.js",
         "./constants": "./src/constants.js",
-        "./dispatches": "./src/dispatch.js",
+        "./dispatch": "./src/dispatch/index.js",
         "./manager": "./src/manager.js",
         "./matchmaker": "./src/matchmaker.js",
         "./packets": "./src/packet.js",
@@ -51,10 +51,10 @@
     "imports": {
         "#api": "./src/api.js",
         "#bot": "./src/bot.js",
-        "#comm": "./src/comm.js",
         "#constants": "./src/constants.js",
-        "#dispatch": "./src/dispatch.js",
+        "#dispatch/*": "./src/dispatches/*",
         "#manager": "./src/manager.js",
+        "#matchmaker": "./src/matchmaker.js",
         "#packet": "./src/packet.js"
     }
 }

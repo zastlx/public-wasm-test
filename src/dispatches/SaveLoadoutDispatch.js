@@ -1,7 +1,7 @@
 import { queryServices } from '#api';
 import packet from '#packet';
 
-export default class SaveLoadoutDispatchte {
+class SaveLoadoutDispatch {
     constructor(gunId) {
         this.gunId = gunId;
     }
@@ -11,12 +11,7 @@ export default class SaveLoadoutDispatchte {
     }
 
     execute(bot) {
-        if (this.gunId) {
-            new packet.ChangeCharacterPacket(this.gunId).execute(bot.gameSocket);
-        }
-
-        console.log(bot.me.character);
-        console.log('sending stamp ID', bot.me.character.stamp.id);
+        new packet.ChangeCharacterPacket(this.gunId || bot.me.selectedGun).execute(bot.gameSocket);
 
         const saveLoadout = queryServices({
             cmd: 'saveLoadout',
@@ -48,3 +43,5 @@ export default class SaveLoadoutDispatchte {
         saveLoadout.then((res) => console.log('saveloadout', res)) 
     }
 }
+
+export default SaveLoadoutDispatch;

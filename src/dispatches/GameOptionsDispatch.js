@@ -1,6 +1,6 @@
 import packet from '#packet';
 
-export default class GameOptionsDispatch {
+class GameOptionsDispatch {
     check(bot) {
         return bot.game.isGameOwner;
     }
@@ -9,3 +9,5 @@ export default class GameOptionsDispatch {
         new packet.GameOptionsPacket(bot.game.options).execute(bot.gameSocket);
     }
 }
+
+export default GameOptionsDispatch;

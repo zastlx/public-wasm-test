@@ -1,6 +1,6 @@
 import packet from '#packet';
 
-export default class SwitchTeamDispatch {
+class SwitchTeamDispatch {
     check(bot) {
         if (bot.me.playing) { return false; } // you probably cant change team mid-game
         if (bot.game.gameModeId == 0) { return false; } // ffa
@@ -23,3 +23,5 @@ export default class SwitchTeamDispatch {
         new packet.TeamSwitchingTraitorPacket().execute(bot.gameSocket);
     }
 }
+
+export default SwitchTeamDispatch;

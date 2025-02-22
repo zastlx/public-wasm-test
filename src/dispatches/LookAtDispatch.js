@@ -21,7 +21,7 @@ const calculatePitch = function (pos) {
     return setPrecision(-Math.atan2(pos.y, Math.hypot(pos.x, pos.z)) % 1.5);
 };
 
-export default class LookAtDispatch {
+class LookAtDispatch {
     idOrName;
 
     constructor(idOrName) {
@@ -74,3 +74,5 @@ export default class LookAtDispatch {
         bot.me.view.pitch = newPitch;
     }
 }
+
+export default LookAtDispatch;

@@ -1,6 +1,6 @@
 import packet from '#packet';
 
-export default class SpawnDispatch {
+class PauseDispatch {
     check(bot) {
         return bot.me.playing;
     }
@@ -10,3 +10,5 @@ export default class SpawnDispatch {
         setTimeout(() => bot.me.playing = false, 3000); 
     }
 }
+
+export default PauseDispatch;

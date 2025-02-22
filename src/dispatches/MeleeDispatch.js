@@ -1,6 +1,6 @@
 import packet from '#packet';
 
-export default class MeleeDispatch {
+class MeleeDispatch {
     check(bot) {
         return bot.me.playing && !bot.state.reloading && !bot.state.swappingGun && !bot.state.usingMelee;
     }
@@ -18,7 +18,9 @@ export default class MeleeDispatch {
             setTimeout(() => {
                 // new ChatDispatch('end swap gun').execute(player);
                 bot.swappingGun = false
-            }, 0.5 * bot.weapons[0].equipTime)
+            }, 0.5 * bot.me.weapons[0].equipTime)
         }, 566.61);
     }
 }
+
+export default MeleeDispatch;

@@ -1,9 +1,10 @@
 /* eslint-disable curly */
 
-import dispatch from '#dispatch';
 import Bot from '#bot';
-
 import { Move } from '#constants';
+
+import MovementDispatch from '#dispatch/MovementDispatch.js';
+import SpawnDispatch from '#dispatch/SpawnDispatch.js';
 
 const player = new Bot({ name: 'selfbot' });
 
@@ -12,8 +13,8 @@ player.on('join', (_bot, player) => {
 });
 
 player.on('chat', (bot, _player, msg) => {
-    if (msg == 'spawn') bot.dispatch(new dispatch.SpawnDispatch());
-    if (msg == 'move') bot.dispatch(new dispatch.MovementDispatch(Move.FORWARD | Move.JUMP));
+    if (msg == 'spawn') bot.dispatch(new SpawnDispatch());
+    if (msg == 'move') bot.dispatch(new MovementDispatch(Move.FORWARD | Move.JUMP));
 })
 
-await player.join(process.argv[2]);
+await player.join(process.env.GAME_CODE || process.argv[2]);

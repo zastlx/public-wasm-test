@@ -1,7 +1,9 @@
 /* eslint-disable curly */
 
-import dispatch from '#dispatch';
 import Bot from '#bot';
+
+import SpawnDispatch from '#dispatch/SpawnDispatch.js';
+import SwitchTeamDispatch from '#dispatch/SwitchTeamDispatch.js';
 
 const player = new Bot({ name: 'selfbot' });
 
@@ -10,8 +12,8 @@ player.on('join', (_bot, player) => {
 });
 
 player.on('chat', (bot, _player, msg) => {
-    if (msg == 'spawn') bot.dispatch(new dispatch.SpawnDispatch());
-    if (msg == 'switchTeam') bot.dispatch(new dispatch.SwitchTeamDispatch());
+    if (msg == 'spawn') bot.dispatch(new SpawnDispatch());
+    if (msg == 'switchTeam') bot.dispatch(new SwitchTeamDispatch());
 })
 
-await player.join(process.argv[2]);
+await player.join(process.env.GAME_CODE || process.argv[2]);

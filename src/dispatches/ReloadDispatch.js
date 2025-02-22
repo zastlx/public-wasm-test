@@ -1,6 +1,6 @@
 import packet from '#packet';
 
-export default class ReloadDispatch {
+class ReloadDispatch {
     check(bot) {
         return bot.me.playing && !bot.state.reloading && !bot.state.swappingGun && !bot.state.usingMelee;
     }
@@ -15,3 +15,5 @@ export default class ReloadDispatch {
         setTimeout(() => bot.state.reloading = false, isLongTime ? activeWeapon.longReloadTime : activeWeapon.shortReloadTime);
     }
 }
+
+export default ReloadDispatch;

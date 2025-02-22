@@ -1,6 +1,6 @@
 import packet from '#packet';
 
-export default class SpawnDispatch {
+class SpawnDispatch {
     check(bot) {
         if (!bot.me.playing && (bot.lastDeathTime + 6000) < Date.now()) { return true; }
 
@@ -16,3 +16,5 @@ export default class SpawnDispatch {
         bot.me.playing = true;
     }
 }
+
+export default SpawnDispatch;
