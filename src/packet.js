@@ -101,6 +101,10 @@ function PausePacket() {
     return new Packet(CommCode.pause);
 }
 
+function ReloadPacket() {
+    return new Packet(CommCode.reload);
+}
+
 export default {
     Packet,
     BootPacket,
@@ -109,6 +113,7 @@ export default {
     GameOptionsPacket,
     MeleePacket,
     PausePacket,
+    ReloadPacket,
     ReportPacket,
     RespawnPacket,
     SwapWeaponPacket,

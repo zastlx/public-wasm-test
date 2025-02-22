@@ -1,5 +1,6 @@
 import BootPlayerDispatch from './BootPlayerDispatch.js';
 import ChatDispatch from './ChatDispatch.js';
+import FireDispatch from './FireDispatch.js';
 import GameOptionsDispatch from './GameOptionsDispatch.js';
 import LookAtDispatch from './LookAtDispatch.js';
 import LookToDispatch from './LookToDispatch.js';
@@ -16,6 +17,7 @@ import SwitchTeamDispatch from './SwitchTeamDispatch.js';
 export {
     BootPlayerDispatch,
     ChatDispatch,
+    FireDispatch,
     GameOptionsDispatch,
     LookAtDispatch,
     LookToDispatch,
@@ -33,6 +35,7 @@ export {
 export default {
     BootPlayerDispatch,
     ChatDispatch,
+    FireDispatch,
     GameOptionsDispatch,
     LookAtDispatch,
     LookToDispatch,

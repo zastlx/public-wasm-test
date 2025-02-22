@@ -67,7 +67,10 @@ class Bot {
             // once we implement more packets these may be moved to "players"
             reloading: false,
             swappingGun: false,
-            usingMelee: false
+            usingMelee: false,
+
+            // shots fired ezzz
+            shotsFired: 0
         }
 
         this.players = {}
@@ -448,13 +451,15 @@ class Bot {
             out.packInt8(this.me.serverStateIdx); // serverStateIdx
             for (let i = 0; i < 3; i++) {
                 out.packInt8(this.controlKeys); // controlkeys
-                out.packInt8(0); // shots (unused)
+                out.packInt8(this.state.shotsFired); // shots fired
                 out.packRadU(this.me.view.yaw); // yaw
                 out.packRad(this.me.view.pitch); // pitch
                 out.packInt8(100); // ??? 
             }
             out.send(this.gameSocket);
+
             this.lastUpdateTime = Date.now();
+            this.state.shotsFired = 0;
         }
 
         let cb;
