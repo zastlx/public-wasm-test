@@ -29,7 +29,7 @@ export const PlayTypes = {
 }
 
 export const USER_AGENT =
-    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/1230.0.0.0 Safari/537.36';
+    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/1230.0.0.0 Safari/537.36'
 
 export const Move = {
     FORWARD: 1,
@@ -45,7 +45,7 @@ export const Move = {
 export const TEAM = {
     blue: 1,
     red: 2
-};
+}
 
 export const CoopStates = {
     start: 0,
@@ -56,7 +56,7 @@ export const CoopStates = {
     takeover: 5,
     abandoned: 6,
     unclaimed: 7
-};
+}
 
 export const CoopStagesById = Object.fromEntries(Object.entries(CoopStates).map(([key, value]) => [value, key]));
 
@@ -67,7 +67,7 @@ export const ShellStreak = {
     OverHeal: 8,
     DoubleEggs: 16,
     MiniEgg: 32
-};
+}
 
 export const CollectTypes = {
     AMMO: 0,
@@ -83,4 +83,4 @@ export const GameOptionFlags = {
 export const GameActions = {
     reset: 1,
     pause: 2
-};
+}
