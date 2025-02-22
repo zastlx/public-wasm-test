@@ -13,8 +13,8 @@ player.on('join', (_bot, player) => {
 });
 
 player.on('chat', (bot, _player, msg) => {
-    if (msg == 'spawn') bot.dispatch(new SpawnDispatch());
-    if (msg == 'lookAtMe') bot.dispatch(new LookAtDispatch(_player.id));
+    if (msg == 's') bot.dispatch(new SpawnDispatch());
+    if (msg == 'l') bot.dispatch(new LookAtDispatch(_player.id));
 
     if (msg.startsWith('yaw ')) {
         const yaw = parseFloat(msg.split(' ')[1]);

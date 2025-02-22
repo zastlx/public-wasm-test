@@ -11,15 +11,9 @@ const radDifference = function (fromAngle, toAngle) {
     return diff;
 };
 
-const setPrecision = function (value) { return Math.round(value * 8192) / 8192 }; // required precision
-
-const calculateYaw = function (pos) {
-    return setPrecision(mod(Math.atan2(pos.z, -pos.x), PI2));
-};
-
-const calculatePitch = function (pos) {
-    return setPrecision(Math.atan2(pos.y, Math.hypot(pos.x, pos.z)));
-};
+const setPrecision = (value) => Math.round(value * 8192) / 8192;
+const calculateYaw = (pos) => setPrecision(mod(Math.atan2(-pos.x, -pos.z), PI2));
+const calculatePitch = (pos) => setPrecision(Math.atan2(pos.y, Math.hypot(pos.x, pos.z)));
 
 class LookAtDispatch {
     idOrName;
@@ -45,33 +39,17 @@ class LookAtDispatch {
             target = bot.players.find(player => player.name == this.name);
         }
 
-        console.log(target.position, bot.me.position);
-
         const directionVector = {
             x: target.position.x - bot.me.position.x,
             y: target.position.y - bot.me.position.y - 0.05,
             z: target.position.z - bot.me.position.z
-        }
-
-        console.log('direction vector', directionVector);
-
-        const direction = {
-            yawReal: calculateYaw(directionVector),
-            pitchReal: calculatePitch(directionVector)
         };
 
-        console.log(direction);
+        const yawDiff = radDifference(calculateYaw(directionVector), bot.me.view.yaw);
+        const pitchDiff = radDifference(calculatePitch(directionVector), bot.me.view.pitch);
 
-        const yawDiff = radDifference(direction.yawReal, bot.me.view.yaw);
-        const pitchDiff = radDifference(direction.pitchReal, bot.me.view.pitch);
-
-        const newYaw = setPrecision(bot.me.view.yaw + yawDiff * 1);
-        const newPitch = setPrecision(bot.me.view.pitch + pitchDiff * 1);
-
-        console.log('yawDiff', yawDiff, 'pitchDiff', pitchDiff, 'newYaw', newYaw, 'newPitch', newPitch)
-
-        bot.me.view.yaw = newYaw;
-        bot.me.view.pitch = newPitch;
+        bot.me.view.yaw = setPrecision(bot.me.view.yaw + yawDiff);
+        bot.me.view.pitch = setPrecision(bot.me.view.pitch + pitchDiff);
     }
 }
 

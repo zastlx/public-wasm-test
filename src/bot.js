@@ -575,7 +575,7 @@ class Bot {
         const rounds1 = CommIn.unPackInt8U();
         const store1 = CommIn.unPackInt8U();
         const grenades = CommIn.unPackInt8U();
-        const player = id == this.me.id ? this.me : this.players[id];
+        const player = this.players[id];
         if (player) {
             player.playing = true;
             player.randomSeed = seed;
@@ -673,8 +673,8 @@ class Bot {
         const byId = CommIn.unPackInt8U();
         // const rs = CommIn.unPackInt8U();
 
-        const killedPlayer = killedId == this.me.id ? this : this.players[killedId];
-        const byPlayer = byId == this.me.id ? this : this.players[byId];
+        const killedPlayer = this.players[killedId];
+        const byPlayer = this.players[byId];
 
         /*
         const byPlayerLastDmg = CommIn.unPackInt8U();
