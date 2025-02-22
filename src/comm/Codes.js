@@ -1,37 +1,37 @@
 const CommCode = {
-    announcement: 10,
+    announcement: 10, // unused
     updateBalance: 11,
     reload: 12,
     respawn: 13,
     respawnDenied: 14,
-    pong: 15,
+    pong: 15, // unused
     clientReady: 16,
     requestRespawn: 17,
-    joinPublicGame: 18,
-    joinPrivateGame: 19,
+    joinPublicGame: 18, // unused
+    joinPrivateGame: 19, // unused
     switchTeamFail: 20,
-    expireUpgrade: 21,
+    expireUpgrade: 21, // don't use, related to forcing the user to see ads
     swapWeapon: 22,
     joinGame: 23,
-    refreshGameState: 24,
+    refreshGameState: 24, // don't use, related to the game pausing when you unfocused
     spawnItem: 25,
-    observeGame: 26,
+    observeGame: 26, // don't use, for mods
     ping: 27,
     bootPlayer: 28,
-    banPlayer: 29,
+    banPlayer: 29, // don't use, for mods
     loginRequired: 30,
     metaGameState: 31,
     syncMe: 32,
     explode: 33,
     keepAlive: 34,
-    musicInfo: 35,
+    musicInfo: 35, // don't use, likely for UI purposes
     hitMeHardBoiled: 36,
-    playerInfo: 37,
+    playerInfo: 37, // don't use, for admins
     challengeCompleted: 38,
-    gameLocked: 39,
+    gameLocked: 39, // unused???, closecode gamelocked is used afaik
     reportPlayer: 40,
-    banned: 41,
-    createPrivateGame: 42,
+    banned: 41, // unused
+    createPrivateGame: 42, // unused
     switchTeam: 43,
     changeCharacter: 44,
     pause: 45,
@@ -45,21 +45,21 @@ const CommCode = {
     fire: 53,
     melee: 54,
     throwGrenade: 55,
-    info: 56,
+    info: 56, // unused
     eventModifier: 57,
     hitThem: 58,
     hitMe: 59,
     collectItem: 60,
     chlgPlayerRerollInGame: 61,
-    playerInGameReward: 62,
+    playerInGameReward: 62, // unused
     playerRewards: 63,
     chat: 64,
     syncThem: 65,
-    syncAmmo: 66,
-    die: 67,
+    syncAmmo: 66, // unused
+    die: 67, // unused
     beginShellStreak: 68,
     endShellStreak: 69,
-    startReload: 70
+    startReload: 70 // unused
 }
 
 const CloseCode = {
