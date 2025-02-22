@@ -1,7 +1,4 @@
-const mod = function (n, m) {
-    const remain = n % m;
-    return remain >= 0 ? remain : remain + m;
-};
+const mod = (n, m) => ((n % m) + m) % m;
 
 const PI2 = Math.PI * 2;
 
