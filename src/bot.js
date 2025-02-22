@@ -136,7 +136,43 @@ class Bot {
             capturePercent: 0.0
         }
 
-        this.loginData = null;
+        this.account = {
+            // used for auth
+            firebaseId: '',
+            sessionId: '',
+
+            // used for skin changing
+            loadout: {
+                hatId: null,
+                meleeId: 0,
+                stampId: null,
+                classIdx: 0,
+                colorIdx: 0,
+                grenadeId: 0,
+                primaryId: [
+                    3100, 3600,
+                    3400, 3800,
+                    4000, 4200,
+                    4500
+                ],
+                secondaryId: new Array(7).fill(3000),
+                stampPositionX: 0,
+                stampPositionY: 0
+            },
+            ownedItemIds: [],
+
+            // used for chat checking
+            accountAge: 0,
+
+            // use in relation to commcodes
+            eggBalance: 0,
+            challenges: [],
+            claimedChallenges: [],
+            chwReady: {},
+
+            // raw login
+            rawLoginData: {}
+        };
 
         this._dispatches = [];
         this._packetQueue = [];
@@ -158,12 +194,30 @@ class Bot {
     }
 
     async login(email, pass) {
-        const time = Date.now()
-        this.email = email; this.pass = pass;
-        this.loginData = await loginWithCredentials(email, pass, this.proxy ? this.proxy : '');
+        const time = Date.now();
+
+        this.email = email;
+        this.pass = pass;
+
         this.state.loggedIn = true;
+
+        const loginData = await loginWithCredentials(email, pass, this.proxy ? this.proxy : '');
+
+        this.account.rawLoginData = loginData;
+
+        this.account.accountAge = loginData.accountAge;
+        this.account.challenges = loginData.challenges;
+        this.account.chwReady = loginData.chwReady;
+        this.account.claimedChallenges = loginData.claimedChallenges;
+        this.account.eggBalance = loginData.currentBalance;
+        this.account.firebaseId = loginData.firebaseId;
+        this.account.loadout = loginData.loadout;
+        this.account.ownedItemIds = loginData.ownedItemIds;
+        this.account.sessionId = loginData.sessionId;
+
         console.log('Logged in successfully. Time:', Date.now() - time, 'ms');
-        return this.loginData;
+
+        return this.account;
     }
 
     dispatch(disp) {
@@ -658,7 +712,6 @@ class Bot {
         const player = this.players[id];
         if (player) {
             player.playing = false;
-            // console.log(`Player ${player.name} paused.`);
             this._hooks.pause.forEach((fn) => this._liveCallbacks.push(fn.apply(this, [this, player])));
         }
     }
@@ -702,6 +755,9 @@ class Bot {
     #processFirePacket() {
         const id = CommIn.unPackInt8U(); // there should be 6 floats after this, but that's irrelevant for our purposes 
         const player = this.players[id];
+
+        player.weapons[player.activeGun].ammo.rounds--;
+
         this._hooks.fire.forEach((fn) => this._liveCallbacks.push(fn.apply(this, [this, player])));
     }
 
@@ -714,7 +770,9 @@ class Bot {
         const player = this.players[playerId];
 
         if (type == CollectTypes.AMMO) {
-            return; // TODO: Implement
+            const playerWeapon = player.weapons[player.activeGun];
+            playerWeapon.ammo.store = Math.min(playerWeapon.ammo.storeMax, playerWeapon.ammo.store + playerWeapon.ammo.pickup);
+            return;
         }
 
         if (type == CollectTypes.GRENADE) {
@@ -731,6 +789,11 @@ class Bot {
         const hp = CommIn.unPackInt8U();
         const player = this.players[id];
         player.hp = hp;
+    }
+
+    #processHitMePacket() {
+        const hp = CommIn.unPackInt8U();
+        this.me.hp = hp;
     }
 
     #processSyncMePacket() {
@@ -912,7 +975,7 @@ class Bot {
 
         if (action == GameActions.pause) {
             console.log('settings changed, gameOwner changed game settings, force paused');
-            this.me.playing = false;
+            setTimeout(() => this.me.playing = false, 3000);
         }
 
         if (action == GameActions.reset) {
@@ -991,6 +1054,33 @@ class Bot {
         }
     }
 
+    #processUpdateBalancePacket() {
+        const newBalance = CommIn.unPackInt32U();
+        this.account.eggBalance = newBalance;
+    }
+
+    #processRespawnDeniedPacket() {
+        this.me.playing = false;
+    }
+
+    // we do this since reload doesn't get emitted to ourselves
+    processReloadPacket(customPlayer) {
+        const id = customPlayer || CommIn.unPackInt8U();
+        const player = this.players[id];
+
+        if (!player) { return; }
+
+        const playerActiveWeapon = player.weapons[player.activeGun];
+
+        const newRounds = Math.min(
+            Math.min(playerActiveWeapon.ammo.capacity, playerActiveWeapon.ammo.reload) - playerActiveWeapon.ammo.rounds,
+            playerActiveWeapon.ammo.store
+        );
+
+        playerActiveWeapon.ammo.rounds += newRounds;
+        playerActiveWeapon.ammo.store -= newRounds;
+    }
+
     handlePacket(packet) {
         CommIn.init(packet);
         this._hooks.packet.forEach((fn) => this._liveCallbacks.push(fn.apply(this, [this, packet])));
@@ -1034,6 +1124,10 @@ class Bot {
 
             case CommCode.hitThem:
                 this.#processHitThemPacket(packet);
+                break;
+
+            case CommCode.hitMe:
+                this.#processHitMePacket(packet);
                 break;
 
             case CommCode.syncMe:
@@ -1084,7 +1178,18 @@ class Bot {
                 this.#processChangeCharacterPacket(packet);
                 break;
 
+            case CommCode.updateBalance:
+                this.#processUpdateBalancePacket(packet);
+                break;
+
+            case CommCode.respawnDenied:
+                this.#processRespawnDeniedPacket(packet);
+                break;
+
             case CommCode.reload:
+                this.processReloadPacket();
+                break;
+
             case CommCode.spawnItem:
             case CommCode.explode:
             case CommCode.melee:

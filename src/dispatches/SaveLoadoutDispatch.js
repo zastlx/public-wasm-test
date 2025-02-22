@@ -1,4 +1,5 @@
 import { queryServices } from '#api';
+import { gunIndexes } from '#constants';
 import packet from '#packet';
 
 class SaveLoadoutDispatch {
@@ -11,6 +12,10 @@ class SaveLoadoutDispatch {
     }
 
     execute(bot) {
+        if (this.gunId !== bot.me.selectedGun) {
+            bot.me.weapons[0] = new gunIndexes[this.gunId]();
+        }
+
         new packet.ChangeCharacterPacket(this.gunId || bot.me.selectedGun).execute(bot.gameSocket);
 
         const saveLoadout = queryServices({
@@ -40,7 +45,7 @@ class SaveLoadoutDispatch {
             }
         })
 
-        saveLoadout.then((res) => console.log('saveloadout', res)) 
+        saveLoadout.then((res) => console.log('saveloadout', res))
     }
 }
 

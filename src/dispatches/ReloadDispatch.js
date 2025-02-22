@@ -8,6 +8,8 @@ class ReloadDispatch {
     execute(bot) {
         new packet.ReloadPacket().execute(bot.gameSocket);
 
+        bot.processReloadPacket(bot.me.id);
+
         const activeWeapon = bot.me.weapons[bot.me.activeGun];
         const isLongTime = activeWeapon.ammo.rounds < 1;
 
