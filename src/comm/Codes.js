@@ -32,7 +32,7 @@ const CommCode = {
     reportPlayer: 40,
     banned: 41, // unused
     createPrivateGame: 42, // unused
-    switchTeam: 43, // don't use, because unlike official client, we don't assume the team is switched
+    switchTeam: 43, // don't use outgoing, because unlike official client, we don't assume the team is switched
     changeCharacter: 44,
     pause: 45,
     gameOptions: 46,

@@ -1266,6 +1266,14 @@ class Bot {
                 this.processReloadPacket();
                 break;
 
+            case CommCode.clientReady:
+            case CommCode.expireUpgrade:
+            case CommCode.musicInfo:
+            case CommCode.challengeCompleted:
+                // we do not plan to implement these
+                // for more info, see comm/codes.js
+                break;
+
             case CommCode.spawnItem:
             case CommCode.explode:
             case CommCode.melee:
