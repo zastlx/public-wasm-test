@@ -156,10 +156,8 @@ class Bot {
             accountAge: 0,
             emailVerified: false,
 
-            // use in relation to commcodes
+            // balance is tracked
             eggBalance: 0,
-            challenges: [],
-            claimedChallenges: [],
 
             // raw login
             rawLoginData: {}
@@ -197,8 +195,6 @@ class Bot {
         this.account.rawLoginData = loginData;
 
         this.account.accountAge = loginData.accountAge;
-        this.account.challenges = loginData.challenges;
-        this.account.claimedChallenges = loginData.claimedChallenges;
         this.account.eggBalance = loginData.currentBalance;
         this.account.emailVerified = loginData.emailVerified;
         this.account.firebaseId = loginData.firebaseId;
@@ -235,8 +231,6 @@ class Bot {
         this.account.rawLoginData = loginData;
 
         this.account.accountAge = loginData.accountAge;
-        this.account.challenges = loginData.challenges;
-        this.account.claimedChallenges = loginData.claimedChallenges;
         this.account.eggBalance = loginData.currentBalance;
         this.account.emailVerified = loginData.emailVerified;
         this.account.firebaseId = loginData.firebaseId;
