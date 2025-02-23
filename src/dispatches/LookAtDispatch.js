@@ -1,15 +1,8 @@
-import LookToDispatch from '#dispatch/LookToDispatch.js';
+import LookToDispatch from './LookToDispatch.js';
 
 const mod = (n, m) => ((n % m) + m) % m;
 
 const PI2 = Math.PI * 2;
-
-// eslint-disable-next-line no-unused-vars
-const radDifference = function (fromAngle, toAngle) {
-    let diff = (fromAngle - toAngle + Math.PI) % PI2 - Math.PI;
-    diff = diff < -Math.PI ? diff + PI2 : diff;
-    return diff;
-};
 
 const setPrecision = (value) => Math.round(value * 8192) / 8192;
 const calculateYaw = (pos) => setPrecision(mod(Math.atan2(-pos.x, -pos.z), PI2));
@@ -44,10 +37,9 @@ class LookAtDispatch {
             y: target.position.y - bot.me.position.y - 0.05,
             z: target.position.z - bot.me.position.z
         };
-        const yaw = calculateYaw(directionVector)
-        const pitch = calculatePitch(directionVector)
 
-        // console.log('Looking to ', target.name, ' at ', yaw, pitch)
+        const yaw = calculateYaw(directionVector);
+        const pitch = calculatePitch(directionVector);
 
         new LookToDispatch(yaw, pitch).execute(bot); // it works chat
     }
