@@ -12,6 +12,7 @@ const radDifference = function (fromAngle, toAngle) {
 };
 
 const setPrecision = function (value) { return Math.round(value * 8192) / 8192 }; //required precision
+
 const calculateYaw = function (pos) {
     return setPrecision(mod(Math.atan2(pos.x, pos.z), PI2));
 };
