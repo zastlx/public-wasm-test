@@ -612,7 +612,7 @@ class Bot {
             shield_: CommIn.unPackInt8U(),
             hp_: CommIn.unPackInt8U(),
             playing_: CommIn.unPackInt8U(),
-            weaponIdx_: CommIn.unPackInt8U(),
+            weaponIdx_: CommIn.unPackInt8U(),   
             controlKeys_: CommIn.unPackInt8U(),
             upgradeProductId_: CommIn.unPackInt8U(),
             activeShellStreaks_: CommIn.unPackInt8U(),

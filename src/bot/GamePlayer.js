@@ -13,6 +13,7 @@ export default class GamePlayer {
 
         this.joinedGame = true;
         this.playing = playerData.playing_;
+        
         this.position = {
             x: this.data.x_,
             y: this.data.y_,
