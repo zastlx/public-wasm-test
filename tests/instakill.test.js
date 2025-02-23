@@ -6,13 +6,13 @@ import ReloadDispatch from '#dispatch/ReloadDispatch.js';
 import SaveLoadoutDispatch from '#dispatch/SaveLoadoutDispatch.js';
 import SpawnDispatch from '#dispatch/SpawnDispatch.js';
 
-const player = new Bot({ name: 'selfbot' });
+const bot = new Bot({ name: 'selfbot' });
 
-player.on('join', (player) => {
+bot.on('join', (player) => {
     console.log(player.name, 'joined.');
 });
 
-player.on('chat', (bot, _player, msg) => {
+bot.on('chat', (_player, msg) => {
     if (msg == 's') {
         bot.dispatch(new SaveLoadoutDispatch(5)); // change gun to crackshot
         bot.dispatch(new SpawnDispatch()); // spawn in game
@@ -25,4 +25,4 @@ player.on('chat', (bot, _player, msg) => {
     }
 })
 
-await player.join(process.env.GAME_CODE || process.argv[2]);
+await bot.join(process.env.GAME_CODE || process.argv[2]);

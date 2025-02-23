@@ -2,14 +2,14 @@
 
 import Bot from '#bot';
 
-const player = new Bot({ name: 'selfbot' });
+const bot = new Bot({ name: 'selfbot' });
 
-player.on('join', (player) => {
+bot.on('join', (player) => {
     console.log(player.name, 'joined.');
 });
 
-player.onAny((event, ...args) => {
+bot.onAny((event, ...args) => {
     if (!['packet', 'tick'].includes(event)) console.log('onAny', event, ...args);
 });
 
-await player.join(process.env.GAME_CODE || process.argv[2]);
+await bot.join(process.env.GAME_CODE || process.argv[2]);

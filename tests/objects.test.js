@@ -5,13 +5,13 @@ import Bot from '#bot';
 import ChatDispatch from '#dispatch/ChatDispatch.js';
 import SpawnDispatch from '#dispatch/SpawnDispatch.js';
 
-const player = new Bot({ name: 'selfbot' });
+const bot = new Bot({ name: 'selfbot' });
 
-player.on('join', (player) => {
+bot.on('join', (player) => {
     console.log(player.name, 'joined.');
 });
 
-player.on('chat', (bot, _player, msg) => {
+bot.on('chat', (_player, msg) => {
     if (msg == 'spawn') bot.dispatch(new SpawnDispatch());
 
     if (msg == 'activeWeapon') bot.dispatch(new ChatDispatch(`using the ${bot.me.activeGun == 1 ? 'secondary' : 'primary'}`));
@@ -23,4 +23,4 @@ player.on('chat', (bot, _player, msg) => {
     if (msg == 'player0') console.log(bot.players[0]);
 })
 
-await player.join(process.env.GAME_CODE || process.argv[2]);
+await bot.join(process.env.GAME_CODE || process.argv[2]);
