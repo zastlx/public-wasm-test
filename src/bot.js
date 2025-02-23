@@ -151,6 +151,7 @@ class Bot {
                 stampPositionY: 0
             },
             ownedItemIds: [],
+            vip: false,
 
             // used for chat checking
             accountAge: 0,
@@ -205,6 +206,7 @@ class Bot {
         this.account.loadout = loginData.loadout;
         this.account.ownedItemIds = loginData.ownedItemIds;
         this.account.sessionId = loginData.sessionId;
+        this.account.vip = loginData.upgradeProductId && !loginData.upgradeIsExpired;
 
         console.log('Logged in successfully. Time:', Date.now() - time, 'ms');
 
@@ -243,6 +245,7 @@ class Bot {
         this.account.ownedItemIds = loginData.ownedItemIds;
         this.account.session = loginData.session;
         this.account.sessionId = loginData.sessionId;
+        this.account.vip = false;
     }
 
     async #initMatchmaker() {
