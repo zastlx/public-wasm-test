@@ -11,3 +11,5 @@ builds
 
 # mac cache
 .DS_Store
+
+**/logins.json
