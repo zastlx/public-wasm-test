@@ -11,20 +11,7 @@ export const Items = JSON.parse(fs.readFileSync(itemPath));
 
 export const findItemById = (id) => Items.find(item => item.id === id);
 
-const MeshPartMappings = {
-    aug: AUG,
-    csg1: CSG1,
-    dozenGauge: DozenGauge,
-    eggk47: Eggk47,
-    m24: M24,
-    rpegg: RPEGG,
-    smg: SMG
-}
-
-export const getWeaponFromMeshName = (meshName) => {
-    const mainPart = meshName.split('_')[1];
-    return MeshPartMappings[mainPart];
-}
+export const gunIndexes = [Eggk47, DozenGauge, CSG1, RPEGG, SMG, M24, AUG];
 
 export const GameModes = {
     'ffa': 0,
@@ -42,7 +29,7 @@ export const PlayTypes = {
 }
 
 export const USER_AGENT =
-    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/1230.0.0.0 Safari/537.36';
+    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/1230.0.0.0 Safari/537.36'
 
 export const Move = {
     FORWARD: 1,
@@ -54,3 +41,87 @@ export const Move = {
     MELEE: 64, // useless
     SCOPE: 128
 }
+
+export const TEAM = {
+    blue: 1,
+    red: 2
+}
+
+export const CoopStates = {
+    start: 0,
+    score: 1,
+    win: 2,
+    capturing: 3,
+    contested: 4,
+    takeover: 5,
+    abandoned: 6,
+    unclaimed: 7
+}
+
+export const CoopStagesById = Object.fromEntries(Object.entries(CoopStates).map(([key, value]) => [value, key]));
+
+export const ShellStreak = {
+    HardBoiled: 1,
+    EggBreaker: 2,
+    Restock: 4,
+    OverHeal: 8,
+    DoubleEggs: 16,
+    MiniEgg: 32
+}
+
+export const CollectTypes = {
+    AMMO: 0,
+    GRENADE: 1
+}
+
+export const GameOptionFlags = {
+    locked: 1,
+    noTeamChange: 2,
+    noTeamShuffle: 4
+}
+
+export const GameActions = {
+    reset: 1,
+    pause: 2
+}
+
+export const StatsArr = [
+    'kills',
+    'deaths',
+    'streak',
+    'killsCluck9mm',
+    'killsGrenade',
+    'killsRpegg',
+    'killsEggk47',
+    'killsScrambler',
+    'killsFreeRanger',
+    'killsWhipper',
+    'killsCrackshot',
+    'killsTriHard',
+    'killsMelee',
+    'killsPrivate',
+    'killsPublic',
+    'killsKing',
+    'killsSpatula',
+    'killsTeams',
+    'killsFFA',
+    'deathsCluck9mm',
+    'deathsGrenade',
+    'deathsRpegg',
+    'deathsEggk47',
+    'deathsScrambler',
+    'deathsFreeRanger',
+    'deathsWhipper',
+    'deathsCrackshot',
+    'deathsTriHard',
+    'deathsMelee',
+    'deathsFall',
+    'deathsPrivate',
+    'deathsPublic',
+    'deathsKing',
+    'deathsSpatula',
+    'deathsTeams',
+    'deathsFFA',
+    'kotcCaptured',
+    'kotcWins'
+];

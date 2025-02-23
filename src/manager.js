@@ -35,7 +35,7 @@ class Manager {
         this.players.forEach((player) => player.drain(nPackets));
     }
     on(event, callback) {
-        this.players.forEach((player) => player.on(event, callback));
+        this.players.forEach((player) => player.on(event, (...args) => callback(player, ...args)));
     }
     update() {
         const tmp = Date.now();
@@ -55,6 +55,4 @@ class Manager {
     }
 }
 
-export default {
-    Manager
-}
+export default Manager;

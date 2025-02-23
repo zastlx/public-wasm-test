@@ -1,6 +1,5 @@
-import * as comm from '#comm';
-
-const { CommCode, CommOut } = comm;
+import CommOut from './comm/CommOut.js';
+import { CommCode } from './comm/Codes.js';
 
 class Packet {
     constructor(code, _args) {
@@ -19,7 +18,7 @@ class Packet {
                     case 'string':
                         this.out.packString(arg.val);
                         break;
-                    case 'float': 
+                    case 'float':
                         this.out.packFloat(arg.val);
                         break;
                 }
@@ -48,16 +47,75 @@ function ChatPacket(msg) {
     ]);
 }
 
-function SwapWeaponPacket(player) {
+function SwapWeaponPacket(weaponId) {
     return new Packet(CommCode.swapWeapon, [
-        { type: 'int8', val: player.state.weapon }
+        { type: 'int8', val: weaponId }
     ]);
+}
+
+function ReportPacket(userId, reasonInt) {
+    return new Packet(CommCode.reportPlayer, [
+        { type: 'string', val: userId },
+        { type: 'int8', val: reasonInt }
+    ]);
+}
+
+function TeamSwitchingTraitorPacket() {
+    return new Packet(CommCode.switchTeam);
+}
+
+function GameOptionsPacket(options) {
+    const flags =
+        (options.locked ? 1 : 0) |
+        (options.noTeamChange ? 2 : 0) |
+        (options.noTeamShuffle ? 4 : 0);
+
+    const weapons = [];
+
+    options.weaponsDisabled.forEach((v) => {
+        weapons.push({ type: 'int8', val: v ? 1 : 0 });
+    });
+
+    return new Packet(CommCode.gameOptions, [
+        { type: 'int8', val: options.gravity * 4 },
+        { type: 'int8', val: options.damage * 4 },
+        { type: 'int8', val: options.healthRegen * 4 },
+        { type: 'int8', val: flags },
+        ...weapons
+    ]);
+}
+
+function BootPacket(uniqueId) {
+    return new Packet(CommCode.bootPlayer, [
+        { type: 'string', val: uniqueId }
+    ]);
+}
+
+function ChangeCharacterPacket(gunId) {
+    return new Packet(CommCode.changeCharacter, [
+        { type: 'int8', val: gunId }
+    ]);
+}
+
+function PausePacket() {
+    return new Packet(CommCode.pause);
+}
+
+function ReloadPacket() {
+    return new Packet(CommCode.reload);
 }
 
 export default {
     Packet,
+    BootPacket,
+    ChangeCharacterPacket,
     ChatPacket,
+    GameOptionsPacket,
     MeleePacket,
+    PausePacket,
+    ReloadPacket,
+    ReportPacket,
     RespawnPacket,
-    SwapWeaponPacket
+    SwapWeaponPacket,
+    TeamSwitchingTraitorPacket
 }

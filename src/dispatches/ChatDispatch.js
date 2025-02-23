@@ -1,15 +1,22 @@
 import packet from '#packet';
 
-export default class ChatDispatch {
+class ChatDispatch {
     constructor(msg) {
         this.msg = msg;
     }
-    check(player) {
-        return (player.state.joinedGame && (player.lastChatTime + 3000) < Date.now());
+
+    check(bot) {
+        if (!bot.state.joinedGame || (bot.lastChatTime + 3000) > Date.now()) { return false; }
+        if (!bot.game.isPrivate && !bot.account.emailVerified && bot.account.accountAge < (1e3 * 60 * 60 * 12)) { return false }
+
+        return true;
     }
-    execute(player) {
+
+    execute(bot) {
         console.log('Sending chat message:', this.msg);
-        new packet.ChatPacket(this.msg).execute(player.gameSocket);
-        player.lastChatTime = Date.now();
+        new packet.ChatPacket(this.msg).execute(bot.gameSocket);
+        bot.lastChatTime = Date.now();
     }
 }
+
+export default ChatDispatch;

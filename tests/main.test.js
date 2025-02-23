@@ -1,17 +1,17 @@
 import fs from 'fs';
-
 import path from 'path';
-import dispatch from '#dispatch';
-import manager from '#manager';
-import player from '#player';
 
-import Matchmaker from './src/matchmaker.js';
+import Bot from '#bot';
+import Manager from '#manager';
+import Matchmaker from '#matchmaker';
+
+import SpawnDispatch from '#dispatch/SpawnDispatch.js';
 
 const playerList = [];
 const emails = []; // fill in here
 const passwords = []; // fill in here
 
-const loginJSONPath = path.join(import.meta.dirname, 'data', 'logins.json');
+const loginJSONPath = path.join(import.meta.dirname, '..', 'data', 'logins.json');
 if (fs.existsSync(loginJSONPath)) {
     JSON.parse(fs.readFileSync(loginJSONPath)).accounts.forEach(element => {
         emails.push(element.email);
@@ -33,28 +33,30 @@ if (emails.length == 0 || passwords.length == 0) {
 
 const NUM_PLAYERS = 1;
 
-for (let i = 0; i < NUM_PLAYERS; i++) { playerList.push(new player.Player({ name: process.argv[3] || 'spammer', updateInterval: 1 })); }
+for (let i = 0; i < NUM_PLAYERS; i++) { playerList.push(new Bot({ name: process.argv[3] || 'spammer', updateInterval: 1 })); }
 
-const man = new manager.Manager(playerList);
+const man = new Manager(playerList);
 
-man.on('chat', (me, _player, msg) => {
-    if (msg == 'spawn') { me.dispatch(new dispatch.SpawnDispatch()); }
+man.on('chat', (bot, _player, msg) => {
+    if (msg == 'spawn') {
+        bot.dispatch(new SpawnDispatch());
+    }
 });
 
-man.on('respawn', (me, p) => {
-    if (me.name == p.name) {
-        me.dispatch(new dispatch.SpawnDispatch());
+man.on('respawn', (bot, p) => {
+    if (bot.me.name == p.name) {
+        bot.dispatch(new SpawnDispatch());
         console.log('respawned');
     }
 });
 
-man.on('join', (_me, player) => {
+man.on('join', (_bot, player) => {
     console.log(player.name, 'joined.');
 });
 
 await man.login(emails, passwords);
 
-let gameCode = process.argv[2];
+let gameCode = process.env.GAME_CODE || process.argv[2];
 if (!gameCode) {
     console.log('no game code specified, joininr game');
     const mm = new Matchmaker(man.getSessionId());

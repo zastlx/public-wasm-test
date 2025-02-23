@@ -1,17 +1,19 @@
 /* eslint-disable curly */
 
-import dispatch from '#dispatch';
-import Player from '#player';
+import Bot from '#bot';
 
-const player = new Player.Player({ name: 'selfbot' });
+import SpawnDispatch from '#dispatch/SpawnDispatch.js';
+import SwapWeaponDispatch from '#dispatch/SwapWeaponDispatch.js';
 
-player.on('join', (_me, player) => {
+const bot = new Bot({ name: 'selfbot' });
+
+bot.on('join', (player) => {
     console.log(player.name, 'joined.');
 });
 
-player.on('chat', (me, _player, msg) => {
-    if (msg == 'spawn') me.dispatch(new dispatch.SpawnDispatch());
-    if (msg == 'swapWeapon') player.dispatch(new dispatch.SwapWeaponDispatch());
+bot.on('chat', (_player, msg) => {
+    if (msg == 'spawn') bot.dispatch(new SpawnDispatch());
+    if (msg == 'swapWeapon') bot.dispatch(new SwapWeaponDispatch());
 })
 
-await player.join(process.argv[2]);
+await bot.join(process.env.GAME_CODE || process.argv[2]);

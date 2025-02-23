@@ -1,14 +1,15 @@
-import axios from 'axios';
 import fs from 'fs';
 import path from 'path';
 
-import { USER_AGENT } from 'src/constants';
+import { USER_AGENT } from '../../src/constants.js';
 
-const { data: js } = await axios.get('https://shellshock.io/js/shellshock.js', {
+const data = await fetch('https://shellshock.io/js/shellshock.js', {
     headers: {
         'User-Agent': USER_AGENT
     }
 });
+
+const js = await data.text();
 
 const match = js.match(/\[\{id:1001,.*?\}\]/)?.[0];
 

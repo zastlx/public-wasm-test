@@ -1,19 +1,20 @@
 /* eslint-disable curly */
 
-import dispatch from '#dispatch';
-import Player from '#player';
-
+import Bot from '#bot';
 import { Move } from '#constants';
 
-const player = new Player.Player({ name: 'selfbot' });
+import MovementDispatch from '#dispatch/MovementDispatch.js';
+import SpawnDispatch from '#dispatch/SpawnDispatch.js';
 
-player.on('join', (_me, player) => {
+const bot = new Bot({ name: 'selfbot' });
+
+bot.on('join', (player) => {
     console.log(player.name, 'joined.');
 });
 
-player.on('chat', (me, _player, msg) => {
-    if (msg == 'spawn') me.dispatch(new dispatch.SpawnDispatch());
-    if (msg == 'move') me.dispatch(new dispatch.MovementDispatch(Move.FORWARD | Move.JUMP));
+bot.on('chat', (_player, msg) => {
+    if (msg == 'spawn') bot.dispatch(new SpawnDispatch());
+    if (msg == 'move') bot.dispatch(new MovementDispatch(Move.FORWARD | Move.JUMP));
 })
 
-await player.join(process.argv[2]);
+await bot.join(process.env.GAME_CODE || process.argv[2]);

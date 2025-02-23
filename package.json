@@ -1,27 +1,39 @@
 {
-    "name": "shellfbot",
-    "version": "1.0.0",
-    "description": "shell headless bots",
-    "main": "main.js",
-    "repository": "https://github.com/enbyte/ShellfBot",
+    "name": "yolkbot",
+    "description": "create a shell shockers (self) bot in under 10 lines.",
+    "version": "0.0.1",
+    "keywords": ["shell shockers", "shellshock.io", "blue wizard", "yolkbot"],
+    "homepage": "https://github.com/enbyte/ShellfBot#readme",
+    "bugs": { "url": "https://github.com/enbyte/ShellfBot/issues" },
     "author": "hijinks",
-    "license": "unlicensed",
-    "private": true,
+    "contributors": [{ "name": "1ust", "url": "https://github.com/VillainsRule" }],
+    "repository": "github:enbyte/ShellfBot",
+
     "type": "module",
-    "scripts": {
-        "lint": "eslint --fix"
+    "files": [
+        "data/**/*",
+        "src/**/*",
+        "package.json",
+        "README.md"
+    ],
+    "exports": {
+        "./package.json": "./package.json",
+        ".": "./src/index.js",
+
+        "./api": "./src/api.js",
+        "./bot": "./src/bot.js",
+        "./comm": "./src/comm/index.js",
+        "./constants": "./src/constants.js",
+        "./dispatch": "./src/dispatch/index.js",
+        "./manager": "./src/manager.js",
+        "./matchmaker": "./src/matchmaker.js",
+        "./packets": "./src/packet.js",
+
+        "./dispatch/*": "./src/dispatch/*.js",
+        "./dispatch/*.js": "./src/packets/*.js"
     },
-    "imports": {
-        "#api": "./src/api.js",
-        "#comm": "./src/comm.js",
-        "#constants": "./src/constants.js",
-        "#dispatch": "./src/dispatch.js",
-        "#manager": "./src/manager.js",
-        "#player": "./src/player.js",
-        "#packet": "./src/packet.js"
-    },
+
     "dependencies": {
-        "firebase": "^11.3.1",
         "socks-proxy-agent": "^8.0.5",
         "ws": "^8.18.0"
     },
@@ -30,5 +42,19 @@
         "@stylistic/eslint-plugin": "^4.0.1",
         "eslint": "^9.20.1",
         "globals": "^15.15.0"
+    },
+
+    "scripts": {
+        "lint": "eslint --fix",
+        "postpublish": "node --env-file=.env scripts/postpublish.js"
+    },
+    "imports": {
+        "#api": "./src/api.js",
+        "#bot": "./src/bot.js",
+        "#constants": "./src/constants.js",
+        "#dispatch/*": "./src/dispatches/*",
+        "#manager": "./src/manager.js",
+        "#matchmaker": "./src/matchmaker.js",
+        "#packet": "./src/packet.js"
     }
 }

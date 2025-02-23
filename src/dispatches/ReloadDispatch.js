@@ -1,16 +1,21 @@
 import packet from '#packet';
 
-export default class ReloadDispatch {
-    check(player) {
-        return player.state.playing
+class ReloadDispatch {
+    check(bot) {
+        return bot.me.playing && !bot.state.reloading && !bot.state.swappingGun && !bot.state.usingMelee;
     }
-    execute(player) {
-        new packet.ReloadPacket().execute(player.gameSocket);
 
-        const isLongTime = player.state.weapons[player.state.weapon].ammo.rounds < 1;
-        const weaponData = player.state.weaponData;
+    execute(bot) {
+        new packet.ReloadPacket().execute(bot.gameSocket);
 
-        player.reloading = true;
-        setTimeout(() => player.reloading = false, isLongTime ? weaponData.longReloadTime : weaponData.shortReloadTime);
+        bot.processReloadPacket(bot.me.id);
+
+        const activeWeapon = bot.me.weapons[bot.me.activeGun];
+        const isLongTime = activeWeapon.ammo.rounds < 1;
+
+        bot.state.reloading = true;
+        setTimeout(() => bot.state.reloading = false, isLongTime ? activeWeapon.longReloadTime : activeWeapon.shortReloadTime);
     }
 }
+
+export default ReloadDispatch;

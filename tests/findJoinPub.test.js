@@ -1,4 +1,5 @@
-import Matchmaker from '../src/matchmaker.js';
+import Bot from '#bot';
+import Matchmaker from '#matchmaker';
 
 const mm = new Matchmaker();
 
@@ -10,11 +11,17 @@ console.log('selected random region', randomRegion);
 const randomGamemode = mm.getRandomGameMode();
 console.log('selected random gamemode', randomGamemode);
 
-const games = await mm.findPublicGame({
+const game = await mm.findPublicGame({
     region: randomRegion,
     mode: randomGamemode
 })
 
-console.log('found a game!', games);
+console.log('found a game!', game);
 
 mm.close();
+
+const bot = new Bot({ name: 'findJoinPub' });
+
+await bot.join(game);
+
+console.log('bot joined the game', game.id);

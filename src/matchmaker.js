@@ -1,20 +1,31 @@
+import EventEmitter from 'node:events';
+
+import { SocksProxyAgent } from 'socks-proxy-agent';
 import { WebSocket } from 'ws';
-import api from '#api';
 
-import { GameModes, PlayTypes, USER_AGENT } from './constants.js';
+import { loginAnonymously } from '#api';
+import { GameModes, PlayTypes, USER_AGENT } from '#constants';
 
-class Matchmaker {
+class Matchmaker extends EventEmitter {
     connected = false;
     onceConnected = [];
+
+    proxy = null;
     sessionId = '';
 
     forceClose = false;
 
-    constructor(customSessionId) {
+    constructor(customSessionId, proxy) {
+        super();
+
         if (customSessionId) {
             this.sessionId = customSessionId;
         } else {
             this.createSessionId();
+        }
+
+        if (proxy) {
+            this.proxy = new SocksProxyAgent(proxy);
         }
 
         this.createSocket();
@@ -25,7 +36,8 @@ class Matchmaker {
             headers: {
                 'user-agent': USER_AGENT,
                 'accept-language': 'en-US,en;q=0.9'
-            }
+            },
+            agent: this.proxy
         });
 
         this.ws.onopen = () => {
@@ -35,6 +47,11 @@ class Matchmaker {
             }
         };
 
+        this.ws.onmessage = (e) => {
+            const data = JSON.parse(e.data);
+            this.emit('msg', data);
+        }
+
         this.ws.onclose = () => {
             if (this.forceClose) { return; }
 
@@ -43,8 +60,12 @@ class Matchmaker {
         }
     }
 
+    send(msg) {
+        this.ws.send(JSON.stringify(msg));
+    }
+
     async createSessionId() {
-        const j = await api.anonymous();
+        const j = await loginAnonymously(this.proxy);
         this.sessionId = j.sessionId;
         console.log('matchmaker got sessionid', this.sessionId);
         if (this.connected) { this.onceConnected.forEach(func => func()); }
@@ -67,13 +88,12 @@ class Matchmaker {
         return new Promise((res) => {
             console.log('fetching regions');
 
-            this.ws.onmessage = (e2) => {
-                const data2 = JSON.parse(e2.data);
+            this.on('msg', (data2) => {
                 if (data2.command == 'regionList') {
                     this.regionList = data2.regionList;
                     res(data2.regionList);
                 }
-            };
+            });
 
             this.ws.onerror = (e2) => {
                 throw new Error('Failed to get regions', e2);
@@ -112,10 +132,11 @@ class Matchmaker {
                 sessionId: this.sessionId
             };
 
-            this.ws.onmessage = (e2) => {
-                const data2 = JSON.parse(e2.data);
-                if (data2.command == 'gameFound') { res(data2); }
-            };
+            this.on('msg', (data2) => {
+                if (data2.command == 'gameFound') {
+                    res(data2);
+                }
+            });
 
             this.ws.send(JSON.stringify(opts));
         });

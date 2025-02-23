@@ -2,7 +2,7 @@
 
 import Bot from '#bot';
 
-import MeleeDispatch from '#dispatch/MeleeDispatch.js';
+import ReportPlayerDispatch from '#dispatch/ReportPlayerDispatch.js';
 import SpawnDispatch from '#dispatch/SpawnDispatch.js';
 
 const bot = new Bot({ name: 'selfbot' });
@@ -13,7 +13,7 @@ bot.on('join', (player) => {
 
 bot.on('chat', (_player, msg) => {
     if (msg == 'spawn') bot.dispatch(new SpawnDispatch());
-    if (msg == 'melee') bot.dispatch(new MeleeDispatch());
+    if (msg == 'report') bot.dispatch(new ReportPlayerDispatch(_player.id, { cheating: true }));
 })
 
 await bot.join(process.env.GAME_CODE || process.argv[2]);

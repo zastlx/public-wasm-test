@@ -1,25 +1,30 @@
 /* eslint-disable curly */
 
-import dispatch from '#dispatch';
-import Player from '#player';
+import Bot from '#bot';
 
-const player = new Player.Player({ name: 'selfbot' });
+import LookAtDispatch from '#dispatch/LookAtDispatch.js';
+import LookToDispatch from '#dispatch/LookToDispatch.js';
+import SpawnDispatch from '#dispatch/SpawnDispatch.js';
 
-player.on('join', (_me, player) => {
+const bot = new Bot({ name: 'selfbot' });
+
+bot.on('join', (player) => {
     console.log(player.name, 'joined.');
 });
 
-player.on('chat', (me, _player, msg) => {
-    if (msg == 'spawn') me.dispatch(new dispatch.SpawnDispatch());
-    else if (msg == 'lookAtMe') {
-        me.dispatch(new dispatch.LookAtDispatch(_player.id));
-    } else if (msg.startsWith('yaw ')) {
+bot.on('chat', (_player, msg) => {
+    if (msg == 's') bot.dispatch(new SpawnDispatch());
+    if (msg == 'l') bot.dispatch(new LookAtDispatch(_player.id));
+
+    if (msg.startsWith('yaw ')) {
         const yaw = parseFloat(msg.split(' ')[1]);
-        me.state.view.yaw = yaw;
-    } else if (msg.startsWith('pitch ')) {
+        bot.dispatch(new LookToDispatch(yaw, null));
+    }
+
+    if (msg.startsWith('pitch ')) {
         const pitch = parseFloat(msg.split(' ')[1]);
-        me.state.view.pitch = pitch;
+        bot.dispatch(new LookToDispatch(null, pitch));
     }
 })
 
-await player.join(process.argv[2]);
+await bot.join(process.env.GAME_CODE || process.argv[2]);

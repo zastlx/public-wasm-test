@@ -1,13 +1,13 @@
-# Account data
-logins.json
-
-# Dependencies
+# modules
 node_modules
 
-# Lockfiles
-bun.lock
-yarn.lock
+# lockfiles
+*.lock
 package-lock.json
 
-# Mac Cache
+# npm utils
+builds
+.env
+
+# mac cache
 .DS_Store

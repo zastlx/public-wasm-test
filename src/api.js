@@ -1,18 +1,9 @@
-import WebSocket from 'ws';
-
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/auth';
-
 import { SocksProxyAgent } from 'socks-proxy-agent';
+import { WebSocket } from 'ws';
 
-firebase.initializeApp({
-    'apiKey': 'AIzaSyDP4SIjKaw6A4c-zvfYxICpbEjn1rRnN50',
-    'authDomain': 'shellshockio-181719.firebaseapp.com',
-    'databaseURL': 'https://shellshockio-181719.firebaseio.com',
-    'projectId': 'shellshockio-181719',
-    'storageBucket': 'shellshockio-181719.appspot.com',
-    'messagingSenderId': '68327206324'
-});
+import { USER_AGENT } from '#constants';
+
+const firebaseKey = 'AIzaSyDP4SIjKaw6A4c-zvfYxICpbEjn1rRnN50';
 
 async function fetchConstantsRaw() {
     const resp = await fetch('https://raw.githubusercontent.com/StateFarmNetwork/client-keys/refs/heads/main/constants_latest.json');
@@ -20,7 +11,7 @@ async function fetchConstantsRaw() {
     return json;
 }
 
-async function queryAPI(request, prox = '') {
+async function queryServices(request, prox = '') {
     let ws;
     if (prox) {
         ws = new WebSocket('wss://shellshock.io/services/', {
@@ -46,7 +37,7 @@ async function queryAPI(request, prox = '') {
                 const resp = JSON.parse(mes.data);
                 resolve(resp);
             } catch (e) {
-                console.log('Bad API JSON response in queryAPI with call: ' + request.cmd + ' and data: ' + JSON.stringify(request));
+                console.log('Bad API JSON response in queryServices with call: ' + request.cmd + ' and data: ' + JSON.stringify(request));
                 console.log('Full data sent: ' + JSON.stringify(request));
                 console.log('Full data received: ' + mes);
                 console.log('Full error: ' + e);
@@ -58,14 +49,14 @@ async function queryAPI(request, prox = '') {
     });
 
     if (response.error) {
-        console.log('queryAPI error:', response.error);
+        console.log('queryServices error:', response.error);
         return null;
     }
 
     return response;
 }
 
-async function login(email, password, prox = '') {
+async function loginWithCredentials(email, password, prox = '') {
 
     /*
     DO NOT CALL RAW!!!! (you can if you want :3 it doesn't change anything)
@@ -89,13 +80,25 @@ async function login(email, password, prox = '') {
     */
 
     let SUCCESS = false;
-    let user, token;
+    let request, body, token;
     let k = 0;
 
     while (!SUCCESS) {
         try {
-            user = await firebase.auth().signInWithEmailAndPassword(email, password);
-            token = await user.user.getIdToken();
+            request = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=' + firebaseKey, {
+                method: 'POST',
+                body: JSON.stringify({
+                    email: email,
+                    password: password,
+                    returnSecureToken: true
+                }),
+                headers: {
+                    'user-agent': USER_AGENT,
+                    'x-client-version': 'Chrome/JsCore/9.17.2/FirebaseCore-web'
+                }
+            })
+            body = await request.json();
+            token = body.idToken;
             SUCCESS = true;
         } catch (error) {
             ++k;
@@ -113,7 +116,7 @@ async function login(email, password, prox = '') {
 
     // let current_time = new Date().getTime();
 
-    const response = await queryAPI({
+    const response = await queryServices({
         cmd: 'auth',
         firebaseToken: token
     }, prox);
@@ -124,19 +127,27 @@ async function login(email, password, prox = '') {
     return response;
 }
 
-async function anonymous(prox = '') {
-    const user = await firebase.auth().signInAnonymously();
-    const token = await user.user.getIdToken();
-    const response = await queryAPI({
+async function loginAnonymously(prox = '') {
+    const request = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=' + firebaseKey, {
+        method: 'POST',
+        body: JSON.stringify({ returnSecureToken: true }),
+        headers: {
+            'user-agent': USER_AGENT,
+            'x-client-version': 'Chrome/JsCore/9.17.2/FirebaseCore-web'
+        }
+    })
+    const body = await request.json();
+    const token = body.idToken;
+    const response = await queryServices({
         cmd: 'auth',
         firebaseToken: token
     }, prox);
     return response
 }
 
-export default {
-    login,
-    queryAPI,
+export {
     fetchConstantsRaw,
-    anonymous
+    loginAnonymously,
+    loginWithCredentials,
+    queryServices
 }
