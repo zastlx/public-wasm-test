@@ -23,11 +23,11 @@ await bot.createPrivateGame({
 
 console.log('created private game, joining...');
 
-bot.on('join', (_bot, player) => {
+bot.on('join', (player) => {
     console.log(player.name, 'joined.');
 });
 
-bot.on('chat', (_bot, player, msg) => {
+bot.on('chat', (player, msg) => {
     if (msg.startsWith('gravity ')) {
         const gravity = parseFloat(msg.split(' ')[1]);
         bot.game.options.gravity = gravity;

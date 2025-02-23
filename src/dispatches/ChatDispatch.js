@@ -6,7 +6,10 @@ class ChatDispatch {
     }
 
     check(bot) {
-        return (bot.state.joinedGame && (bot.lastChatTime + 3000) < Date.now());
+        if (!bot.state.joinedGame || (bot.lastChatTime + 3000) > Date.now()) { return false; }
+        if (!bot.game.isPrivate && !bot.account.emailVerified && bot.account.accountAge < (1e3 * 60 * 60 * 12)) { return false }
+
+        return true;
     }
 
     execute(bot) {

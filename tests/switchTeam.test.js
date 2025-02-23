@@ -7,7 +7,7 @@ import SwitchTeamDispatch from '#dispatch/SwitchTeamDispatch.js';
 
 const player = new Bot({ name: 'selfbot' });
 
-player.on('join', (_bot, player) => {
+player.on('join', (player) => {
     console.log(player.name, 'joined.');
 });
 

@@ -1,10 +1,22 @@
 import { queryServices } from '#api';
-import { gunIndexes } from '#constants';
+import { findItemById, gunIndexes } from '#constants';
 import packet from '#packet';
 
 class SaveLoadoutDispatch {
-    constructor(gunId) {
-        this.gunId = gunId;
+    constructor(opts) {
+        this.changes = {
+            classIdx: opts.gunId,
+            hatId: opts.hatId,
+            stampId: opts.stampId,
+            grenadeId: opts.grenadeId,
+            meleeId: opts.meleeId,
+            colorIdx: opts.eggColor,
+            primaryId: opts.primaryIds,
+            secondaryId: opts.secondaryIds
+        };
+
+        // filter out undefined
+        this.changes = Object.fromEntries(Object.entries(this.changes).filter(([, v]) => v !== undefined));
     }
 
     check(bot) {
@@ -12,40 +24,67 @@ class SaveLoadoutDispatch {
     }
 
     execute(bot) {
-        if (this.gunId !== bot.me.selectedGun) {
-            bot.me.weapons[0] = new gunIndexes[this.gunId]();
+        if (this.changes.classIdx && this.changes.classIdx !== bot.me.selectedGun) {
+            bot.me.weapons[0] = new gunIndexes[this.changes.classIdx]();
         }
 
-        new packet.ChangeCharacterPacket(this.gunId || bot.me.selectedGun).execute(bot.gameSocket);
+        const loadout = {
+            ...bot.account.loadout,
+            ...this.changes
+        }
 
         const saveLoadout = queryServices({
             cmd: 'saveLoadout',
             save: true,
-            firebaseId: bot.loginData.firebaseId,
-            sessionId: bot.loginData.sessionId,
-            loadout: {
-                classIdx: this.gunId || bot.me.selectedGun,
-                hatId: bot.me.character.hat?.id || null,
-                stampId: bot.me.character.stamp?.id || null,
-                stampPositionX: 0,
-                stampPositionY: 0,
-                grenadeId: bot.me.character.grenade.id,
-                meleeId: bot.me.character.melee.id,
-                colorIdx: bot.me.character.eggColor,
-                primaryId: [
-                    3100,
-                    3600,
-                    3400,
-                    3800,
-                    4000,
-                    4200,
-                    4500
-                ],
-                secondaryId: new Array(7).fill(3000)
-            }
-        })
+            firebaseId: bot.account.firebaseId,
+            sessionId: bot.account.sessionId,
+            loadout
+        });
 
-        saveLoadout.then((res) => console.log('saveloadout', res))
+        bot.account.loadout = loadout;
+
+        saveLoadout.then((res) => {
+            console.log('saveloadout', res);
+
+            new packet.ChangeCharacterPacket(this.changes?.classIdx || bot.me.selectedGun).execute(bot.gameSocket);
+
+            // apply changes to the bot
+            Object.entries(this.changes).forEach(([changeKey, changeValue]) => {
+                switch (changeKey) {
+                    case 'classIdx':
+                        bot.me.selectedGun = changeValue;
+                        break;
+
+                    case 'hatId':
+                        bot.me.character.hat = findItemById(changeValue);
+                        break;
+
+                    case 'stampId':
+                        bot.me.character.stamp = findItemById(changeValue);
+                        break;
+
+                    case 'grenadeId':
+                        bot.me.character.grenade = findItemById(changeValue);
+                        break;
+
+                    case 'meleeId':
+                        bot.me.character.melee = findItemById(changeValue);
+                        break;
+
+                    case 'colorIdx':
+                        bot.me.character.eggColor = changeValue;
+                        break;
+
+                    case 'primaryId':
+                        bot.me.character.primaryGun = findItemById(changeValue[bot.me.selectedGun]);
+                        break;
+
+                    case 'secondaryId':
+                        bot.me.character.secondaryGun = findItemById(changeValue[bot.me.selectedGun]);
+                        break;
+                }
+            })
+        })
     }
 }
 

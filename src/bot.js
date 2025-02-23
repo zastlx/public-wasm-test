@@ -130,6 +130,7 @@ class Bot {
             // used for auth
             firebaseId: '',
             sessionId: '',
+            session: '',
 
             // used for skin changing
             loadout: {
@@ -153,12 +154,12 @@ class Bot {
 
             // used for chat checking
             accountAge: 0,
+            emailVerified: false,
 
             // use in relation to commcodes
             eggBalance: 0,
             challenges: [],
             claimedChallenges: [],
-            chwReady: {},
 
             // raw login
             rawLoginData: {}
@@ -197,9 +198,9 @@ class Bot {
 
         this.account.accountAge = loginData.accountAge;
         this.account.challenges = loginData.challenges;
-        this.account.chwReady = loginData.chwReady;
         this.account.claimedChallenges = loginData.claimedChallenges;
         this.account.eggBalance = loginData.currentBalance;
+        this.account.emailVerified = loginData.emailVerified;
         this.account.firebaseId = loginData.firebaseId;
         this.account.loadout = loginData.loadout;
         this.account.ownedItemIds = loginData.ownedItemIds;
@@ -227,15 +228,32 @@ class Bot {
         }
     }
 
+    async #anonLogin() {
+        const loginData = await loginAnonymously(this.proxy ? this.proxy : '');
+
+        this.account.rawLoginData = loginData;
+
+        this.account.accountAge = loginData.accountAge;
+        this.account.challenges = loginData.challenges;
+        this.account.claimedChallenges = loginData.claimedChallenges;
+        this.account.eggBalance = loginData.currentBalance;
+        this.account.emailVerified = loginData.emailVerified;
+        this.account.firebaseId = loginData.firebaseId;
+        this.account.loadout = loginData.loadout;
+        this.account.ownedItemIds = loginData.ownedItemIds;
+        this.account.session = loginData.session;
+        this.account.sessionId = loginData.sessionId;
+    }
+
     async #initMatchmaker() {
         if (!this.state.loggedIn) {
             console.log('Not logged in, attempting to create anonymous user...');
-            this.loginData = await loginAnonymously(this.proxy ? this.proxy : '');
+            await this.#anonLogin();
         }
 
         if (!this.matchmaker) {
             console.log('No matchmaker, creating instance')
-            this.matchmaker = new Matchmaker(this.loginData.sessionId, this.proxy);
+            this.matchmaker = new Matchmaker(this.account.sessionId, this.proxy);
             await this.matchmaker.getRegions();
         }
     }
@@ -265,7 +283,7 @@ class Bot {
             command: 'joinGame',
             id: code,
             observe: false,
-            sessionId: this.loginData.sessionId
+            sessionId: this.account.sessionId
         })
 
         while (!this.gameFound) { await new Promise(r => setTimeout(r, 10)); }
@@ -290,9 +308,9 @@ class Bot {
                 out.packInt8(0); // hidebadge
                 out.packInt8(0); // weapon choice
 
-                out.packInt32(this.loginData.session); // session int
-                out.packString(this.loginData.firebaseId); // firebase id
-                out.packString(this.loginData.sessionId); // session id
+                out.packInt32(this.account.session); // session int
+                out.packString(this.account.firebaseId); // firebase id
+                out.packString(this.account.sessionId); // session id
 
                 out.send(this.gameSocket);
                 break;
@@ -397,7 +415,7 @@ class Bot {
             region: opts.region,
             playType: PlayTypes.createPrivate,
             gameType: GameModes[opts.mode],
-            sessionId: this.loginData.sessionId,
+            sessionId: this.account.sessionId,
             noobLobby: false,
             map: mapIdx
         });
@@ -416,8 +434,9 @@ class Bot {
         } else if (typeof data == 'object') {
             if (!this.state.loggedIn) {
                 console.log('passed an object but you still need to be logged in!!')
-                this.loginData = await loginAnonymously(this.proxy ? this.proxy : '');
+                await this.#anonLogin();
             }
+
             // this is a game object that we can pass and get the needed info from
             this.game.raw = data;
             this.game.code = this.game.raw.id;
