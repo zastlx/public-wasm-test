@@ -1,7 +1,7 @@
 {
     "name": "yolkbot",
     "description": "create a shell shockers (self) bot in under 10 lines.",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "keywords": ["shell shockers", "shellshock.io", "blue wizard", "yolkbot"],
     "homepage": "https://github.com/enbyte/yolkbot#readme",
     "bugs": { "url": "https://github.com/enbyte/yolkbot/issues" },
@@ -24,13 +24,13 @@
         "./bot": "./src/bot.js",
         "./comm": "./src/comm/index.js",
         "./constants": "./src/constants.js",
-        "./dispatch": "./src/dispatch/index.js",
         "./manager": "./src/manager.js",
         "./matchmaker": "./src/matchmaker.js",
         "./packets": "./src/packet.js",
 
-        "./dispatch/*": "./src/dispatch/*.js",
-        "./dispatch/*.js": "./src/packets/*.js"
+        "./dispatch": "./src/dispatches/index.js",
+        "./dispatch/*": "./src/dispatches/*.js",
+        "./dispatch/*.js": "./src/dispatches/*.js"
     },
 
     "dependencies": {
