@@ -1,5 +1,3 @@
-import LookToDispatch from './LookToDispatch.js';
-
 const mod = (n, m) => ((n % m) + m) % m;
 
 const PI2 = Math.PI * 2;
@@ -41,7 +39,8 @@ class LookAtDispatch {
         const yaw = calculateYaw(directionVector);
         const pitch = calculatePitch(directionVector);
 
-        new LookToDispatch(yaw, pitch).execute(bot); // it works chat
+        bot.me.view.yaw = yaw;
+        bot.me.view.pitch = pitch;
     }
 }
 

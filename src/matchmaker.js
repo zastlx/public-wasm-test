@@ -1,10 +1,9 @@
-import EventEmitter from 'events/';
 import { SocksProxyAgent } from 'socks-proxy-agent';
 
 import { loginAnonymously } from '#api';
 import { GameModes, isBrowser, PlayTypes, USER_AGENT, WS } from '#constants';
 
-class Matchmaker extends EventEmitter {
+class Matchmaker {
     connected = false;
     onceConnected = [];
 
@@ -13,9 +12,10 @@ class Matchmaker extends EventEmitter {
 
     forceClose = false;
 
-    constructor(customSessionId, proxy) {
-        super();
+    onListeners = new Map();
+    onceListeners = new Map();
 
+    constructor(customSessionId, proxy) {
         if (customSessionId) {
             this.sessionId = customSessionId;
         } else {
@@ -86,7 +86,7 @@ class Matchmaker extends EventEmitter {
         return new Promise((res) => {
             console.log('fetching regions');
 
-            this.on('msg', (data2) => {
+            this.once('msg', (data2) => {
                 if (data2.command == 'regionList') {
                     this.regionList = data2.regionList;
                     res(data2.regionList);
@@ -130,7 +130,7 @@ class Matchmaker extends EventEmitter {
                 sessionId: this.sessionId
             };
 
-            this.on('msg', (data2) => {
+            this.once('msg', (data2) => {
                 if (data2.command == 'gameFound') {
                     res(data2);
                 }
@@ -155,6 +155,33 @@ class Matchmaker extends EventEmitter {
     close() {
         this.forceClose = true;
         this.ws.close();
+    }
+
+    on(event, callback) {
+        if (!this.onListeners.has(event)) {
+            this.onListeners.set(event, []);
+        }
+
+        this.onListeners.get(event).push(callback);
+    }
+
+    once(event, callback) {
+        if (!this.onceListeners.has(event)) {
+            this.onceListeners.set(event, []);
+        }
+
+        this.onceListeners.get(event).push(callback);
+    }
+
+    emit(event, ...args) {
+        if (this.onListeners.has(event)) {
+            this.onListeners.get(event).forEach(func => func(...args));
+        }
+
+        if (this.onceListeners.has(event)) {
+            this.onceListeners.get(event).forEach(func => func(...args));
+            this.onceListeners.delete(event);
+        }
     }
 }
 
