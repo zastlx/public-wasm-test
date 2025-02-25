@@ -1,28 +1,21 @@
 import { SocksProxyAgent } from 'socks-proxy-agent';
-import { WebSocket } from 'ws';
 
-import { USER_AGENT } from '#constants';
+import { isBrowser, USER_AGENT, WS } from '#constants';
 
 const firebaseKey = 'AIzaSyDP4SIjKaw6A4c-zvfYxICpbEjn1rRnN50';
 
-async function fetchConstantsRaw() {
-    const resp = await fetch('https://raw.githubusercontent.com/StateFarmNetwork/client-keys/refs/heads/main/constants_latest.json');
-    const json = await resp.json();
-    return json;
-}
-
 async function queryServices(request, prox = '') {
     let ws;
-    if (prox) {
-        ws = new WebSocket('wss://shellshock.io/services/', {
+    if (prox && !isBrowser) {
+        ws = new WS('wss://shellshock.io/services/', {
             agent: new SocksProxyAgent(prox)
         });
     } else {
-        ws = new WebSocket('wss://shellshock.io/services/');
+        ws = new WS('wss://shellshock.io/services/');
     }
 
     const openPromise = new Promise((resolve, reject) => {
-        ws.on('open', () => resolve(ws));
+        ws.addEventListener('open', () => resolve(ws));
         ws.onerror = (err) => reject(err);
     });
 
@@ -138,7 +131,6 @@ async function loginAnonymously(prox = '') {
 }
 
 export {
-    fetchConstantsRaw,
     loginAnonymously,
     loginWithCredentials,
     queryServices

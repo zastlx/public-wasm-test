@@ -1,4 +1,5 @@
-[
+/* eslint-disable */
+export const Maps = [
     {
         "filename": "aqueduct",
         "hash": "11dp765kifr",
@@ -1039,4 +1040,4 @@
         "availability": "private",
         "numPlayers": "18"
     }
-]
+];

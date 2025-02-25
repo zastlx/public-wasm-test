@@ -1,13 +1,7 @@
-import fs from 'fs';
-import path from 'path';
+import NodeWebSocket from 'ws';
 
 import { AUG, CSG1, DozenGauge, Eggk47, M24, RPEGG, SMG } from '../data/guns.js';
-
-const mapPath = path.join(import.meta.dirname, '..', 'data', 'maps.json');
-export const Maps = JSON.parse(fs.readFileSync(mapPath));
-
-const itemPath = path.join(import.meta.dirname, '..', 'data', 'items.json');
-export const Items = JSON.parse(fs.readFileSync(itemPath));
+import { Items } from '../data/items.js';
 
 export const findItemById = (id) => Items.find(item => item.id === id);
 
@@ -125,3 +119,7 @@ export const StatsArr = [
     'kotcCaptured',
     'kotcWins'
 ];
+
+export const isBrowser = typeof window !== 'undefined';
+// eslint-disable-next-line no-undef
+export const WS = isBrowser ? window.WebSocket : NodeWebSocket;

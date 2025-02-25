@@ -1,4 +1,5 @@
-[
+/* eslint-disable */
+export const Items = [
     {
         "id": 1001,
         "name": "Ball Cap",
@@ -41901,4 +41902,4 @@
         "is_available": false,
         "unlock": "manual"
     }
-]
+];

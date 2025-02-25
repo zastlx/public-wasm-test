@@ -1,5 +1,4 @@
 import { SocksProxyAgent } from 'socks-proxy-agent';
-import { WebSocket } from 'ws';
 
 import { loginAnonymously, loginWithCredentials } from '#api';
 
@@ -20,12 +19,15 @@ import {
     GameModesById,
     GameOptionFlags,
     gunIndexes,
-    Maps,
+    isBrowser,
     PlayTypes,
     ShellStreak,
     StatsArr,
-    USER_AGENT
+    USER_AGENT,
+    WS
 } from '#constants';
+
+import { Maps } from '../data/maps.js';
 
 class Bot {
     // params.name - the bot name
@@ -447,7 +449,7 @@ class Bot {
 
         console.log(`Joining ${this.game.raw.id} using proxy ${this.proxy || 'none'}`);
 
-        this.gameSocket = new WebSocket(`wss://${this.game.raw.subdomain}.shellshock.io/game/${this.game.raw.id}`, {
+        this.gameSocket = new WS(`wss://${this.game.raw.subdomain}.shellshock.io/game/${this.game.raw.id}`, isBrowser ? undefined : {
             headers: {
                 'user-agent': USER_AGENT,
                 'accept-language': 'en-US,en;q=0.9'

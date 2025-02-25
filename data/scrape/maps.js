@@ -18,4 +18,7 @@ let parsed = '';
 
 eval(`parsed = ${match}`);
 
-fs.writeFileSync(path.join(import.meta.dirname, '..', 'maps.json'), JSON.stringify(parsed, null, 4));
+fs.writeFileSync(
+    path.join(import.meta.dirname, '..', 'maps.js'),
+    `/* eslint-disable */\nexport const Maps = ${JSON.stringify(parsed, null, 4)};`
+);

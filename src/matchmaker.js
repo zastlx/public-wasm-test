@@ -1,10 +1,8 @@
-import EventEmitter from 'node:events';
-
+import EventEmitter from 'events/';
 import { SocksProxyAgent } from 'socks-proxy-agent';
-import { WebSocket } from 'ws';
 
 import { loginAnonymously } from '#api';
-import { GameModes, PlayTypes, USER_AGENT } from '#constants';
+import { GameModes, isBrowser, PlayTypes, USER_AGENT, WS } from '#constants';
 
 class Matchmaker extends EventEmitter {
     connected = false;
@@ -32,7 +30,7 @@ class Matchmaker extends EventEmitter {
     }
 
     createSocket() {
-        this.ws = new WebSocket('wss://shellshock.io/matchmaker/', {
+        this.ws = new WS('wss://shellshock.io/matchmaker/', isBrowser ? undefined : {
             headers: {
                 'user-agent': USER_AGENT,
                 'accept-language': 'en-US,en;q=0.9'
