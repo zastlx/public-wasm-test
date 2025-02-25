@@ -57,12 +57,6 @@ async function queryServices(request, prox = '') {
 }
 
 async function loginWithCredentials(email, password, prox = '') {
-
-    /*
-    DO NOT CALL RAW!!!! (you can if you want :3 it doesn't change anything)
-    create an Account() and then call .session() to get this data
-    */
-
     /*
     Response looks something like:
         {
@@ -114,15 +108,10 @@ async function loginWithCredentials(email, password, prox = '') {
         }
     }
 
-    // let current_time = new Date().getTime();
-
     const response = await queryServices({
         cmd: 'auth',
         firebaseToken: token
     }, prox);
-    // let after_time = new Date().getTime();
-
-    // console.log("Took " + (after_time - current_time) + "ms to authenticate");
 
     return response;
 }
@@ -136,12 +125,15 @@ async function loginAnonymously(prox = '') {
             'x-client-version': 'Chrome/JsCore/9.17.2/FirebaseCore-web'
         }
     })
+
     const body = await request.json();
     const token = body.idToken;
+
     const response = await queryServices({
         cmd: 'auth',
         firebaseToken: token
     }, prox);
+
     return response
 }
 
