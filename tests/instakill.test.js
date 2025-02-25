@@ -14,7 +14,7 @@ bot.on('join', (player) => {
 
 bot.on('chat', (_player, msg) => {
     if (msg == 's') {
-        bot.dispatch(new SaveLoadoutDispatch(5)); // change gun to crackshot
+        bot.dispatch(new SaveLoadoutDispatch({ gunId: 5 })); // change gun to crackshot
         bot.dispatch(new SpawnDispatch()); // spawn in game
     }
 
