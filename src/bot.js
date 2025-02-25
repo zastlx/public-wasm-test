@@ -29,7 +29,7 @@ import {
 
 import { Maps } from '../data/maps.js';
 
-class Bot {
+export class Bot {
     // params.name - the bot name
     // params.proxy - a socks(4|5) proxy
     // params.doUpdate - whether to auto update

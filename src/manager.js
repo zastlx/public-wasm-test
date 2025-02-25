@@ -3,7 +3,7 @@ import path from 'path';
 
 const proxyJSONPath = path.join(import.meta.dirname, '..', 'data', 'proxies.json');
 
-class Manager {
+export class Manager {
     _updateTimes = [];
 
     constructor(players, useProxies = false) {

@@ -3,7 +3,7 @@ import { SocksProxyAgent } from 'socks-proxy-agent';
 import { loginAnonymously } from '#api';
 import { GameModes, isBrowser, PlayTypes, USER_AGENT, WS } from '#constants';
 
-class Matchmaker {
+export class Matchmaker {
     connected = false;
     onceConnected = [];
 
