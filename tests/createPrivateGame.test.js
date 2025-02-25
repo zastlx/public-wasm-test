@@ -23,7 +23,7 @@ await bot.createPrivateGame({
 
 console.log('created private game, joining...');
 
-bot.on('join', (player) => {
+bot.on('playerJoin', (player) => {
     console.log(player.name, 'joined.');
 });
 

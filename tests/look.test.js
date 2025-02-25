@@ -8,7 +8,7 @@ import SpawnDispatch from '#dispatch/SpawnDispatch.js';
 
 const bot = new Bot({ name: 'selfbot' });
 
-bot.on('join', (player) => {
+bot.on('playerJoin', (player) => {
     console.log(player.name, 'joined.');
 });
 
