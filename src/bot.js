@@ -873,7 +873,7 @@ export class Bot {
     }
 
     #processGameStatePacket() {
-        if (this.game.gameModeId == 2) { // spatula
+        if (this.game.gameModeId == GameModes.spatula) {
             this.game.teamScore[1] = CommIn.unPackInt16U();
             this.game.teamScore[2] = CommIn.unPackInt16U();
 
@@ -893,7 +893,7 @@ export class Bot {
             };
 
             this.#emit('gameStateChange', this.game);
-        } else if (this.game.gameModeId == 3) { // kotc
+        } else if (this.game.gameModeId == GameModes.kotc) {
             this.game.stage = CommIn.unPackInt8U(); // constants.CoopStates
             this.game.activeZone = CommIn.unPackInt8U(); // a number to represent which 'active zone' kotc is using
             this.game.capturing = CommIn.unPackInt8U(); // the team capturing, named "teams" in shell src
@@ -909,11 +909,11 @@ export class Bot {
             this.#emit('gameStateChange', this.game);
         }
 
-        if (this.game.gameModeId !== 2) {
+        if (this.game.gameModeId !== GameModes.spatula) {
             delete this.game.spatula;
         }
 
-        if (this.game.gameModeId !== 3) {
+        if (this.game.gameModeId !== GameModes.kotc) {
             delete this.game.stage;
             delete this.game.activeZone;
             delete this.game.capturing;
@@ -921,7 +921,7 @@ export class Bot {
             delete this.game.numCapturing
         }
 
-        if (this.game.gameModeId !== 3 && this.game.gameModeId !== 2) {
+        if (this.game.gameModeId !== GameModes.spatula && this.game.gameModeId !== GameModes.kotc) {
             delete this.game.teamScore;
         }
     }
