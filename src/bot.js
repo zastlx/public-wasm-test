@@ -794,7 +794,7 @@ export class Bot {
 
         player.weapons[player.activeGun].ammo.rounds--;
 
-        this.#emit('fire', player);
+        this.#emit('playerFire', player);
     }
 
     #processCollectPacket() {
@@ -822,13 +822,13 @@ export class Bot {
         const hp = CommIn.unPackInt8U();
         const player = this.players[id];
         player.hp = hp;
-        this.#emit('playerHit', player, player.hp);
+        this.#emit('playerDamaged', player, player.hp);
     }
 
     #processHitMePacket() {
         const hp = CommIn.unPackInt8U();
         this.me.hp = hp;
-        this.#emit('selfHit', this.me, this.me.hp);
+        this.#emit('selfDamaged', this.me, this.me.hp);
     }
 
     #processSyncMePacket() {
@@ -853,7 +853,7 @@ export class Bot {
         player.position.z = newZ;
 
         if (oldX != newX || oldY != newY || oldZ != newZ) {
-            this.#emit('serverMoveSelf', player, { x: oldX, y: oldY, z: oldZ }, { x: newX, y: newY, z: newZ });
+            this.#emit('selfMoved', player, { x: oldX, y: oldY, z: oldZ }, { x: newX, y: newY, z: newZ });
         }
     }
 
@@ -968,7 +968,7 @@ export class Bot {
                 break;
         }
 
-        this.#emit('beginStreakReward', ksType, player);
+        this.#emit('playerBeginStreak', ksType, player);
     }
 
     #processEndStreakPacket() {
@@ -987,7 +987,7 @@ export class Bot {
             player.streakRewards = player.streakRewards.filter((r) => r != ksType);
         }
 
-        this.#emit('endStreakReward', ksType, player);
+        this.#emit('playerEndStreak', ksType, player);
     }
 
     #processHitShieldPacket() {
@@ -999,9 +999,9 @@ export class Bot {
 
         if (this.me.hpShield <= 0) {
             this.me.streakRewards = this.me.streakRewards.filter((r) => r != ShellStreak.HardBoiled);
-            this.#emit('selfLoseShield');
+            this.#emit('selfShieldLost');
         } else {
-            this.#emit('selfHitShield', this.me.hpShield);
+            this.#emit('selfShieldHit', this.me.hpShield);
         }
     }
 
@@ -1136,7 +1136,7 @@ export class Bot {
 
     #processRespawnDeniedPacket() {
         this.me.playing = false;
-        this.#emit('respawnFail');
+        this.#emit('selfRespawnFail');
     }
 
     // we do this since reload doesn't get emitted to ourselves
