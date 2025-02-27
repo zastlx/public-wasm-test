@@ -178,6 +178,16 @@ export class Matchmaker {
             this.onceListeners.delete(event);
         }
     }
+
+    off(event, callback) {
+        if (this.onListeners.has(event)) {
+            this.onListeners.set(event, this.onListeners.get(event).filter(func => func !== callback));
+        }
+
+        if (this.onceListeners.has(event)) {
+            this.onceListeners.set(event, this.onceListeners.get(event).filter(func => func !== callback));
+        }
+    }
 }
 
 export default Matchmaker;
