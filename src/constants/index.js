@@ -1,5 +1,5 @@
-import { AUG, CSG1, DozenGauge, Eggk47, M24, RPEGG, SMG } from '../data/guns.js';
-import { Items } from '../data/items.js';
+import { AUG, CSG1, DozenGauge, Eggk47, M24, RPEGG, SMG } from './guns.js';
+import { Items } from './items.js';
 
 export const findItemById = (id) => Items.find(item => item.id === id);
 
