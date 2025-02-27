@@ -503,7 +503,9 @@ export class Bot {
         if (this._packetQueue.length === 0 && this._dispatches.length === 0) { return; }
 
         let packet;
-        while ((packet = this._packetQueue.shift()) !== undefined) { this.handlePacket(packet); }
+        while ((packet = this._packetQueue.shift()) !== undefined) {
+            this.#handlePacket(packet);
+        }
 
         this.drain();
 
@@ -1159,7 +1161,7 @@ export class Bot {
         this.#emit('playerReload', player, playerActiveWeapon);
     }
 
-    handlePacket(packet) {
+    #handlePacket(packet) {
         CommIn.init(packet);
         this.#emit('packet', packet);
         const cmd = CommIn.unPackInt8U();
