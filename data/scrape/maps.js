@@ -1,11 +1,11 @@
 import fs from 'fs';
 import path from 'path';
 
-import { USER_AGENT } from '../../src/constants.js';
+import { UserAgent } from '../../src/constants.js';
 
 const data = await fetch('https://shellshock.io/js/shellshock.js', {
     headers: {
-        'User-Agent': USER_AGENT
+        'User-Agent': UserAgent
     }
 });
 

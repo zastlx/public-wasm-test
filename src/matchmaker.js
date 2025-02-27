@@ -1,7 +1,7 @@
-import { SocksProxyAgent } from 'socks-proxy-agent';
-
 import { loginAnonymously } from '#api';
-import { GameModes, isBrowser, PlayTypes, USER_AGENT, WS } from '#constants';
+import { GameModes, PlayTypes, UserAgent } from '#constants';
+
+import yolkws from './socket.js';
 
 export class Matchmaker {
     connected = false;
@@ -22,20 +22,15 @@ export class Matchmaker {
             this.createSessionId();
         }
 
-        if (proxy) {
-            this.proxy = new SocksProxyAgent(proxy);
-        }
+        this.proxy = proxy;
 
         this.createSocket();
     }
 
     createSocket() {
-        this.ws = new WS('wss://shellshock.io/matchmaker/', isBrowser ? undefined : {
-            headers: {
-                'user-agent': USER_AGENT,
-                'accept-language': 'en-US,en;q=0.9'
-            },
-            agent: this.proxy
+        this.ws = new yolkws('wss://shellshock.io/matchmaker/', this.proxy, {
+            'user-agent': UserAgent,
+            'accept-language': 'en-US,en;q=0.9'
         });
 
         this.ws.onopen = () => {

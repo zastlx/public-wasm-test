@@ -1,5 +1,5 @@
 import { queryServices } from '#api';
-import { findItemById, gunIndexes } from '#constants';
+import { findItemById, GunList } from '#constants';
 
 import packet from '#packet';
 
@@ -64,7 +64,7 @@ class SaveLoadoutDispatch {
 
     execute(bot) {
         if (this.changes.classIdx && this.changes.classIdx !== bot.me.selectedGun) {
-            bot.me.weapons[0] = new gunIndexes[this.changes.classIdx]();
+            bot.me.weapons[0] = new GunList[this.changes.classIdx]();
         }
 
         const loadout = {

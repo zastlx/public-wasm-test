@@ -1,5 +1,3 @@
-import { SocksProxyAgent } from 'socks-proxy-agent';
-
 import { loginAnonymously, loginWithCredentials } from '#api';
 
 import CommIn from './comm/CommIn.js';
@@ -8,26 +6,25 @@ import { CloseCode, CommCode } from './comm/Codes.js';
 
 import GamePlayer from './bot/GamePlayer.js';
 import Matchmaker from './matchmaker.js';
+import yolkws from './socket.js';
 
 import {
     CollectTypes,
-    CoopStagesById,
     CoopStates,
     findItemById,
     GameActions,
     GameModes,
-    GameModesById,
     GameOptionFlags,
-    gunIndexes,
-    isBrowser,
+    GunList,
     PlayTypes,
-    ShellStreak,
-    StatsArr,
-    USER_AGENT,
-    WS
+    ShellStreaks,
+    UserAgent
 } from '#constants';
 
 import { Maps } from '../data/maps.js';
+
+const CoopStagesById = Object.fromEntries(Object.entries(CoopStates).map(([key, value]) => [value, key]));
+const GameModesById = Object.fromEntries(Object.entries(GameModes).map(([key, value]) => [value, key]));
 
 export class Bot {
     // params.name - the bot name
@@ -449,12 +446,9 @@ export class Bot {
 
         console.log(`Joining ${this.game.raw.id} using proxy ${this.proxy || 'none'}`);
 
-        this.gameSocket = new WS(`wss://${this.game.raw.subdomain}.shellshock.io/game/${this.game.raw.id}`, isBrowser ? undefined : {
-            headers: {
-                'user-agent': USER_AGENT,
-                'accept-language': 'en-US,en;q=0.9'
-            },
-            agent: this.proxy ? new SocksProxyAgent(this.proxy) : null
+        this.gameSocket = new yolkws(`wss://${this.game.raw.subdomain}.shellshock.io/game/${this.game.raw.id}`, this.proxy, {
+            'user-agent': UserAgent,
+            'accept-language': 'en-US,en;q=0.9'
         });
 
         this.gameSocket.binaryType = 'arraybuffer';
@@ -622,12 +616,6 @@ export class Bot {
         playerData.gameData_.private = CommIn.unPackInt8U();
         playerData.gameData_.gameType = CommIn.unPackInt8U();
 
-        playerData.stats_ = {};
-        StatsArr.forEach((stat) => playerData.stats_[stat] = 0);
-        playerData.stats_.kills = playerData.kills_;
-        playerData.stats_.deaths = playerData.deaths_;
-        playerData.stats_.streak = playerData.streak_;
-
         if (!this.players[playerData.id_]) {
             this.players[playerData.id_] = new GamePlayer(playerData.id_, playerData.team_, playerData);
 
@@ -639,7 +627,7 @@ export class Bot {
 
                     const regenSpeed = 0.1 * (this.game.isPrivate ? this.game.options.healthRegen : 1);
 
-                    if (player.streakRewards.includes(ShellStreak.OverHeal)) {
+                    if (player.streakRewards.includes(ShellStreaks.OverHeal)) {
                         player.hp = Math.max(100, player.hp - regenSpeed);
                     } else {
                         player.hp = Math.min(100, player.hp + regenSpeed);
@@ -695,7 +683,7 @@ export class Bot {
 
                 const regenSpeed = 0.1 * (this.game.isPrivate ? this.game.options[GameOptionFlags.healthRegen] : 1);
 
-                if (player.streakRewards.includes(ShellStreak.OverHeal)) {
+                if (player.streakRewards.includes(ShellStreaks.OverHeal)) {
                     player.hp = Math.max(100, player.hp - regenSpeed);
                 } else {
                     player.hp = Math.min(100, player.hp + regenSpeed);
@@ -934,16 +922,16 @@ export class Bot {
         const player = this.players[id];
 
         switch (ksType) {
-            case ShellStreak.HardBoiled:
+            case ShellStreaks.HardBoiled:
                 player.hpShield = 100;
-                player.streakRewards.push(ShellStreak.HardBoiled);
+                player.streakRewards.push(ShellStreaks.HardBoiled);
                 break;
 
-            case ShellStreak.EggBreaker:
-                player.streakRewards.push(ShellStreak.EggBreaker);
+            case ShellStreaks.EggBreaker:
+                player.streakRewards.push(ShellStreaks.EggBreaker);
                 break;
 
-            case ShellStreak.Restock: {
+            case ShellStreaks.Restock: {
                 player.grenades = 3;
 
                 // main weapon
@@ -956,17 +944,17 @@ export class Bot {
                 break;
             }
 
-            case ShellStreak.OverHeal:
+            case ShellStreaks.OverHeal:
                 player.hp = Math.min(200, player.hp + 100);
-                player.streakRewards.push(ShellStreak.OverHeal);
+                player.streakRewards.push(ShellStreaks.OverHeal);
                 break;
 
-            case ShellStreak.DoubleEggs:
-                player.streakRewards.push(ShellStreak.DoubleEggs);
+            case ShellStreaks.DoubleEggs:
+                player.streakRewards.push(ShellStreaks.DoubleEggs);
                 break;
 
-            case ShellStreak.MiniEgg:
-                player.streakRewards.push(ShellStreak.MiniEgg);
+            case ShellStreaks.MiniEgg:
+                player.streakRewards.push(ShellStreaks.MiniEgg);
                 break;
         }
 
@@ -979,10 +967,10 @@ export class Bot {
         const player = this.players[id];
 
         const streaks = [
-            ShellStreak.EggBreaker,
-            ShellStreak.OverHeal,
-            ShellStreak.DoubleEggs,
-            ShellStreak.MiniEgg
+            ShellStreaks.EggBreaker,
+            ShellStreaks.OverHeal,
+            ShellStreaks.DoubleEggs,
+            ShellStreaks.MiniEgg
         ];
 
         if (streaks.includes(ksType) && player.streakRewards.includes(ksType)) {
@@ -1000,7 +988,7 @@ export class Bot {
         this.me.hp = hp;
 
         if (this.me.hpShield <= 0) {
-            this.me.streakRewards = this.me.streakRewards.filter((r) => r != ShellStreak.HardBoiled);
+            this.me.streakRewards = this.me.streakRewards.filter((r) => r != ShellStreaks.HardBoiled);
             this.#emit('selfShieldLost');
         } else {
             this.#emit('selfShieldHit', this.me.hpShield);
@@ -1124,7 +1112,7 @@ export class Bot {
             player.character.melee = meleeItem;
 
             player.selectedGun = weaponIndex;
-            player.weapons[0] = new gunIndexes[weaponIndex]();
+            player.weapons[0] = new GunList[weaponIndex]();
 
             this.#emit('playerChangeCharacter', player, oldCharacter, player.character, oldWeaponIdx, player.selectedGun);
         }

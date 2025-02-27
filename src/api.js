@@ -1,18 +1,11 @@
-import { SocksProxyAgent } from 'socks-proxy-agent';
+import yolkws from './socket.js';
 
-import { isBrowser, USER_AGENT, WS } from '#constants';
+import { UserAgent } from '#constants';
 
 const firebaseKey = 'AIzaSyDP4SIjKaw6A4c-zvfYxICpbEjn1rRnN50';
 
 async function queryServices(request, prox = '') {
-    let ws;
-    if (prox && !isBrowser) {
-        ws = new WS('wss://shellshock.io/services/', {
-            agent: new SocksProxyAgent(prox)
-        });
-    } else {
-        ws = new WS('wss://shellshock.io/services/');
-    }
+    const ws = new yolkws('wss://shellshock.io/services/', prox, { 'user-agent': UserAgent });
 
     const openPromise = new Promise((resolve, reject) => {
         ws.addEventListener('open', () => resolve(ws));
@@ -80,7 +73,7 @@ async function loginWithCredentials(email, password, prox = '') {
                     returnSecureToken: true
                 }),
                 headers: {
-                    'user-agent': USER_AGENT,
+                    'user-agent': UserAgent,
                     'x-client-version': 'Chrome/JsCore/9.17.2/FirebaseCore-web'
                 }
             })
@@ -114,7 +107,7 @@ async function loginAnonymously(prox = '') {
         method: 'POST',
         body: JSON.stringify({ returnSecureToken: true }),
         headers: {
-            'user-agent': USER_AGENT,
+            'user-agent': UserAgent,
             'x-client-version': 'Chrome/JsCore/9.17.2/FirebaseCore-web'
         }
     })

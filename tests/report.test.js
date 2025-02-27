@@ -1,5 +1,3 @@
-/* eslint-disable curly */
-
 import Bot from '#bot';
 
 import ReportPlayerDispatch from '#dispatch/ReportPlayerDispatch.js';

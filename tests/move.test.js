@@ -1,7 +1,5 @@
-/* eslint-disable curly */
-
 import Bot from '#bot';
-import { Move } from '#constants';
+import { Movements } from '#constants';
 
 import MovementDispatch from '#dispatch/MovementDispatch.js';
 import SpawnDispatch from '#dispatch/SpawnDispatch.js';
@@ -14,7 +12,7 @@ bot.on('playerJoin', (player) => {
 
 bot.on('chat', (_player, msg) => {
     if (msg == 'spawn') bot.dispatch(new SpawnDispatch());
-    if (msg == 'move') bot.dispatch(new MovementDispatch(Move.FORWARD | Move.JUMP));
+    if (msg == 'move') bot.dispatch(new MovementDispatch(Movements.FORWARD | Movements.JUMP));
 })
 
 await bot.join(process.env.GAME_CODE || process.argv[2]);

@@ -1,5 +1,3 @@
-/* eslint-disable curly */
-
 import Bot from '#bot';
 
 const bot = new Bot({ name: 'selfbot' });
