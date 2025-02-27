@@ -10,11 +10,8 @@ class LookAtDispatch {
     idOrName;
 
     constructor(idOrName) {
-        if (typeof idOrName == 'number') {
-            this.id = idOrName
-        } else if (typeof idOrName == 'string') {
-            this.name = idOrName
-        }
+        if (typeof idOrName == 'number') this.id = idOrName
+        else if (typeof idOrName == 'string') this.name = idOrName
     }
 
     check(bot) {
@@ -24,11 +21,8 @@ class LookAtDispatch {
     execute(bot) {
         let target;
 
-        if (this.id !== undefined) {
-            target = bot.players[this.id.toString()];
-        } else if (this.name !== undefined) {
-            target = bot.players.find(player => player.name == this.name);
-        }
+        if (this.id !== undefined) target = bot.players[this.id.toString()];
+        else if (this.name !== undefined) target = bot.players.find(player => player.name == this.name);
 
         const directionVector = {
             x: target.position.x - bot.me.position.x,

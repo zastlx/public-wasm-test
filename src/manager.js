@@ -59,7 +59,7 @@ export class Manager {
         if (authorizedPlayers.length) {
             const randomPlayer = Math.floor(Math.random() * authorizedPlayers.length);
             return randomPlayer?.loginData?.sessionId;
-        } else { return null; }
+        } else return null;
     }
 }
 

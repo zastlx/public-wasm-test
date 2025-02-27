@@ -263,13 +263,10 @@ export class Bot {
                 delete this.game.raw.command; // pissed me off
 
                 this.gameFound = true;
-            } else {
-                console.log(mes);
-            }
+            } else console.log(mes);
 
-            if (mes.error && mes.error == 'gameNotFound') {
+            if (mes.error && mes.error == 'gameNotFound')
                 throw new Error(`Game ${code} not found (likely expired).`)
-            }
         };
 
         this.matchmaker.on('msg', listener);
@@ -281,7 +278,7 @@ export class Bot {
             sessionId: this.account.sessionId
         })
 
-        while (!this.gameFound) { await new Promise(r => setTimeout(r, 10)); }
+        while (!this.gameFound) await new Promise(r => setTimeout(r, 10));
 
         this.matchmaker.off('msg', listener);
     }
@@ -379,19 +376,18 @@ export class Bot {
         await this.#initMatchmaker();
 
         if (!opts.region) { throw new Error('pass a region: createPrivateGame({ region: "useast", ... })') }
-        if (!this.matchmaker.regionList.find(r => r.id == opts.region)) {
+        if (!this.matchmaker.regionList.find(r => r.id == opts.region))
             throw new Error('invalid region, see <bot>.matchmaker.regionList for a region list (pass an "id")')
-        }
 
-        if (!opts.mode) { throw new Error('pass a mode: createPrivateGame({ mode: "ffa", ... })') }
-        if (GameModes[opts.mode] == undefined) { throw new Error('invalid mode, see GameModes for a list') }
+        if (!opts.mode) throw new Error('pass a mode: createPrivateGame({ mode: "ffa", ... })')
+        if (GameModes[opts.mode] == undefined) throw new Error('invalid mode, see GameModes for a list')
 
-        if (!opts.map) { throw new Error('pass a map: createPrivateGame({ map: "downfall", ... })') }
+        if (!opts.map) throw new Error('pass a map: createPrivateGame({ map: "downfall", ... })')
 
         const map = Maps.find(m => m.name.toLowerCase() == opts.map.toLowerCase());
         const mapIdx = Maps.indexOf(map);
 
-        if (mapIdx == -1) { throw new Error('invalid map, see the Maps constant for a list') }
+        if (mapIdx == -1) throw new Error('invalid map, see the Maps constant for a list')
 
         const listener = (msg) => {
             if (msg.command == 'gameFound') {
@@ -415,7 +411,7 @@ export class Bot {
             map: mapIdx
         });
 
-        while (!this.gameFound) { await new Promise(r => setTimeout(r, 10)); }
+        while (!this.gameFound) await new Promise(r => setTimeout(r, 10));
 
         this.matchmaker.off('msg', listener);
 
@@ -440,9 +436,8 @@ export class Bot {
             this.gameFound = true;
         }
 
-        if (!this.game.raw.id || !this.game.raw.subdomain) {
+        if (!this.game.raw.id || !this.game.raw.subdomain)
             throw new Error('invalid game data passed to <bot>.join');
-        }
 
         console.log(`Joining ${this.game.raw.id} using proxy ${this.proxy || 'none'}`);
 
@@ -463,15 +458,13 @@ export class Bot {
             console.log('Game socket closed:', e.code, Object.entries(CloseCode).filter(([, v]) => v == e.code));
         }
 
-        while (!this.state.joinedGame) { await new Promise(r => setTimeout(r, 1)); }
+        while (!this.state.joinedGame) await new Promise(r => setTimeout(r, 5));
 
         const out = CommOut.getBuffer();
         out.packInt8(CommCode.clientReady);
         out.send(this.gameSocket);
 
-        this.gameSocket.onmessage = (msg) => {
-            this._packetQueue.push(msg.data);
-        }
+        this.gameSocket.onmessage = (msg) => this._packetQueue.push(msg.data);
 
         console.log(`Successfully joined ${this.game.code}. Startup to join time: ${Date.now() - this.initTime} ms`);
 
@@ -494,12 +487,10 @@ export class Bot {
 
         this.nUpdates++;
 
-        if (this._packetQueue.length === 0 && this._dispatches.length === 0) { return; }
+        if (this._packetQueue.length === 0 && this._dispatches.length === 0) return;
 
         let packet;
-        while ((packet = this._packetQueue.shift()) !== undefined) {
-            this.#handlePacket(packet);
-        }
+        while ((packet = this._packetQueue.shift()) !== undefined) this.#handlePacket(packet);
 
         this.drain();
 
@@ -525,15 +516,12 @@ export class Bot {
         }
 
         let cb;
-        while ((cb = this._liveCallbacks.shift()) !== undefined) { cb(); }
+        while ((cb = this._liveCallbacks.shift()) !== undefined) cb();
     }
 
     on(event, cb) {
-        if (Object.keys(this._hooks).includes(event)) {
-            this._hooks[event].push(cb);
-        } else {
-            this._hooks[event] = [cb];
-        }
+        if (Object.keys(this._hooks).includes(event)) this._hooks[event].push(cb);
+        else this._hooks[event] = [cb];
     }
 
     onAny(cb) {
@@ -623,7 +611,7 @@ export class Bot {
 
             if (player.playing) {
                 player.healthInterval = setInterval(() => {
-                    if (player.hp < 1) { return; }
+                    if (player.hp < 1) return;
 
                     const regenSpeed = 0.1 * (this.game.isPrivate ? this.game.options.healthRegen : 1);
 
@@ -679,7 +667,7 @@ export class Bot {
             }
 
             player.healthInterval = setInterval(() => {
-                if (player.hp < 1) { return; }
+                if (player.hp < 1) return;
 
                 const regenSpeed = 0.1 * (this.game.isPrivate ? this.game.options[GameOptionFlags.healthRegen] : 1);
 
@@ -1071,7 +1059,7 @@ export class Bot {
         const toTeam = CommIn.unPackInt8U();
         const player = this.players[id];
 
-        if (!player) { return; }
+        if (!player) return;
 
         player.team = toTeam;
         player.kills = 0;
@@ -1134,7 +1122,7 @@ export class Bot {
         const id = customPlayer || CommIn.unPackInt8U();
         const player = this.players[id];
 
-        if (!player) { return; }
+        if (!player) return;
 
         const playerActiveWeapon = player.weapons[player.activeGun];
 
