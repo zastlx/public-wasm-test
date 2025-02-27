@@ -83,13 +83,13 @@ async function loginWithCredentials(email, password, prox = '') {
         } catch (error) {
             ++k;
             if (error.code == 'auth/network-request-failed') {
-                console.error('cw_api.login: Network req failed (auth/network-request-failed), retrying, k =', k);
+                console.error('loginWithCredentials: Network req failed (auth/network-request-failed), retrying, k =', k);
             } else if (error.code == 'auth/missing-email') {
-                console.error('cw_api.login: You did not specify any emails. Please do so in data/logins.json');
+                console.error('loginWithCredentials: You did not specify an email when using loginWithCredentials');
                 process.exit(0);
             } else {
-                console.error('cw_api.login: Error:', email, password);
-                console.error('cw_api.login: Error:', error, 'k =', k);
+                console.error('loginWithCredentials: Error:', email, password);
+                console.error('loginWithCredentials: Error:', error, 'k =', k);
             }
         }
     }
