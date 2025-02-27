@@ -1118,7 +1118,10 @@ export class Bot {
     }
 
     // we do this since reload doesn't get emitted to ourselves
-    processReloadPacket(customPlayer) {
+    processReloadPacket(customPlayer, iUnderstandThisIsForInternalUseOnlyAndIShouldNotBeCallingThis) {
+        if (!iUnderstandThisIsForInternalUseOnlyAndIShouldNotBeCallingThis)
+            throw new Error('processReloadPacket is exposed for internal use only. do not call it.');
+
         const id = customPlayer || CommIn.unPackInt8U();
         const player = this.players[id];
 
@@ -1243,7 +1246,7 @@ export class Bot {
                 break;
 
             case CommCode.reload:
-                this.processReloadPacket();
+                this.processReloadPacket(null, true);
                 break;
 
             case CommCode.clientReady:
