@@ -24,17 +24,17 @@ export const GameActions = {
     pause: 2
 }
 
-export const GameOptionFlags = {
-    locked: 1,
-    noTeamChange: 2,
-    noTeamShuffle: 4
-}
-
 export const GameModes = {
     'ffa': 0,
     'team': 1,
     'spatula': 2,
     'kotc': 3
+}
+
+export const GameOptionFlags = {
+    locked: 1,
+    noTeamChange: 2,
+    noTeamShuffle: 4
 }
 
 export const GunList = [Eggk47, DozenGauge, CSG1, RPEGG, SMG, M24, AUG];
