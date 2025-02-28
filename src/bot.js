@@ -1,6 +1,9 @@
 
 import { SocksProxyAgent } from 'socks-proxy-agent';
 import { WebSocket } from 'ws';
+import { existsSync, readFileSync, writeFileSync } from 'fs';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
 
 import { loginAnonymously, loginWithCredentials } from '#api';
 
@@ -25,8 +28,15 @@ import {
     PlayTypes,
     ShellStreak,
     StatsArr,
-    USER_AGENT
+    USER_AGENT,
+    Move
 } from '#constants';
+
+import { NodeList } from './dispatches/pathing/mapnode.js';
+import LookAtPosDispatch from '#dispatch/LookAtPosDispatch.js';
+import MovementDispatch from '#dispatch/MovementDispatch.js';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 class Bot {
     // params.name - the bot name
@@ -85,7 +95,9 @@ class Bot {
                     King: false
                 },
                 availability: 'both',
-                numPlayers: '18'
+                numPlayers: '18',
+                raw: {},
+                nodes: {}
             },
             playerLimit: 0,
             isGameOwner: false,
@@ -183,6 +195,21 @@ class Bot {
         this.controlKeys = 0;
 
         this.initTime = Date.now();
+
+        try {
+            this.maps = JSON.parse(readFileSync(join(__dirname, '..', 'data', 'maps.json'), 'utf-8'));
+        } catch (e) {
+            console.log('Failed to load maps:', e);
+            this.maps = [];
+        }
+
+        this.pathing = {
+            nodeList: null,
+            followingPath: false,
+            activePath: null,
+            activeNode: null,
+            activeNodeIdx: 0
+        }
     }
 
     async login(email, pass) {
@@ -294,7 +321,7 @@ class Bot {
         this.matchmaker.off('msg', listener);
     }
 
-    #onGameMesssage(msg) { // to minify with vscode
+    async #onGameMesssage(msg) { // to minify with vscode
         CommIn.init(msg.data);
 
         let out;
@@ -328,6 +355,8 @@ class Bot {
                 // console.log("Gametype:", this.game.gameMode, this.game.gameModeId);
                 this.game.mapIdx = CommIn.unPackInt8U();
                 this.game.map = Maps[this.game.mapIdx];
+                this.game.map.raw = await this.#fetchMap(this.game.map.filename, this.game.map.hash);
+                this.pathing.nodeList = this.#parseMap(this.game.map.raw);
                 // console.log("Map:", this.game.map);
                 this.game.playerLimit = CommIn.unPackInt8U();
                 // console.log("Player limit:", this.game.playerLimit);
@@ -339,6 +368,7 @@ class Bot {
                 // console.log('Successfully joined game.');
                 this.state.joinedGame = true;
                 this.lastDeathTime = Date.now();
+
                 break;
 
             case CommCode.eventModifier:
@@ -488,7 +518,7 @@ class Bot {
 
         if (this.autoUpdate) {
             console.log('autoUpdate enabled...');
-            setInterval(() => this.update(), this.updateInterval);
+            setInterval(async () => await this.update(), this.updateInterval);
         }
 
         if (this.autoPing) {
@@ -500,7 +530,7 @@ class Bot {
         }
     }
 
-    update() {
+    async update() {
         if (!this.state.joinedGame) { throw new Error('Not playing, can\'t update. '); }
 
         this.nUpdates++;
@@ -508,9 +538,44 @@ class Bot {
         if (this._packetQueue.length === 0 && this._dispatches.length === 0) { return; }
 
         let packet;
-        while ((packet = this._packetQueue.shift()) !== undefined) { this.handlePacket(packet); }
+        while ((packet = this._packetQueue.shift()) !== undefined) { await this.handlePacket(packet); }
 
         this.drain();
+
+        if (this.pathing.followingPath) {
+            if (this.pathing.activeNodeIdx == this.pathing.activePath.length - 1) {
+                console.log('Completed path to', this.pathing.activePath[this.pathing.activePath.length - 1].position);
+                this.pathing.followingPath = false;
+                this.pathing.activePath = null;
+                this.pathing.activeNode = null;
+                this.pathing.activeNodeIdx = 0;
+
+                this.dispatch(new MovementDispatch(0));
+            } else {
+                const positionTarget = this.pathing.activePath[this.pathing.activeNodeIdx + 1].flatCenter();
+                this.dispatch(new LookAtPosDispatch(positionTarget));
+
+                for (const node of this.pathing.activePath) {
+                    if (node.flatRadialDistance(this.me.position) < 0.5) {
+                        if (this.pathing.activePath.indexOf(node) > this.pathing.activeNodeIdx) {
+                            this.pathing.activeNode = node;
+                            this.pathing.activeNodeIdx = this.pathing.activePath.indexOf(node);
+                            break;
+                        } else {
+                            // console.log('Close to node that\'s before, idx:', 
+                            //    this.pathing.activePath.indexOf(node), 'current:', this.pathing.activeNodeIdx);
+                        }
+                    } else {
+                        // console.log('Node at', node.position, 'is', node.flatRadialDistance(this.me.position), 'away.')
+                    }
+                    // console.log('activeNode is ', this.pathing.activeNode.flatRadialDistance(this.me.position), 'away');
+                }
+
+                if (!(this.controlKeys & Move.FORWARD)) {
+                    this.dispatch(new MovementDispatch(Move.FORWARD));
+                }
+            }
+        }
 
         if (Date.now() - this.lastUpdateTime >= 50) {
             this.#emit('tick');
@@ -525,7 +590,7 @@ class Bot {
                 out.packInt8(this.state.shotsFired); // shots fired
                 out.packRadU(this.me.view.yaw); // yaw
                 out.packRad(this.me.view.pitch); // pitch
-                out.packInt8(100); // ??? 
+                out.packInt8(100); // not needed why is this here @1ust
             }
             out.send(this.gameSocket);
 
@@ -559,6 +624,22 @@ class Bot {
         for (const cb of this._globalHooks) {
             this._liveCallbacks.push(() => cb(event, ...args));
         }
+    }
+
+    #parseMap(data) {
+        return new NodeList(data);
+    }
+
+    async #fetchMap(name, hash) {
+        if (existsSync(join(__dirname, '..', 'data', 'cache', 'maps', `${name}-${hash}.json`))) {
+            return JSON.parse(readFileSync(join(__dirname, '..', 'data', 'cache', 'maps', `${name}-${hash}.json`), 'utf-8'));
+        }
+        console.warn(`Map "${name}" not found in cache, fetching...`);
+
+        const data = await (await fetch(`https://shellshock.io/maps/${name}.json?${hash}`)).json();
+
+        writeFileSync(join(__dirname, '..', 'data', 'cache', 'maps', `${name}-${hash}.json`),JSON.stringify(data, null, 4), { flag: 'w+' });
+        return data;
     }
 
     #processChatPacket() {
@@ -612,7 +693,7 @@ class Bot {
             shield_: CommIn.unPackInt8U(),
             hp_: CommIn.unPackInt8U(),
             playing_: CommIn.unPackInt8U(),
-            weaponIdx_: CommIn.unPackInt8U(),   
+            weaponIdx_: CommIn.unPackInt8U(),
             controlKeys_: CommIn.unPackInt8U(),
             upgradeProductId_: CommIn.unPackInt8U(),
             activeShellStreaks_: CommIn.unPackInt8U(),
@@ -1164,7 +1245,7 @@ class Bot {
         this.#emit('playerReload', player, playerActiveWeapon);
     }
 
-    handlePacket(packet) {
+    async handlePacket(packet) {
         CommIn.init(packet);
         this.#emit('packet', packet);
         const cmd = CommIn.unPackInt8U();
@@ -1174,7 +1255,7 @@ class Bot {
                 break;
 
             case CommCode.addPlayer:
-                this.#processAddPlayerPacket(packet);
+                await this.#processAddPlayerPacket(packet);
                 break;
 
             case CommCode.respawn:

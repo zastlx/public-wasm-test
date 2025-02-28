@@ -4,6 +4,7 @@ import FireDispatch from './FireDispatch.js';
 import GameOptionsDispatch from './GameOptionsDispatch.js';
 import LookAtDispatch from './LookAtDispatch.js';
 import LookToDispatch from './LookToDispatch.js';
+import LookAtPosDispatch from './LookAtPosDispatch.js';
 import MeleeDispatch from './MeleeDispatch.js';
 import MovementDispatch from './MovementDispatch.js';
 import PauseDispatch from './PauseDispatch.js';
@@ -20,6 +21,7 @@ export {
     FireDispatch,
     GameOptionsDispatch,
     LookAtDispatch,
+    LookAtPosDispatch,
     LookToDispatch,
     MeleeDispatch,
     MovementDispatch,
@@ -38,6 +40,7 @@ export default {
     FireDispatch,
     GameOptionsDispatch,
     LookAtDispatch,
+    LookAtPosDispatch,
     LookToDispatch,
     MeleeDispatch,
     MovementDispatch,
