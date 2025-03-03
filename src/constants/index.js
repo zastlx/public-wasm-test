@@ -39,6 +39,15 @@ export const GameOptionFlags = {
 
 export const GunList = [Eggk47, DozenGauge, CSG1, RPEGG, SMG, M24, AUG];
 
+export const ItemTypes = {
+    Hat: 1,
+    Stamp: 2,
+    Primary: 3,
+    Secondary: 4,
+    Grenade: 6,
+    Melee: 7
+};
+
 export const Movements = {
     FORWARD: 1,
     BACK: 2,
