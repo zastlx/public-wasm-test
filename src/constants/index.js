@@ -39,6 +39,8 @@ export const GameOptionFlags = {
 
 export const GunList = [Eggk47, DozenGauge, CSG1, RPEGG, SMG, M24, AUG];
 
+export const IsBrowser = typeof window !== 'undefined';
+
 export const ItemTypes = {
     Hat: 1,
     Stamp: 2,
