@@ -1980,7 +1980,7 @@ export const Items = [
                 "Feb25"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "purchase",
         "align": {
             "x": -0.11678575639135991,
@@ -2005,7 +2005,7 @@ export const Items = [
                 "Feb25"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "purchase",
         "align": {
             "x": -0.0742835205682435,
@@ -2029,7 +2029,7 @@ export const Items = [
                 "Feb25"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "purchase",
         "align": {
             "x": -0.08518905206413807,
@@ -2051,10 +2051,11 @@ export const Items = [
                 "StPatricksDay",
                 "MarM23",
                 "Green",
-                "Mar24"
+                "Mar24",
+                "Mar25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase",
         "align": {
             "x": -0.12025224778385146,
@@ -2077,10 +2078,11 @@ export const Items = [
                 "MarM23",
                 "Black",
                 "Gold",
-                "Mar24"
+                "Mar24",
+                "Mar25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase",
         "align": {
             "x": -0.063050017457572,
@@ -2102,10 +2104,11 @@ export const Items = [
                 "StPatricksDay",
                 "MarM23",
                 "Green",
-                "Mar24"
+                "Mar24",
+                "Mar25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase",
         "align": {
             "x": -0.07051683154538146,
@@ -2765,8 +2768,7 @@ export const Items = [
                 "Yellow",
                 "MarM24",
                 "JulyM24",
-                "Feb25",
-                "premFeatTwo"
+                "Feb25"
             ]
         },
         "is_available": false,
@@ -3136,11 +3138,11 @@ export const Items = [
             "tags": [
                 "Eggwalker",
                 "Brown",
-                "FebM24",
+                "FebM25",
                 "premFeatOne"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "purchase",
         "align": {
             "x": -0.025574859788104032,
@@ -3151,7 +3153,7 @@ export const Items = [
     {
         "id": 1128,
         "name": "Bounty Egger",
-        "price": 6500,
+        "price": 20000,
         "item_type_id": 1,
         "item_type_name": "Hat",
         "category_name": "Hats",
@@ -3161,10 +3163,12 @@ export const Items = [
             "tags": [
                 "Eggwalker",
                 "Green",
-                "Black"
+                "Black",
+                "premFeatTwo",
+                "Mar25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase",
         "align": {
             "x": -0.09010359208146834,
@@ -3766,10 +3770,11 @@ export const Items = [
                 "JanM23",
                 "Brown",
                 "Music",
-                "SepM24"
+                "SepM24",
+                "Mar25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase",
         "align": {
             "x": -0.02668556941149891,
@@ -3793,10 +3798,11 @@ export const Items = [
                 "Black",
                 "Red",
                 "Music",
-                "SepM24"
+                "SepM24",
+                "Mar25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase",
         "align": {
             "x": -0.017915658211507868,
@@ -3820,10 +3826,11 @@ export const Items = [
                 "Black",
                 "White",
                 "Music",
-                "SepM24"
+                "SepM24",
+                "Mar25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase",
         "align": {
             "x": -0.009818349718689667,
@@ -4271,11 +4278,11 @@ export const Items = [
                 "Premium",
                 "Red",
                 "OctM23",
-                "FebM24",
+                "FebM25",
                 "premFeatOne"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "premium",
         "activeProduct": true,
         "sku": [
@@ -6214,10 +6221,12 @@ export const Items = [
             "meshName": "hat_cheese",
             "tags": [
                 "Food",
-                "Yellow"
+                "Yellow",
+                "premFeatTwo",
+                "Mar25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase",
         "align": {
             "x": -0.09736025924578184,
@@ -7109,10 +7118,12 @@ export const Items = [
                 "StPatricksDay",
                 "MarM23",
                 "Green",
-                "Mar24"
+                "Mar24",
+                "Mar25",
+                "premFeatTwo"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "premium",
         "activeProduct": true,
         "sku": [
@@ -9182,10 +9193,11 @@ export const Items = [
                 "JanM23",
                 "Black",
                 "Music",
-                "SepM24"
+                "SepM24",
+                "Mar25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase",
         "align": {
             "x": -0.08104278879501514,
@@ -9210,10 +9222,11 @@ export const Items = [
                 "Yellow",
                 "Brown",
                 "Music",
-                "SepM24"
+                "SepM24",
+                "Mar25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase",
         "align": {
             "x": -0.16684042187958514,
@@ -9239,10 +9252,12 @@ export const Items = [
                 "Purple",
                 "Blurple",
                 "Music",
-                "SepM24"
+                "SepM24",
+                "Mar25",
+                "premFeatTwo"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "premium",
         "activeProduct": true,
         "sku": [
@@ -9271,10 +9286,11 @@ export const Items = [
                 "Green",
                 "Gold",
                 "Music",
-                "SepM24"
+                "SepM24",
+                "Mar25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase",
         "align": {
             "x": -0.00973114550144527,
@@ -9297,8 +9313,7 @@ export const Items = [
                 "Feb23",
                 "Red",
                 "Feb24",
-                "Feb25",
-                "premFeatTwo"
+                "Feb25"
             ]
         },
         "is_available": false,
@@ -9406,7 +9421,7 @@ export const Items = [
                 "Gray",
                 "Grey",
                 "AprM24",
-                "FebM24"
+                "FebM25"
             ]
         },
         "is_available": true,
@@ -9434,7 +9449,7 @@ export const Items = [
                 "Yellow",
                 "Brown",
                 "AprM24",
-                "FebM24"
+                "FebM25"
             ]
         },
         "is_available": true,
@@ -9462,7 +9477,7 @@ export const Items = [
                 "Blue",
                 "White",
                 "AprM24",
-                "FebM24"
+                "FebM25"
             ]
         },
         "is_available": true,
@@ -9644,7 +9659,7 @@ export const Items = [
                 "OctM23",
                 "Pink",
                 "AprM24",
-                "FebM24"
+                "FebM25"
             ]
         },
         "is_available": true,
@@ -12362,10 +12377,11 @@ export const Items = [
                 "Mar24",
                 "StPatricksDay",
                 "Brown",
-                "Mar24"
+                "Mar24",
+                "Mar25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase",
         "align": {
             "x": -0.07898811547084694,
@@ -12387,10 +12403,11 @@ export const Items = [
                 "Mar24",
                 "StPatricksDays",
                 "Green",
-                "Mar24"
+                "Mar24",
+                "Mar25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase",
         "align": {
             "x": -0.10272882257863225,
@@ -12980,7 +12997,8 @@ export const Items = [
                 "Jun24",
                 "Bugs",
                 "Statham",
-                "Jason"
+                "Jason",
+                "Newsletter"
             ]
         },
         "is_available": false,
@@ -13310,11 +13328,11 @@ export const Items = [
                 "Eggx-men",
                 "xmen",
                 "marvel",
-                "FebM24",
+                "FebM25",
                 "premFeatOne"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "purchase",
         "align": {
             "x": -0.10551757425891828,
@@ -13699,7 +13717,8 @@ export const Items = [
             "meshName": "hat_leatherface",
             "tags": [
                 "Sep24",
-                "EggyP"
+                "EggyP",
+                "Newsletter"
             ]
         },
         "is_available": false,
@@ -14293,7 +14312,7 @@ export const Items = [
                 "Yellow"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "purchase",
         "align": {
             "x": -0.09273167319622111,
@@ -14317,7 +14336,7 @@ export const Items = [
                 "Yellow"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "purchase",
         "align": {
             "x": -0.11216442427732165,
@@ -14341,7 +14360,7 @@ export const Items = [
                 "Yellow"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "purchase",
         "align": {
             "x": -0.12075653081620974,
@@ -14509,6 +14528,60 @@ export const Items = [
             "x": -0.04832250932301607,
             "y": -0.1581391004944373,
             "z": -0.022115194586275998
+        }
+    },
+    {
+        "id": 1579,
+        "name": "St Patrick Sideburns",
+        "price": 2147483647,
+        "item_type_id": 1,
+        "item_type_name": "Hat",
+        "category_name": "Hats",
+        "exclusive_for_class": null,
+        "item_data": {
+            "meshName": "hat_leprechaunhair",
+            "tags": [
+                "Mar25",
+                "Bundle",
+                "Irish",
+                "Green",
+                "Orange",
+                "Buckle"
+            ]
+        },
+        "is_available": false,
+        "unlock": "manual",
+        "align": {
+            "x": -0.05185480455074476,
+            "y": -0.17136269562496276,
+            "z": -0.023735905871966445
+        }
+    },
+    {
+        "id": 1580,
+        "name": "Lucky Hat",
+        "price": 2147483647,
+        "item_type_id": 1,
+        "item_type_name": "Hat",
+        "category_name": "Hats",
+        "exclusive_for_class": null,
+        "item_data": {
+            "meshName": "hat_luckycap",
+            "tags": [
+                "Mar25",
+                "Stpatricksday",
+                "Green",
+                "Orange",
+                "Buckle",
+                "Newsletter"
+            ]
+        },
+        "is_available": false,
+        "unlock": "manual",
+        "align": {
+            "x": -0.1210543003967457,
+            "y": -0.268313840390229,
+            "z": -0.05540308757285228
         }
     },
     {
@@ -15464,7 +15537,7 @@ export const Items = [
                 "Feb25"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "purchase"
     },
     {
@@ -15484,7 +15557,7 @@ export const Items = [
                 "Feb25"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "purchase"
     },
     {
@@ -15504,7 +15577,7 @@ export const Items = [
                 "Feb25"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "purchase"
     },
     {
@@ -15522,10 +15595,11 @@ export const Items = [
                 "StPatricksDay",
                 "MarM23",
                 "Green",
-                "Mar24"
+                "Mar24",
+                "Mar25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase"
     },
     {
@@ -15543,10 +15617,11 @@ export const Items = [
                 "StPatricksDay",
                 "MarM23",
                 "Brown",
-                "Mar24"
+                "Mar24",
+                "Mar25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase"
     },
     {
@@ -15563,10 +15638,11 @@ export const Items = [
             "tags": [
                 "StPatricksDay",
                 "MarM23",
-                "Mar24"
+                "Mar24",
+                "Mar25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase"
     },
     {
@@ -16578,10 +16654,11 @@ export const Items = [
                 "JanM23",
                 "Pink",
                 "Music",
-                "SepM24"
+                "SepM24",
+                "Mar25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase"
     },
     {
@@ -16600,10 +16677,11 @@ export const Items = [
                 "JanM23",
                 "Black",
                 "Music",
-                "SepM24"
+                "SepM24",
+                "Mar25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase"
     },
     {
@@ -16622,10 +16700,11 @@ export const Items = [
                 "JanM23",
                 "Yellow",
                 "Music",
-                "SepM24"
+                "SepM24",
+                "Mar25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase"
     },
     {
@@ -21509,10 +21588,11 @@ export const Items = [
                 "Grey",
                 "Gray",
                 "Music",
-                "SepM24"
+                "SepM24",
+                "Mar25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase"
     },
     {
@@ -21531,10 +21611,11 @@ export const Items = [
                 "JanM23",
                 "Black",
                 "Music",
-                "SepM24"
+                "SepM24",
+                "Mar25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase"
     },
     {
@@ -21553,10 +21634,11 @@ export const Items = [
                 "JanM23",
                 "Yellow",
                 "Music",
-                "SepM24"
+                "SepM24",
+                "Mar25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase"
     },
     {
@@ -21777,7 +21859,7 @@ export const Items = [
                 "AugM23",
                 "Red",
                 "AprM24",
-                "FebM24"
+                "FebM25"
             ]
         },
         "is_available": true,
@@ -21801,7 +21883,7 @@ export const Items = [
                 "White",
                 "Eggs",
                 "AprM24",
-                "FebM24"
+                "FebM25"
             ]
         },
         "is_available": true,
@@ -21824,7 +21906,7 @@ export const Items = [
                 "Yellow",
                 "GOTY",
                 "AprM24",
-                "FebM24"
+                "FebM25"
             ]
         },
         "is_available": true,
@@ -21847,7 +21929,7 @@ export const Items = [
                 "Blue",
                 "BWD",
                 "AprM24",
-                "FebM24"
+                "FebM25"
             ]
         },
         "is_available": true,
@@ -21869,7 +21951,7 @@ export const Items = [
                 "Mar23",
                 "Brown",
                 "AprM24",
-                "FebM24"
+                "FebM25"
             ]
         },
         "is_available": true,
@@ -21912,7 +21994,7 @@ export const Items = [
                 "Eggs",
                 "White",
                 "AprM24",
-                "FebM24"
+                "FebM25"
             ]
         },
         "is_available": true,
@@ -22095,10 +22177,11 @@ export const Items = [
                 "StPatricksDay",
                 "MarM23",
                 "Green",
-                "Mar24"
+                "Mar24",
+                "Mar25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase"
     },
     {
@@ -22970,7 +23053,7 @@ export const Items = [
                 "Drops5",
                 "Yellow",
                 "AprM24",
-                "FebM24"
+                "FebM25"
             ]
         },
         "is_available": true,
@@ -22993,7 +23076,7 @@ export const Items = [
                 "Thumb",
                 "Black",
                 "AprM24",
-                "FebM24"
+                "FebM25"
             ]
         },
         "is_available": true,
@@ -23014,7 +23097,7 @@ export const Items = [
                 "AugM23",
                 "Drops5",
                 "AprM24",
-                "FebM24"
+                "FebM25"
             ]
         },
         "is_available": true,
@@ -23080,7 +23163,7 @@ export const Items = [
                 "Blue",
                 "BWD",
                 "AprM24",
-                "FebM24"
+                "FebM25"
             ]
         },
         "is_available": true,
@@ -24531,10 +24614,11 @@ export const Items = [
                 "Irish",
                 "Celtic",
                 "Green",
-                "Mar24"
+                "Mar24",
+                "Mar25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase"
     },
     {
@@ -24553,10 +24637,11 @@ export const Items = [
                 "Irish",
                 "Celtic",
                 "Green",
-                "Mar24"
+                "Mar24",
+                "Mar25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase"
     },
     {
@@ -24575,10 +24660,11 @@ export const Items = [
                 "Irish",
                 "Celtic",
                 "Green",
-                "Mar24"
+                "Mar24",
+                "Mar25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase"
     },
     {
@@ -24619,10 +24705,11 @@ export const Items = [
                 "Irish",
                 "Celtic",
                 "Green",
-                "Mar24"
+                "Mar24",
+                "Mar25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase"
     },
     {
@@ -24641,10 +24728,11 @@ export const Items = [
                 "Irish",
                 "Celtic",
                 "Green",
-                "Mar24"
+                "Mar24",
+                "Mar25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase"
     },
     {
@@ -24665,10 +24753,11 @@ export const Items = [
                 "Green",
                 "Gold",
                 "Yellow",
-                "Mar24"
+                "Mar24",
+                "Mar25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase"
     },
     {
@@ -26679,7 +26768,8 @@ export const Items = [
                 "Nov24",
                 "SC2",
                 "Text",
-                "Red"
+                "Red",
+                "Newsletter"
             ]
         },
         "is_available": false,
@@ -27063,7 +27153,7 @@ export const Items = [
                 "Blue"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "purchase"
     },
     {
@@ -27080,7 +27170,8 @@ export const Items = [
             "tags": [
                 "Feb25",
                 "Green",
-                "Fish"
+                "Fish",
+                "Newsletter"
             ]
         },
         "is_available": false,
@@ -27105,7 +27196,7 @@ export const Items = [
                 "Candy"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "purchase"
     },
     {
@@ -27127,7 +27218,7 @@ export const Items = [
                 "Candy"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "purchase"
     },
     {
@@ -27278,6 +27369,27 @@ export const Items = [
                 "D7W2",
                 "Face",
                 "Black"
+            ]
+        },
+        "is_available": true,
+        "unlock": "purchase"
+    },
+    {
+        "id": 2625,
+        "name": "Shamrocked Stamp",
+        "price": 250,
+        "item_type_id": 2,
+        "item_type_name": "Stamp",
+        "category_name": "Stamps",
+        "exclusive_for_class": null,
+        "item_data": {
+            "x": 8,
+            "y": 20,
+            "tags": [
+                "Mar25",
+                "StPatricksDay",
+                "Clover",
+                "Green"
             ]
         },
         "is_available": true,
@@ -27494,7 +27606,7 @@ export const Items = [
                 "Feb25"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "purchase"
     },
     {
@@ -27513,10 +27625,11 @@ export const Items = [
                 "Green",
                 "Black",
                 "Yellow",
-                "Mar24"
+                "Mar24",
+                "Mar25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase"
     },
     {
@@ -27782,10 +27895,11 @@ export const Items = [
                 "Rockstar",
                 "JanM23",
                 "Black",
-                "SepM24"
+                "SepM24",
+                "Mar25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase"
     },
     {
@@ -28813,7 +28927,7 @@ export const Items = [
                 "Feb25"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "purchase"
     },
     {
@@ -28832,10 +28946,11 @@ export const Items = [
                 "Green",
                 "Black",
                 "Yellow",
-                "Mar24"
+                "Mar24",
+                "Mar25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase"
     },
     {
@@ -29109,10 +29224,11 @@ export const Items = [
                 "JanM23",
                 "Black",
                 "Guitar",
-                "SepM24"
+                "SepM24",
+                "Mar25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase"
     },
     {
@@ -29914,6 +30030,28 @@ export const Items = [
         "unlock": "purchase"
     },
     {
+        "id": 3460,
+        "name": "Green Snake Free Ranger",
+        "price": 150000,
+        "item_type_id": 3,
+        "item_type_name": "Primary",
+        "category_name": "Ranger Primary Weapons",
+        "exclusive_for_class": 2,
+        "item_data": {
+            "meshName": "gun_csg1_SnakePatrick",
+            "tags": [
+                "Mar25",
+                "StPatricksday",
+                "Green",
+                "White",
+                "Yellow",
+                "Mar25"
+            ]
+        },
+        "is_available": true,
+        "unlock": "purchase"
+    },
+    {
         "id": 3600,
         "name": "The Scrambler",
         "price": 0,
@@ -30125,7 +30263,7 @@ export const Items = [
                 "Feb25"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "purchase"
     },
     {
@@ -30144,10 +30282,11 @@ export const Items = [
                 "Green",
                 "Black",
                 "Yellow",
-                "Mar24"
+                "Mar24",
+                "Mar25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase"
     },
     {
@@ -30417,10 +30556,11 @@ export const Items = [
                 "Red",
                 "Gold",
                 "Guitar",
-                "SepM24"
+                "SepM24",
+                "Mar25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase"
     },
     {
@@ -31068,10 +31208,11 @@ export const Items = [
                 "Mar23",
                 "StPatricksDay",
                 "Snek",
-                "Mar24"
+                "Mar24",
+                "Mar25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase"
     },
     {
@@ -31276,8 +31417,7 @@ export const Items = [
                 "Clouds",
                 "White",
                 "Rainbow",
-                "Feb25",
-                "premFeatTwo"
+                "Feb25"
             ]
         },
         "is_available": false,
@@ -31302,12 +31442,14 @@ export const Items = [
                 "StPatricksDay",
                 "Green",
                 "Gold",
-                "Mar24"
+                "Mar24",
+                "Mar25",
+                "premFeatTwo"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "premium",
-        "activeProduct": false,
+        "activeProduct": true,
         "sku": [
             "item_gauge_irish"
         ]
@@ -31628,7 +31770,7 @@ export const Items = [
                 "Feb25"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "purchase"
     },
     {
@@ -31647,10 +31789,11 @@ export const Items = [
                 "Green",
                 "Black",
                 "Yellow",
-                "Mar24"
+                "Mar24",
+                "Mar25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase"
     },
     {
@@ -31927,10 +32070,11 @@ export const Items = [
                 "Grey",
                 "Gray",
                 "Harmonica",
-                "SepM24"
+                "SepM24",
+                "Mar25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase"
     },
     {
@@ -32489,8 +32633,7 @@ export const Items = [
                 "Feb23",
                 "Blue",
                 "Stars",
-                "Feb25",
-                "premFeatTwo"
+                "Feb25"
             ]
         },
         "is_available": false,
@@ -32513,8 +32656,7 @@ export const Items = [
                 "Rainbow",
                 "White",
                 "Feb24",
-                "Feb25",
-                "premFeatTwo"
+                "Feb25"
             ]
         },
         "is_available": false,
@@ -33139,7 +33281,7 @@ export const Items = [
                 "Feb25"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "purchase"
     },
     {
@@ -33158,10 +33300,11 @@ export const Items = [
                 "Green",
                 "Black",
                 "Yellow",
-                "Mar24"
+                "Mar24",
+                "Mar25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase"
     },
     {
@@ -33453,10 +33596,11 @@ export const Items = [
                 "Yellow",
                 "Gold",
                 "Tuba",
-                "SepM24"
+                "SepM24",
+                "Mar25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase"
     },
     {
@@ -34315,8 +34459,27 @@ export const Items = [
                 "D7W1"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "manual"
+    },
+    {
+        "id": 3963,
+        "name": "The Bouzouki",
+        "price": 2147483647,
+        "item_type_id": 3,
+        "item_type_name": "Primary",
+        "category_name": "Eggsploder Primary Weapons",
+        "exclusive_for_class": 3,
+        "item_data": {
+            "meshName": "gun_rpegg_Bouzouki",
+            "tags": [
+                "Mar25",
+                "StPatrickDay",
+                "Bundle"
+            ]
+        },
+        "is_available": false,
+        "unlock": "premium"
     },
     {
         "id": 4000,
@@ -34530,7 +34693,7 @@ export const Items = [
                 "Feb25"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "purchase"
     },
     {
@@ -34549,10 +34712,11 @@ export const Items = [
                 "Green",
                 "Black",
                 "Yellow",
-                "Mar24"
+                "Mar24",
+                "Mar25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase"
     },
     {
@@ -34821,10 +34985,11 @@ export const Items = [
                 "Orange",
                 "Keytar",
                 "Piano",
-                "SepM24"
+                "SepM24",
+                "Mar25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase"
     },
     {
@@ -35176,7 +35341,7 @@ export const Items = [
                 "GameBoy",
                 "AprM24",
                 "bun_gamer",
-                "FebM24"
+                "FebM25"
             ]
         },
         "is_available": true,
@@ -35590,6 +35755,29 @@ export const Items = [
         "unlock": "purchase"
     },
     {
+        "id": 4058,
+        "name": "Irish Whipper",
+        "price": 5,
+        "item_type_id": 3,
+        "item_type_name": "Primary",
+        "category_name": "Whipper Primary Weapons",
+        "exclusive_for_class": 4,
+        "item_data": {
+            "meshName": "gun_smg_Irish",
+            "tags": [
+                "Mar25",
+                "StPatrickDay",
+                "Green"
+            ]
+        },
+        "is_available": true,
+        "unlock": "premium",
+        "activeProduct": true,
+        "sku": [
+            "item_smg_irish"
+        ]
+    },
+    {
         "id": 4200,
         "name": "The Crackshot",
         "price": 0,
@@ -35801,7 +35989,7 @@ export const Items = [
                 "Feb25"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "purchase"
     },
     {
@@ -35820,10 +36008,11 @@ export const Items = [
                 "Green",
                 "Black",
                 "Yellow",
-                "Mar24"
+                "Mar24",
+                "Mar25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase"
     },
     {
@@ -36118,10 +36307,11 @@ export const Items = [
                 "JanM23",
                 "Red",
                 "Guitar",
-                "SepM24"
+                "SepM24",
+                "Mar25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase"
     },
     {
@@ -36463,11 +36653,11 @@ export const Items = [
                 "OctM23",
                 "bun_tactic",
                 "Telescope",
-                "FebM24",
+                "FebM25",
                 "premFeatOne"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "premium",
         "activeProduct": true,
         "sku": [
@@ -37317,10 +37507,11 @@ export const Items = [
                 "StPatricksDay",
                 "MarM23",
                 "Green",
-                "Mar24"
+                "Mar24",
+                "Mar25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase"
     },
     {
@@ -37826,7 +38017,7 @@ export const Items = [
                 "Feb25"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "purchase"
     },
     {
@@ -38304,10 +38495,11 @@ export const Items = [
                 "JanM23",
                 "Aug23",
                 "Music",
-                "SepM24"
+                "SepM24",
+                "Mar25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase"
     },
     {
@@ -38856,7 +39048,8 @@ export const Items = [
                 "Dec24",
                 "Christmas4",
                 "Red",
-                "Gold"
+                "Gold",
+                "Newsletter"
             ]
         },
         "is_available": false,
@@ -39198,10 +39391,11 @@ export const Items = [
                 "MarM23",
                 "Green",
                 "Yellow",
-                "Mar24"
+                "Mar24",
+                "Mar25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase"
     },
     {
@@ -39517,7 +39711,7 @@ export const Items = [
                 "Feb25"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "purchase"
     },
     {
@@ -39748,10 +39942,11 @@ export const Items = [
                 "Yellow",
                 "Saxaphone",
                 "Saxamaphone",
-                "SepM24"
+                "SepM24",
+                "Mar25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase"
     },
     {
@@ -39993,13 +40188,15 @@ export const Items = [
             "tags": [
                 "Mar24",
                 "White",
+                "StPatricksDay",
                 "Green",
                 "Grey",
                 "Gray",
-                "Albino"
+                "Albino",
+                "Mar25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase"
     },
     {
@@ -40147,7 +40344,7 @@ export const Items = [
         },
         "is_available": true,
         "unlock": "premium",
-        "activeProduct": true,
+        "activeProduct": false,
         "sku": [
             "item_aug_techno"
         ]
@@ -40487,10 +40684,11 @@ export const Items = [
                 "MarM23",
                 "Music",
                 "Brown",
-                "Mar24"
+                "Mar24",
+                "Mar25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase"
     },
     {
@@ -40924,11 +41122,11 @@ export const Items = [
                 "Black",
                 "White",
                 "Cat",
-                "FebM24",
+                "FebM25",
                 "premFeatOne"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "premium",
         "activeProduct": true,
         "sku": [
@@ -41594,7 +41792,8 @@ export const Items = [
                 "Premium",
                 "Music",
                 "SepM24",
-                "eggyp"
+                "eggyp",
+                "Mar25"
             ]
         },
         "is_available": true,
@@ -41876,7 +42075,7 @@ export const Items = [
                 "Silver"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "premium",
         "activeProduct": false,
         "sku": [

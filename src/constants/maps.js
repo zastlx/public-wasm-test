@@ -23,7 +23,7 @@ export const Maps = [
             "Spatula": true,
             "King": true
         },
-        "availability": "private",
+        "availability": "both",
         "numPlayers": "14"
     },
     {
@@ -88,7 +88,7 @@ export const Maps = [
             "Spatula": true,
             "King": true
         },
-        "availability": "private",
+        "availability": "both",
         "numPlayers": "14"
     },
     {
@@ -166,7 +166,7 @@ export const Maps = [
             "Spatula": true,
             "King": true
         },
-        "availability": "private",
+        "availability": "both",
         "numPlayers": "18"
     },
     {
@@ -322,7 +322,7 @@ export const Maps = [
             "Spatula": true,
             "King": true
         },
-        "availability": "both",
+        "availability": "private",
         "numPlayers": "16"
     },
     {
@@ -388,6 +388,19 @@ export const Maps = [
             "King": true
         },
         "availability": "private",
+        "numPlayers": "18"
+    },
+    {
+        "filename": "foundation",
+        "hash": "1s6kfr5u037",
+        "name": "Foundation",
+        "modes": {
+            "FFA": true,
+            "Teams": true,
+            "Spatula": true,
+            "King": true
+        },
+        "availability": "both",
         "numPlayers": "18"
     },
     {
@@ -517,7 +530,7 @@ export const Maps = [
             "Spatula": true,
             "King": true
         },
-        "availability": "both",
+        "availability": "private",
         "numPlayers": "18"
     },
     {
@@ -560,6 +573,19 @@ export const Maps = [
         "numPlayers": "18"
     },
     {
+        "filename": "metamorphosis",
+        "hash": "hlpma5zbhi",
+        "name": "Metamorphosis",
+        "modes": {
+            "FFA": true,
+            "Teams": true,
+            "Spatula": true,
+            "King": false
+        },
+        "availability": "both",
+        "numPlayers": "14"
+    },
+    {
         "filename": "moonbase",
         "hash": "1yzocf1mex3",
         "name": "Moonbase",
@@ -595,7 +621,7 @@ export const Maps = [
             "Spatula": true,
             "King": true
         },
-        "availability": "both",
+        "availability": "private",
         "numPlayers": "18"
     },
     {
@@ -738,7 +764,7 @@ export const Maps = [
             "Spatula": true,
             "King": true
         },
-        "availability": "private",
+        "availability": "both",
         "numPlayers": "14"
     },
     {
@@ -790,7 +816,7 @@ export const Maps = [
             "Spatula": true,
             "King": true
         },
-        "availability": "private",
+        "availability": "both",
         "numPlayers": "16"
     },
     {
@@ -803,7 +829,7 @@ export const Maps = [
             "Spatula": true,
             "King": true
         },
-        "availability": "private",
+        "availability": "both",
         "numPlayers": "18"
     },
     {
@@ -868,7 +894,7 @@ export const Maps = [
             "Spatula": true,
             "King": true
         },
-        "availability": "both",
+        "availability": "private",
         "numPlayers": "12"
     },
     {
@@ -881,7 +907,7 @@ export const Maps = [
             "Spatula": true,
             "King": true
         },
-        "availability": "private",
+        "availability": "both",
         "numPlayers": "18"
     },
     {
@@ -920,7 +946,7 @@ export const Maps = [
             "Spatula": true,
             "King": true
         },
-        "availability": "both",
+        "availability": "private",
         "numPlayers": "18"
     },
     {
@@ -987,6 +1013,19 @@ export const Maps = [
         },
         "availability": "private",
         "numPlayers": "18"
+    },
+    {
+        "filename": "uncovered",
+        "hash": "bxrd0zdvtn",
+        "name": "Uncovered",
+        "modes": {
+            "FFA": true,
+            "Teams": true,
+            "Spatula": true,
+            "King": true
+        },
+        "availability": "both",
+        "numPlayers": "12"
     },
     {
         "filename": "vert",
