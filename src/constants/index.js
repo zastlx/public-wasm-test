@@ -19,6 +19,8 @@ export const CoopStates = {
     unclaimed: 7
 }
 
+export const FirebaseKey = 'AIzaSyDP4SIjKaw6A4c-zvfYxICpbEjn1rRnN50';
+
 export const GameActions = {
     reset: 1,
     pause: 2
