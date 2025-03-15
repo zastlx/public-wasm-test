@@ -3,6 +3,8 @@ import { Items } from './items.js';
 
 export const findItemById = (id) => Items.find(item => item.id === id);
 
+export const ChiknWinnerDailyLimit = 3;
+
 export const CollectTypes = {
     AMMO: 0,
     GRENADE: 1
