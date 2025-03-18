@@ -80,10 +80,30 @@ export const ShellStreaks = {
     MiniEgg: 32
 }
 
+export const SocialRewards = {
+    Discord: 'rew_1200',
+    Tiktok: 'rew_1208',
+    Instagram: 'rew_1219',
+    Steam: 'rew_1223',
+    Facebook: 'rew_1227',
+    Twitter: 'rew_1234',
+    Twitch: 'rew_twitch_social'
+}
+
 export const Teams = {
     blue: 1,
     red: 2
 }
+
+export const URLRewards = [
+    'giveBasketBrosReward',
+    'mercZoneFinalGift',
+    'midMonthGiveMeEggs',
+    'newYolkerSignupReward',
+    'newYolkerItemReward',
+    'newYolkerWelcomeBack',
+    'WelcomeBack'
+]
 
 export const UserAgent =
     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36'
