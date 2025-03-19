@@ -10,7 +10,7 @@ export const Maps = [
             "Spatula": true,
             "King": true
         },
-        "availability": "both",
+        "availability": "private",
         "numPlayers": "18"
     },
     {
@@ -23,7 +23,7 @@ export const Maps = [
             "Spatula": true,
             "King": true
         },
-        "availability": "both",
+        "availability": "private",
         "numPlayers": "14"
     },
     {
@@ -127,7 +127,7 @@ export const Maps = [
             "Spatula": true,
             "King": true
         },
-        "availability": "private",
+        "availability": "both",
         "numPlayers": "18"
     },
     {
@@ -166,7 +166,7 @@ export const Maps = [
             "Spatula": true,
             "King": true
         },
-        "availability": "both",
+        "availability": "private",
         "numPlayers": "18"
     },
     {
@@ -387,12 +387,12 @@ export const Maps = [
             "Spatula": true,
             "King": true
         },
-        "availability": "private",
+        "availability": "both",
         "numPlayers": "18"
     },
     {
         "filename": "foundation",
-        "hash": "1s6kfr5u037",
+        "hash": "11y636vc64b",
         "name": "Foundation",
         "modes": {
             "FFA": true,
@@ -426,7 +426,7 @@ export const Maps = [
             "Spatula": true,
             "King": true
         },
-        "availability": "private",
+        "availability": "both",
         "numPlayers": "12"
     },
     {
@@ -465,7 +465,7 @@ export const Maps = [
             "Spatula": true,
             "King": true
         },
-        "availability": "both",
+        "availability": "private",
         "numPlayers": "18"
     },
     {
@@ -543,7 +543,7 @@ export const Maps = [
             "Spatula": true,
             "King": true
         },
-        "availability": "both",
+        "availability": "private",
         "numPlayers": "18"
     },
     {
@@ -569,13 +569,13 @@ export const Maps = [
             "Spatula": true,
             "King": true
         },
-        "availability": "both",
+        "availability": "private",
         "numPlayers": "18"
     },
     {
-        "filename": "metamorphosis",
+        "filename": "metamorph",
         "hash": "hlpma5zbhi",
-        "name": "Metamorphosis",
+        "name": "Metamorph",
         "modes": {
             "FFA": true,
             "Teams": true,
@@ -673,7 +673,7 @@ export const Maps = [
             "Spatula": true,
             "King": true
         },
-        "availability": "private",
+        "availability": "both",
         "numPlayers": "14"
     },
     {
@@ -907,7 +907,7 @@ export const Maps = [
             "Spatula": true,
             "King": true
         },
-        "availability": "both",
+        "availability": "private",
         "numPlayers": "18"
     },
     {
@@ -1011,7 +1011,7 @@ export const Maps = [
             "Spatula": true,
             "King": true
         },
-        "availability": "private",
+        "availability": "both",
         "numPlayers": "18"
     },
     {
@@ -1022,7 +1022,7 @@ export const Maps = [
             "FFA": true,
             "Teams": true,
             "Spatula": true,
-            "King": true
+            "King": false
         },
         "availability": "both",
         "numPlayers": "12"

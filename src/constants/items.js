@@ -2130,10 +2130,11 @@ export const Items = [
                 "Easter",
                 "White",
                 "Pink",
-                "MarM24"
+                "MarM24",
+                "MarM25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase",
         "align": {
             "x": -0.19599893671002944,
@@ -2156,10 +2157,11 @@ export const Items = [
                 "Brown",
                 "Grey",
                 "Gray",
-                "MarM24"
+                "MarM24",
+                "MarM25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase",
         "align": {
             "x": -0.11291007649482054,
@@ -2180,10 +2182,11 @@ export const Items = [
             "tags": [
                 "Easter",
                 "Brown",
-                "MarM24"
+                "MarM24",
+                "MarM25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase",
         "align": {
             "x": -0.12958749591523677,
@@ -2205,10 +2208,11 @@ export const Items = [
                 "Easter",
                 "Blue",
                 "Yellow",
-                "MarM24"
+                "MarM24",
+                "MarM25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase",
         "align": {
             "x": -0.09516800672925507,
@@ -2710,10 +2714,12 @@ export const Items = [
                 "Red",
                 "Brown",
                 "MayM24",
-                "JulyM24"
+                "JulyM24",
+                "premFeatOne",
+                "MarM25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "premium",
         "activeProduct": true,
         "sku": [
@@ -3082,10 +3088,12 @@ export const Items = [
                 "White",
                 "Red",
                 "Black",
-                "MarM24"
+                "MarM24",
+                "premFeatOne",
+                "MarM25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "premium",
         "activeProduct": true,
         "sku": [
@@ -3138,8 +3146,7 @@ export const Items = [
             "tags": [
                 "Eggwalker",
                 "Brown",
-                "FebM25",
-                "premFeatOne"
+                "FebM25"
             ]
         },
         "is_available": false,
@@ -3168,7 +3175,7 @@ export const Items = [
                 "Mar25"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "purchase",
         "align": {
             "x": -0.09010359208146834,
@@ -4278,8 +4285,7 @@ export const Items = [
                 "Premium",
                 "Red",
                 "OctM23",
-                "FebM25",
-                "premFeatOne"
+                "FebM25"
             ]
         },
         "is_available": false,
@@ -6226,7 +6232,7 @@ export const Items = [
                 "Mar25"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "purchase",
         "align": {
             "x": -0.09736025924578184,
@@ -7123,7 +7129,7 @@ export const Items = [
                 "premFeatTwo"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "premium",
         "activeProduct": true,
         "sku": [
@@ -9257,7 +9263,7 @@ export const Items = [
                 "premFeatTwo"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "premium",
         "activeProduct": true,
         "sku": [
@@ -9424,7 +9430,7 @@ export const Items = [
                 "FebM25"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "purchase",
         "align": {
             "x": -0.04510483699042789,
@@ -9452,7 +9458,7 @@ export const Items = [
                 "FebM25"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "purchase",
         "align": {
             "x": -0.11486035543267459,
@@ -9480,7 +9486,7 @@ export const Items = [
                 "FebM25"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "purchase",
         "align": {
             "x": -0.10978212137635612,
@@ -9662,7 +9668,7 @@ export const Items = [
                 "FebM25"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "purchase",
         "align": {
             "x": -0.07430287969300897,
@@ -10204,10 +10210,12 @@ export const Items = [
             "tags": [
                 "Photo",
                 "Jun23",
-                "Black"
+                "Black",
+                "premFeatOne",
+                "MarM25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase",
         "align": {
             "x": -0.21431328988746134,
@@ -12462,10 +12470,11 @@ export const Items = [
                 "Easter",
                 "Bunny",
                 "Carrot",
-                "Nov24"
+                "Nov24",
+                "MarM25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase",
         "align": {
             "x": -0.09468929728517828,
@@ -12487,10 +12496,11 @@ export const Items = [
                 "MarM24",
                 "Egg",
                 "Brown",
-                "Easter"
+                "Easter",
+                "MarM25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase",
         "align": {
             "x": -0.040914625540970695,
@@ -13328,8 +13338,7 @@ export const Items = [
                 "Eggx-men",
                 "xmen",
                 "marvel",
-                "FebM25",
-                "premFeatOne"
+                "FebM25"
             ]
         },
         "is_available": false,
@@ -14436,7 +14445,7 @@ export const Items = [
                 "Green"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "manual",
         "align": {
             "x": -0.0025717114230223714,
@@ -14465,7 +14474,7 @@ export const Items = [
                 "Halo"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "manual",
         "align": {
             "x": -0.03185250516164617,
@@ -14492,7 +14501,7 @@ export const Items = [
                 "Eye"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "purchase",
         "align": {
             "x": -0.06015336519728054,
@@ -14571,8 +14580,6 @@ export const Items = [
                 "Mar25",
                 "Stpatricksday",
                 "Green",
-                "Orange",
-                "Buckle",
                 "Newsletter"
             ]
         },
@@ -14582,6 +14589,87 @@ export const Items = [
             "x": -0.1210543003967457,
             "y": -0.268313840390229,
             "z": -0.05540308757285228
+        }
+    },
+    {
+        "id": 1581,
+        "name": "Island Crown",
+        "price": 500,
+        "item_type_id": 1,
+        "item_type_name": "Hat",
+        "category_name": "Hats",
+        "exclusive_for_class": null,
+        "item_data": {
+            "meshName": "hat_paradisecrown",
+            "tags": [
+                "MarM25",
+                "Easter",
+                "Green",
+                "Moana",
+                "Grass",
+                "Flower",
+                "MarM25"
+            ]
+        },
+        "is_available": true,
+        "unlock": "purchase",
+        "align": {
+            "x": -0.07105644648360965,
+            "y": -0.2733141440835456,
+            "z": -0.02992035560734979
+        }
+    },
+    {
+        "id": 1582,
+        "name": "Snow Blight",
+        "price": 750,
+        "item_type_id": 1,
+        "item_type_name": "Hat",
+        "category_name": "Hats",
+        "exclusive_for_class": null,
+        "item_data": {
+            "meshName": "hat_snowhair",
+            "tags": [
+                "MarM25",
+                "White",
+                "Hair",
+                "Fairest",
+                "Red",
+                "Black"
+            ]
+        },
+        "is_available": true,
+        "unlock": "purchase",
+        "align": {
+            "x": 0.016196499136843734,
+            "y": -0.12718797275005234,
+            "z": 0.006757112068581955
+        }
+    },
+    {
+        "id": 1583,
+        "name": "Malcontent Crown",
+        "price": 1250,
+        "item_type_id": 1,
+        "item_type_name": "Hat",
+        "category_name": "Hats",
+        "exclusive_for_class": null,
+        "item_data": {
+            "meshName": "hat_evilhorns",
+            "tags": [
+                "MarM25",
+                "White",
+                "Queen",
+                "Fairest",
+                "Black"
+            ]
+        },
+        "is_available": true,
+        "unlock": "purchase",
+        "align": {
+            "x": -0.08221047186945785,
+            "y": -0.27911238654565806,
+            "z": -0.03762758719242561
         }
     },
     {
@@ -15660,10 +15748,11 @@ export const Items = [
                 "Easter",
                 "AprM23",
                 "Heart",
-                "MarM24"
+                "MarM24",
+                "MarM25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase"
     },
     {
@@ -15682,10 +15771,11 @@ export const Items = [
                 "AprM23",
                 "Blue",
                 "White",
-                "MarM24"
+                "MarM24",
+                "MarM25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase"
     },
     {
@@ -15701,10 +15791,11 @@ export const Items = [
             "y": 13,
             "tags": [
                 "Easter",
-                "MarM24"
+                "MarM24",
+                "MarM25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase"
     },
     {
@@ -19331,7 +19422,7 @@ export const Items = [
                 "FebM25"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "purchase"
     },
     {
@@ -19352,7 +19443,7 @@ export const Items = [
                 "FebM25"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "purchase"
     },
     {
@@ -19373,7 +19464,7 @@ export const Items = [
                 "FebM25"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "purchase"
     },
     {
@@ -19394,7 +19485,7 @@ export const Items = [
                 "FebM25"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "purchase"
     },
     {
@@ -19415,7 +19506,7 @@ export const Items = [
                 "FebM25"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "purchase"
     },
     {
@@ -19436,7 +19527,7 @@ export const Items = [
                 "FebM25"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "purchase"
     },
     {
@@ -19458,7 +19549,7 @@ export const Items = [
                 "FebM25"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "purchase"
     },
     {
@@ -19478,7 +19569,7 @@ export const Items = [
                 "FebM25"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "purchase"
     },
     {
@@ -21544,10 +21635,12 @@ export const Items = [
             "y": 7,
             "tags": [
                 "Badegg",
-                "Black"
+                "Black",
+                "premFeatOne",
+                "MarM25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase"
     },
     {
@@ -21862,7 +21955,7 @@ export const Items = [
                 "FebM25"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "purchase"
     },
     {
@@ -21886,7 +21979,7 @@ export const Items = [
                 "FebM25"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "purchase"
     },
     {
@@ -21909,7 +22002,7 @@ export const Items = [
                 "FebM25"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "purchase"
     },
     {
@@ -21932,7 +22025,7 @@ export const Items = [
                 "FebM25"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "purchase"
     },
     {
@@ -21954,7 +22047,7 @@ export const Items = [
                 "FebM25"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "purchase"
     },
     {
@@ -21997,7 +22090,7 @@ export const Items = [
                 "FebM25"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "purchase"
     },
     {
@@ -23056,7 +23149,7 @@ export const Items = [
                 "FebM25"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "purchase"
     },
     {
@@ -23079,7 +23172,7 @@ export const Items = [
                 "FebM25"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "purchase"
     },
     {
@@ -23100,7 +23193,7 @@ export const Items = [
                 "FebM25"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "purchase"
     },
     {
@@ -23166,7 +23259,7 @@ export const Items = [
                 "FebM25"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "purchase"
     },
     {
@@ -24812,10 +24905,11 @@ export const Items = [
                 "MarM24",
                 "Easter",
                 "Food",
-                "Rainbow"
+                "Rainbow",
+                "MarM25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase"
     },
     {
@@ -24833,10 +24927,11 @@ export const Items = [
                 "MarM24",
                 "Easter",
                 "Food",
-                "Rainbow"
+                "Rainbow",
+                "MarM25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase"
     },
     {
@@ -24854,10 +24949,11 @@ export const Items = [
                 "MarM24",
                 "Easter",
                 "Food",
-                "Brown"
+                "Brown",
+                "MarM25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase"
     },
     {
@@ -24876,10 +24972,11 @@ export const Items = [
                 "Easter",
                 "Food",
                 "Rabbit",
-                "White"
+                "White",
+                "MarM25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase"
     },
     {
@@ -24899,10 +24996,11 @@ export const Items = [
                 "Food",
                 "Rabbit",
                 "Face",
-                "Brown"
+                "Brown",
+                "MarM25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase"
     },
     {
@@ -24921,10 +25019,11 @@ export const Items = [
                 "Easter",
                 "Text",
                 "Food",
-                "Brown"
+                "Brown",
+                "MarM25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase"
     },
     {
@@ -27261,7 +27360,7 @@ export const Items = [
                 "Eye"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "purchase"
     },
     {
@@ -27305,7 +27404,7 @@ export const Items = [
                 "Crackshot"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "purchase"
     },
     {
@@ -27371,7 +27470,7 @@ export const Items = [
                 "Black"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "purchase"
     },
     {
@@ -27390,6 +27489,47 @@ export const Items = [
                 "StPatricksDay",
                 "Clover",
                 "Green"
+            ]
+        },
+        "is_available": true,
+        "unlock": "purchase"
+    },
+    {
+        "id": 2627,
+        "name": "Easter Island",
+        "price": 500,
+        "item_type_id": 2,
+        "item_type_name": "Stamp",
+        "category_name": "Stamps",
+        "exclusive_for_class": null,
+        "item_data": {
+            "x": 9,
+            "y": 20,
+            "tags": [
+                "MarM25",
+                "Text",
+                "Orange"
+            ]
+        },
+        "is_available": true,
+        "unlock": "purchase"
+    },
+    {
+        "id": 2628,
+        "name": "Dwarf #8",
+        "price": 1000,
+        "item_type_id": 2,
+        "item_type_name": "Stamp",
+        "category_name": "Stamps",
+        "exclusive_for_class": null,
+        "item_data": {
+            "x": 10,
+            "y": 20,
+            "tags": [
+                "MarM25",
+                "Snow",
+                "White",
+                "Tipsy"
             ]
         },
         "is_available": true,
@@ -27646,10 +27786,11 @@ export const Items = [
                 "Easter",
                 "Red",
                 "Eggs",
-                "MarM24"
+                "MarM24",
+                "MarM25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase"
     },
     {
@@ -28580,12 +28721,14 @@ export const Items = [
             "tags": [
                 "MarM24",
                 "Brown",
-                "Gold"
+                "Gold",
+                "premFeatOne",
+                "MarM25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "premium",
-        "activeProduct": false,
+        "activeProduct": true,
         "sku": [
             "item_ak_choc"
         ]
@@ -28967,10 +29110,11 @@ export const Items = [
                 "Easter",
                 "Blue",
                 "Eggs",
-                "MarM24"
+                "MarM24",
+                "MarM25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase"
     },
     {
@@ -29074,7 +29218,9 @@ export const Items = [
                 "Grey",
                 "Gray",
                 "Yellow",
-                "MarM24"
+                "MarM24",
+                "Welcome",
+                "Bundle"
             ]
         },
         "is_available": false,
@@ -30304,10 +30450,11 @@ export const Items = [
                 "Yellow",
                 "Green",
                 "Eggs",
-                "MarM24"
+                "MarM24",
+                "MarM25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase"
     },
     {
@@ -31447,7 +31594,7 @@ export const Items = [
                 "premFeatTwo"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "premium",
         "activeProduct": true,
         "sku": [
@@ -31811,10 +31958,11 @@ export const Items = [
                 "Pink",
                 "Blue",
                 "Eggs",
-                "MarM24"
+                "MarM24",
+                "MarM25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase"
     },
     {
@@ -33092,6 +33240,30 @@ export const Items = [
         "unlock": "purchase"
     },
     {
+        "id": 3070,
+        "name": "Frostfall 9mm",
+        "price": 3,
+        "item_type_id": 4,
+        "item_type_name": "Secondary",
+        "category_name": "Shared Secondary Weapons",
+        "exclusive_for_class": null,
+        "item_data": {
+            "meshName": "gun_cluck9mm_Frostfall",
+            "tags": [
+                "MarM25",
+                "Permanent",
+                "Blue",
+                "White"
+            ]
+        },
+        "is_available": true,
+        "unlock": "premium",
+        "activeProduct": true,
+        "sku": [
+            "item_9mm_frost"
+        ]
+    },
+    {
         "id": 3800,
         "name": "The RPEGG",
         "price": 0,
@@ -33321,10 +33493,11 @@ export const Items = [
                 "Easter",
                 "Orange",
                 "Eggs",
-                "MarM24"
+                "MarM24",
+                "MarM25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase"
     },
     {
@@ -34733,10 +34906,11 @@ export const Items = [
                 "Easter",
                 "Eggs",
                 "Purple",
-                "MarM24"
+                "MarM24",
+                "MarM25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase"
     },
     {
@@ -35344,7 +35518,7 @@ export const Items = [
                 "FebM25"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "purchase"
     },
     {
@@ -35772,7 +35946,7 @@ export const Items = [
         },
         "is_available": true,
         "unlock": "premium",
-        "activeProduct": true,
+        "activeProduct": false,
         "sku": [
             "item_smg_irish"
         ]
@@ -36029,10 +36203,11 @@ export const Items = [
                 "Easter",
                 "Eggs",
                 "Green",
-                "MarM24"
+                "MarM24",
+                "MarM25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase"
     },
     {
@@ -36653,8 +36828,7 @@ export const Items = [
                 "OctM23",
                 "bun_tactic",
                 "Telescope",
-                "FebM25",
-                "premFeatOne"
+                "FebM25"
             ]
         },
         "is_available": false,
@@ -37530,10 +37704,11 @@ export const Items = [
                 "Pink",
                 "Eggs",
                 "MarM24",
-                "bun_badbunny"
+                "bun_badbunny",
+                "MarM25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase"
     },
     {
@@ -39149,7 +39324,7 @@ export const Items = [
                 "D7W1"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "manual"
     },
     {
@@ -39440,10 +39615,11 @@ export const Items = [
                 "JunM23",
                 "Green",
                 "Eggs",
-                "MarM24"
+                "MarM24",
+                "MarM25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase"
     },
     {
@@ -40342,7 +40518,7 @@ export const Items = [
                 "FebM25"
             ]
         },
-        "is_available": true,
+        "is_available": false,
         "unlock": "premium",
         "activeProduct": false,
         "sku": [
@@ -41122,8 +41298,7 @@ export const Items = [
                 "Black",
                 "White",
                 "Cat",
-                "FebM25",
-                "premFeatOne"
+                "FebM25"
             ]
         },
         "is_available": false,
@@ -41508,10 +41683,11 @@ export const Items = [
                 "Rabbit",
                 "Brown",
                 "Easter",
-                "Gold"
+                "Gold",
+                "MarM25"
             ]
         },
-        "is_available": false,
+        "is_available": true,
         "unlock": "purchase"
     },
     {
@@ -41792,8 +41968,7 @@ export const Items = [
                 "Premium",
                 "Music",
                 "SepM24",
-                "eggyp",
-                "Mar25"
+                "eggyp"
             ]
         },
         "is_available": true,
@@ -42100,5 +42275,30 @@ export const Items = [
         },
         "is_available": false,
         "unlock": "manual"
+    },
+    {
+        "id": 15087,
+        "name": "Moai Melee",
+        "price": 5,
+        "item_type_id": 7,
+        "item_type_name": "Melee",
+        "category_name": "Melee",
+        "exclusive_for_class": null,
+        "item_data": {
+            "meshName": "melee_moai",
+            "tags": [
+                "Easter",
+                "Gray",
+                "Grey",
+                "Premium",
+                "MarM25"
+            ]
+        },
+        "is_available": true,
+        "unlock": "premium",
+        "activeProduct": true,
+        "sku": [
+            "item_melee_moai"
+        ]
     }
 ];
