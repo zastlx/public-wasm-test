@@ -71,6 +71,8 @@ export const PlayTypes = {
     joinPrivate: 2
 }
 
+export const ProxiesEnabled = !IsBrowser && typeof Bun == 'undefined';
+
 export const ShellStreaks = {
     HardBoiled: 1,
     EggBreaker: 2,
