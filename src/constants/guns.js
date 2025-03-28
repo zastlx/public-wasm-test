@@ -38,7 +38,9 @@ const Eggk47 = class _Eggk47 extends Gun {
         this.shortReloadTime = 160;
 
         this.weaponName = 'EggK-47';
+        this.internalName = 'Eggk47';
         this.standardMeshName = 'eggk47';
+
         this.rof = 3;
         this.recoil = 7;
         this.automatic = true;
@@ -67,8 +69,10 @@ const DozenGauge = class _DozenGauge extends Gun {
         this.longReloadTime = 155;
         this.shortReloadTime = 155;
 
-        this.weaponName = 'Dozen Gauge';
+        this.weaponName = 'Scrambler';
+        this.internalName = 'Dozen Gauge';
         this.standardMeshName = 'dozenGauge';
+
         this.rof = 8;
         this.recoil = 10;
         this.automatic = false;
@@ -121,8 +125,10 @@ const CSG1 = class _CSG1 extends Gun {
         this.shortReloadTime = 165;
         this.highPrecision = true;
 
-        this.weaponName = 'CSG-1';
+        this.weaponName = 'Free Ranger';
+        this.internalName = 'CSG-1';
         this.standardMeshName = 'csg1';
+
         this.rof = 13;
         this.recoil = 13;
         this.automatic = false;
@@ -159,7 +165,9 @@ const Cluck9mm = class _Cluck9mm extends Gun {
         this.shortReloadTime = 160;
 
         this.weaponName = 'Cluck 9mm';
+        this.internalName = 'Cluck 9mm';
         this.standardMeshName = 'cluck9mm';
+
         this.rof = 4;
         this.recoil = 6;
         this.automatic = false;
@@ -199,7 +207,9 @@ const RPEGG = class _RPEGG extends Gun {
         this.shortReloadTime = 170;
 
         this.weaponName = 'RPEGG';
+        this.internalName = 'Eggsploder';
         this.standardMeshName = 'rpegg';
+
         this.rof = 40;
         this.recoil = 60;
         this.automatic = false;
@@ -236,7 +246,9 @@ const SMG = class _SMG extends Gun {
         this.shortReloadTime = 190;
 
         this.weaponName = 'Whipper';
+        this.internalName = 'SMEGG';
         this.standardMeshName = 'smg';
+
         this.rof = 10;
         this.recoil = 7;
         this.automatic = true;
@@ -276,7 +288,9 @@ const M24 = class _M24 extends Gun {
         this.shortReloadTime = 144;
 
         this.weaponName = 'Crackshot';
+        this.internalName = 'M2DZ';
         this.standardMeshName = 'm24';
+
         this.rof = 60;
         this.recoil = 40;
         this.automatic = false;
@@ -316,7 +330,9 @@ const AUG = class _AUG extends Gun {
         this.shortReloadTime = 160;
 
         this.weaponName = 'Tri-Hard';
+        this.internalName = 'AUG';
         this.standardMeshName = 'aug';
+
         this.rof = 15;
         this.recoil = 18;
         this.automatic = false;
