@@ -82,6 +82,16 @@ export const ShellStreaks = {
     MiniEgg: 32
 }
 
+export const SocialMedias = {
+    0: 'Facebook',
+    1: 'Instagram',
+    2: 'Tiktok',
+    3: 'Discord',
+    4: 'Youtube',
+    5: 'Twitter',
+    6: 'Twitch'
+}
+
 export const SocialRewards = {
     Discord: 'rew_1200',
     Tiktok: 'rew_1208',
