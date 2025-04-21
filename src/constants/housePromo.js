@@ -282,7 +282,7 @@ export const HousePromo = {
             "linksTo": "link"
         }
     ],
-    "test": [
+    "bigBanner": [
         {
             "active": true,
             "label": "VIP",
