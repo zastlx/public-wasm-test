@@ -16,7 +16,6 @@ export const CommCode = {
     "socketReady": 20,
     "addPlayer": 21,
     "removePlayer": 22,
-    "fire": 23,
     "melee": 24,
     "throwGrenade": 25,
     "eventModifier": 27,
