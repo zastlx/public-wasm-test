@@ -689,9 +689,9 @@ export const HousePromo = {
         }
     ],
     "houseAdPercentChance": 100,
-    "specialItemsTag": "Apr25",
-    "featuredSocialMedia": "Facebook",
-    "premFeatured": "premFeatTwo",
+    "specialItemsTag": "May25",
+    "featuredSocialMedia": "Twitter",
+    "premFeatured": "premFeatOne",
     "smHouseAds": [
         {
             "ad": "badEgg",

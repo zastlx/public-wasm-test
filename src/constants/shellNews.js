@@ -2,10 +2,10 @@
 export const ShellNews = [
     {
         "active": true,
-        "content": "Fight from the shadows, or protect the light! ",
+        "content": "sunnier times and eggventure!  It’s the Leggacy of the Sun update ",
         "imageExt": ".png",
-        "id": "news_m8z3wo2d0",
-        "elId": "mJ16et",
+        "id": "news_ma5tobx50",
+        "elId": "C0iCqh",
         "linksToChangeLog": "1"
     },
     {
@@ -14,13 +14,13 @@ export const ShellNews = [
         "imageExt": ".png",
         "active": true,
         "id": "news_m4ul484c2",
-        "elId": "LkwgAI"
+        "elId": "03wNyx"
     },
     {
         "content": "Score in SoccerBros.gg ⚽",
         "imageExt": ".png",
         "id": "news_m4ukw0jq3",
-        "elId": "3xLkgx",
+        "elId": "BdaC8w",
         "link": "https://soccerbros.gg/?utm_source=ssnewsfeed&utm_medium=referral",
         "active": true
     },
@@ -28,7 +28,7 @@ export const ShellNews = [
         "content": "🧟 It’s alive! Badegg.io! 💀",
         "imageExt": ".png",
         "id": "news_m4ukw0jq4",
-        "elId": "qEGhQf",
+        "elId": "aNKrKq",
         "link": "https://badegg.io/?utm_source=ssnewsfeed&utm_medium=referral",
         "active": true
     },
@@ -36,7 +36,7 @@ export const ShellNews = [
         "content": "🤼 Get ready to rumble! Check out WrestleBros.io and beat up your bros! 🏆",
         "imageExt": ".png",
         "id": "news_m4ukw0jq5",
-        "elId": "45kPN5",
+        "elId": "5CWaJ2",
         "link": "https://wrestlebros.io/?utm_source=ssnewsfeed&utm_medium=referral",
         "active": true
     },
@@ -44,7 +44,7 @@ export const ShellNews = [
         "content": "Play the original Bros dunkathon, BasketBros.io! 🏀 1v1 basketball action! Unlock tons of new ballers and upgrades! ⛹️⛹🏿‍♀️⛹🏽‍♂️",
         "imageExt": ".jpg",
         "id": "news_m4ukw0jq6",
-        "elId": "h3L3Ft",
+        "elId": "2mc0EB",
         "active": true,
         "link": "https://basketbros.io/?utm_source=ssnewsfeed&utm_medium=referral"
     },
@@ -53,7 +53,7 @@ export const ShellNews = [
         "imageExt": ".png",
         "linksToVipStore": "1",
         "id": "news_m4uksyyj7",
-        "elId": "aA1wMp",
+        "elId": "e47I8g",
         "active": true
     }
 ];
