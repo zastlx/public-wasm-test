@@ -1635,6 +1635,36 @@ export const ShopItems = [
     },
     {
         "itemIds": [
+            1461
+        ],
+        "sku": "item_hat_mayan",
+        "name": "Ruins Wings",
+        "price": 5,
+        "salePrice": null,
+        "flagText": "",
+        "type": "item",
+        "inStore": 0,
+        "currency": 0,
+        "isActive": true,
+        "id": 131
+    },
+    {
+        "itemIds": [
+            15045
+        ],
+        "sku": "item_melee_mayan",
+        "name": "Mayan Macuahuitl",
+        "price": 5,
+        "salePrice": null,
+        "flagText": "",
+        "type": "item",
+        "inStore": 0,
+        "currency": 0,
+        "isActive": true,
+        "id": 132
+    },
+    {
+        "itemIds": [
             15047
         ],
         "sku": "item_melee_turkcar",
@@ -1998,28 +2028,25 @@ export const ShopItems = [
     },
     {
         "itemIds": [
-            1587,
-            2167,
-            3071,
-            15088
+            1594
         ],
-        "sku": "bun_rd",
-        "name": "Red Dragon Bundle",
-        "price": 6,
+        "sku": "item_hat_sunvis",
+        "name": "Sun Visor",
+        "price": 3,
         "salePrice": null,
         "flagText": "",
-        "type": "bundle",
+        "type": "item",
         "inStore": 1,
         "currency": 0,
         "isActive": true,
-        "id": 203
+        "id": 205
     },
     {
         "itemIds": [
-            1589
+            16092
         ],
-        "sku": "item_hat_pixair",
-        "name": "Pixel Airplane Wings",
+        "sku": "item_gre_mayan",
+        "name": "Mayan Grenade",
         "price": 5,
         "salePrice": null,
         "flagText": "",
@@ -2027,6 +2054,24 @@ export const ShopItems = [
         "inStore": 1,
         "currency": 0,
         "isActive": true,
-        "id": 204
+        "id": 207
+    },
+    {
+        "itemIds": [
+            1457,
+            2319,
+            3042,
+            15089
+        ],
+        "sku": "bun_jones",
+        "name": "Eggiana Jones Bundle",
+        "price": 6,
+        "salePrice": null,
+        "flagText": "",
+        "type": "bundle",
+        "inStore": 1,
+        "currency": 0,
+        "isActive": true,
+        "id": 208
     }
 ];

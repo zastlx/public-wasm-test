@@ -40,6 +40,5 @@ export const CommCode = {
     "keepAlive": 56,
     "musicInfo": 57,
     "hitMeHardBoiled": 58,
-    "challengeCompleted": 60,
-    "eggOrgUpdate": 61
+    "challengeCompleted": 60
 };
