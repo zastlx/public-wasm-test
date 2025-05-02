@@ -3,6 +3,7 @@ export const CommCode = {
     "swapWeapon": 0,
     "joinGame": 1,
     "spawnItem": 3,
+    "observeGame": 4,
     "ping": 5,
     "bootPlayer": 6,
     "reportPlayer": 10,
