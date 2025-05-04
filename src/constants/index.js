@@ -29,6 +29,9 @@ export const CoopStates = {
 
 export const FirebaseKey = 'AIzaSyDP4SIjKaw6A4c-zvfYxICpbEjn1rRnN50';
 
+export const SyncRate = 10;
+export const FramesBetweenSyncs = Math.ceil(30 / SyncRate);
+
 export const GameActions = {
     reset: 1,
     pause: 2
