@@ -2,12 +2,22 @@
 export const ShellYoutube = [
     {
         "active": true,
+        "link": "https://www.youtube.com/watch?v=6z9KKTk4kdw",
+        "desc": "",
+        "imageExt": "",
+        "id": "6z9KKTk4kdw",
+        "author": "TheKingmanYT",
+        "title": "1v1ing THE GOAT KT_VEI",
+        "externalImg": "https://i.ytimg.com/vi/6z9KKTk4kdw/hqdefault.jpg"
+    },
+    {
+        "active": true,
         "link": "https://www.youtube.com/watch?v=Jn1cT1PEi0s",
         "desc": "",
         "imageExt": "",
         "id": "Jn1cT1PEi0s",
         "author": "Meep ",
-        "title": "10 Kill Streak with Ancient Guns! | New Update | Shell Shockers",
+        "title": "10 Kill Streak /w Ancient Guns! | New Update",
         "externalImg": "https://i.ytimg.com/vi/Jn1cT1PEi0s/hqdefault.jpg"
     },
     {
