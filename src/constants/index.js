@@ -111,6 +111,8 @@ export const SocialRewards = {
     Twitch: 'rew_twitch_social'
 }
 
+export const StateBufferSize = 256;
+
 export const Teams = {
     blue: 1,
     red: 2
