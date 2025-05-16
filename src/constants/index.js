@@ -1,7 +1,6 @@
 import { AUG, CSG1, DozenGauge, Eggk47, M24, RPEGG, SMG } from './guns.js';
-import { Items } from './items.js';
 
-export const findItemById = (id) => Items.find(item => item.id === id);
+export { findItemById } from './findItemById.js';
 
 export const ChatFlags = {
     none: 0,
