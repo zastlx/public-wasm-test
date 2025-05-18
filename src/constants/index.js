@@ -79,7 +79,7 @@ export const PlayTypes = {
     joinPrivate: 2
 }
 
-export const ProxiesEnabled = !IsBrowser && typeof Bun == 'undefined';
+export const ProxiesEnabled = !IsBrowser && typeof Bun === 'undefined';
 
 export const ShellStreaks = {
     HardBoiled: 1,
@@ -127,5 +127,5 @@ export const URLRewards = [
     'WelcomeBack'
 ]
 
-export const UserAgent = IsBrowser ? undefined :
+export const UserAgent = IsBrowser ? null :
     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36'
